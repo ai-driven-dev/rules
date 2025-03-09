@@ -61,6 +61,7 @@ Les règles sont fortement poussé par Anysphere (Cursor) mais vous pouvez les u
 - [Cursor](https://docs.cursor.com/context/rules-for-ai)
   - [Cursor Forum : Mémoire dans Cursor](https://forum.cursor.com/t/rules-for-ultra-context-memories-lessons-scratchpad-with-plan-and-act-modes/48792/21?page=2)
 - [Windsurf (+ mémoire)](https://docs.codeium.com/windsurf/memories)
+  - [Windsurf directory](https://codeium.com/windsurf/directory) - Un ensemble de règles de la communauté par langage de programmation.
 
 ## Exemples de règles
 
