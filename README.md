@@ -9,12 +9,49 @@
 
 Ces règles sont des instructions pour l'IA de l'éditeur, qui peut être GitHub Copilot, Cursor ou Windsurf.
 
+- [Installation](#installation)
+  - [Comment utiliser ces règles ?](#comment-utiliser-ces-règles-)
+  - [Récupérer les règles de l'AI-Driven Dev](#récupérer-les-règles-de-lai-driven-dev)
 - [Official documentation](#official-documentation)
 - [Exemples de règles](#exemples-de-règles)
   - [.cursor/rules](#cursorrules)
   - [.cursorrules](#cursorrules-1)
 - [Outils de génération de règles](#outils-de-génération-de-règles)
 - [Tutoriels pour créer ses règles](#tutoriels-pour-créer-ses-règles)
+
+## Installation
+
+Voici des exemples de configuration rules pour Cursor.
+
+> `.cursorrules`est déprécié, splittez vos règles dans `.cursor/rules/*.mdc`.
+
+### Comment utiliser ces règles ?
+
+Ce sont des templates desquels vous inspirer pour vos propres règles en fonction de vos besoins ET de votre stack.
+
+1. Ouvrez `Cursor`, aller dans les `Settings`.
+2. Dans `Project Rules`.
+3. Cliquer sur `+ Add new rule`.
+   1. `Description`: Quand votre règle est appliquée.
+   2. `Globs`: Sur quels fichiers appliquer la règle.
+   3. `Content`: Le contenu de la règle (`markdown` ou `XML`).
+4. Le contenu se retrouvera directement dans des `.cursor/rules/*.mdc`
+   1. <img src="https://alexsoyes.com/wp-content/uploads/2025/02/cursor-project-rules.png" width="500" alt="cursor-rules-settings">
+5. Exemple d'utilisation dans le chat
+   1. <img src="https://alexsoyes.com/wp-content/uploads/2025/02/cursor-chat-rules.png" width="500" alt="cursor-rules-chat">
+6. Vous avez mes règles persos en guise de template.
+7. Enjoy 🙂
+
+### Récupérer les règles de l'AI-Driven Dev
+
+Dans ce dépôt, dans le dossier `.cursor/rules`, vous trouverez nos règles pour Cursor.
+
+1. Récupérez l'ensemble des règles.
+2. Ajustez-les pour VOTRE projet.
+3. Supprimez les règles / langages qui ne vous intéressent pas.
+4. Ajoutez vos propres règles.
+5. Partagez vos règles avec la communauté.
+6. Codez 2x plus vite.
 
 ## Official documentation
 
@@ -40,9 +77,10 @@ La nouvelle manière d'écrire des règles pour Cursor.
 
 ### .cursorrules
 
+- [awesome cursor rules](https://github.com/PatrickJS/awesome-cursorrules) - Une liste de règles pour Cursor.
 - [cursor.directory](https://cursor.directory/rules) - Un ensemble de règles de la communauté par langage de programmation
 - [devin.cursorules](https://github.com/grapeot/devin.cursorrules/blob/master/.cursorrules) - Transformer son IDE en agent IA (comme Devin qui coûte 400$/mois)
-- [mckaywrigley](https://github.com/mckaywrigley/mckays-app-template/blob/main/.cursorrules)
+- [mckaywrigley](https://github.com/mckaywrigley/mckays-app-template/blob/main/.cursorrules) - Projet de démo full AI stack (Next, Tailwind, Vercel, Supabase...)
 
 ## Outils de génération de règles
 
