@@ -33,9 +33,10 @@ Si vous cherchez de l'inspiration pour vos règles.
 
 La nouvelle manière d'écrire des règles pour Cursor.
 
+- [alexsoyes](https://github.com/ai-driven-dev/le-journal/tree/main/.cursor/rules) - TypeScript : Remix + NestJS (🔐 privé pour les membres de l'AI-Driven Dev)
 - [giak](https://github.com/giak/cv-generator/tree/main/.cursor/rules) - Vue 3
-- [Melvynx](https://github.com/Melvynx/cursor.rules) - React + NextJS
-- [mckaywrigley](https://github.com/mckaywrigley/mckays-app-template/tree/main/.cursor/rules) - TypeScript
+- [Melvynx](https://github.com/Melvynx/cursor.rules) - TypeScript : React + NextJS
+- [mckaywrigley](https://github.com/mckaywrigley/mckays-app-template/tree/main/.cursor/rules) - TypeScript : React + NextJS
 
 ### .cursorrules
 
