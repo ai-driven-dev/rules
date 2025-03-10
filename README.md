@@ -18,6 +18,7 @@ Ces règles sont des instructions pour l'IA de l'éditeur, qui peut être GitHub
   - [.cursorrules](#cursorrules-1)
 - [Outils de génération de règles](#outils-de-génération-de-règles)
 - [Tutoriels pour créer ses règles](#tutoriels-pour-créer-ses-règles)
+- [TODO](#todo)
 
 ## Installation
 
@@ -97,3 +98,13 @@ Des tutoriels pour vous aider à créer vos règles.
 
 - [Créer une règle Cursor](https://notes.switchdimension.com/cursor-ai-rules) - Page Notion de Rob Shocks pour vous montrer comment créer une règle Cursor.
 - [Comment générer des règles pour son projet](https://www.youtube.com/watch?v=jEhvwYkI-og) - Vidéo de 15 minutes pour générer des règles pour votre projet.
+
+## TODO
+
+- [ ] Merger le "[Guide du clean code IA](https://www.notion.so/alexsoyes/Guide-du-Clean-Code-avec-IA-17799aa702668072b1f6fccebb8a0ba0?pvs=4)" de l'AI-Driven Dev
+- [ ] Rajouter la partie `devops` pour les règles
+- [ ] Supprimer des règles, il y en a trop, il faut les simplifier
+- [ ] Rajouter des exemples pour toutes les règles
+- [ ] Revoir les règles avec Baptiste
+- [ ] Présentation des nouvelles règles dans le Discord
+- [ ] Déploiement via l'extension AI-Driven Dev

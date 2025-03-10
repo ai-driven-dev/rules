@@ -1,0 +1,118 @@
+---
+description: APPLY Prisma ORM standards WHEN working with database models TO ensure efficient and type-safe database operations
+globs: apps/backend/prisma/**/*.prisma, apps/backend/src/**/*repository.ts
+---
+
+# Prisma ORM Standards
+
+<version>1.0.0</version>
+
+## Context
+- These rules apply to all Prisma schema and database access code
+- They ensure consistent implementation of database patterns
+- They promote maintainable and efficient database operations
+
+## Requirements
+
+### Schema Design
+- Use meaningful model and field names
+- Define appropriate relations between models
+- Use enums for fields with predefined values
+- Add comments to document business rules
+
+### Data Access
+- Use repository pattern to encapsulate Prisma client operations
+- Implement transactions for operations that modify multiple records
+- Handle database errors appropriately
+- Use pagination for queries that may return large result sets
+
+### Performance
+- Create appropriate indexes for frequently queried fields
+- Use `select` to retrieve only needed fields
+- Use `include` judiciously to avoid N+1 problems
+- Implement proper filtering at the database level
+
+### Migrations
+- Review migration files before applying them
+- Test migrations in development environment
+- Have a rollback strategy for each migration
+- Document breaking changes in migrations
+
+## Examples
+
+<example>
+// Good: Well-structured Prisma schema
+/// User account in the system
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  name      String?
+  role      Role     @default(USER)
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  posts     Post[]
+
+  @@index([email])
+  @@map("users")
+}
+
+/// User role determining permissions
+enum Role {
+  ADMIN
+  USER
+  GUEST
+}
+</example>
+
+<example type="invalid">
+// Bad: Poorly structured Prisma schema
+model user {
+  id Int @id @default(autoincrement())
+  email String
+  // Missing relations
+  // Missing indexes
+  // Inconsistent naming (lowercase model name)
+  // No documentation
+}
+</example>
+
+<example>
+// Good: Repository pattern with Prisma
+@Injectable()
+export class UserRepository {
+  constructor(private prisma: PrismaService) {}
+
+  async findById(id: string): Promise<User | null> {
+    return this.prisma.user.findUnique({
+      where: { id },
+      select: {
+        id: true,
+        email: true,
+        name: true,
+        role: true
+      }
+    });
+  }
+
+  async create(data: CreateUserDto): Promise<User> {
+    return this.prisma.user.create({
+      data,
+      select: {
+        id: true,
+        email: true,
+        name: true,
+        role: true
+      }
+    });
+  }
+}
+</example>
+
+## Critical Rules
+
+<critical>
+- NEVER expose Prisma client directly to services
+- ALWAYS use repository pattern
+- ALWAYS document models and relations
+- NEVER use raw SQL queries unless absolutely necessary
+</critical> 

@@ -1,0 +1,35 @@
+---
+description: APPLY shared types standards WHEN creating DTOs and interfaces TO ensure consistent data structures across frontend and backend
+globs: packages/shared-types/**/*.{ts,tsx}
+alwaysApply: false
+---
+
+# Shared Types Standards
+
+<version>1.0.0</version>
+
+## Context
+- These rules apply to all shared types in the monorepo
+- Shared types are used for data transfer between frontend and backend
+- They ensure type consistency across the entire application
+
+## Requirements
+
+### Structure
+- All DTOs must be defined in the shared-types package
+- DTOs must be organized by domain/feature
+- Each DTO must have a clear purpose and documentation
+- Shared DTO between backend and frontend
+
+### Naming Conventions
+- Use suffix appropriate to the purpose (e.g., `UserDTO`, `CreateUserDTO`)
+- Keep names consistent with domain terminology
+
+## Critical Rules
+
+<critical>
+- NEVER use `any` type in shared interfaces
+- ALWAYS document shared types with JSDoc comments
+- ALWAYS organize types by domain/feature
+- NEVER include implementation details in shared types
+</critical> 

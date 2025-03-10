@@ -1,0 +1,325 @@
+---
+description: APPLY Clean Architecture principles WHEN organizing code TO ensure separation of concerns and testability
+globs: apps/**/*.{js,jsx,ts,tsx}
+alwaysApply: false
+---
+
+# Architecture Standards
+
+<version>1.1.0</version>
+
+## Context
+- These rules apply to the overall architecture of applications in the monorepo
+- They ensure proper separation of concerns
+- They promote testability and maintainability
+- Backend follows Clean Architecture principles
+- Frontend follows Feature-based Architecture principles
+
+## Backend Architecture (Clean Architecture)
+
+### Layers
+- Separate code into distinct layers: Domain, Application, Infrastructure, and Presentation
+- Ensure dependencies point inward (Presentation → Application → Domain)
+- Keep the Domain layer independent of frameworks and external concerns
+- Use interfaces to define boundaries between layers
+
+### Domain Layer
+- Focus on business entities and logic
+- Keep domain models pure and framework-independent
+- Implement domain services for complex business operations
+- Define repository interfaces in the domain layer
+
+### Application Layer
+- Implement use cases that orchestrate domain logic
+- Keep application services focused on a single responsibility
+- Use DTOs for data transfer between layers
+- Implement proper validation at the application layer
+
+### Infrastructure Layer
+- Implement repository interfaces defined in the domain layer
+- Handle external concerns like databases, APIs, and file systems
+- Keep infrastructure details isolated from business logic
+- Use adapters to integrate with external systems
+
+### Presentation Layer
+- Focus on API concerns and request/response handling
+- Keep presentation logic separate from business logic
+- Use controllers to handle HTTP requests
+- Implement proper error handling and response formatting
+
+### Backend Examples
+
+<example>
+// Good: Clean Architecture in practice (Backend)
+
+// Domain Layer - Entity
+export class User {
+  constructor(
+    public readonly id: string,
+    public readonly email: string,
+    public readonly name: string,
+    public readonly role: UserRole
+  ) {}
+
+  canAccessAdminPanel(): boolean {
+    return this.role === UserRole.ADMIN;
+  }
+}
+
+// Domain Layer - Repository Interface
+export interface UserRepository {
+  findById(id: string): Promise<User | null>;
+  save(user: User): Promise<void>;
+}
+
+// Application Layer - Use Case
+export class GetUserUseCase {
+  constructor(private userRepository: UserRepository) {}
+
+  async execute(userId: string): Promise<UserDTO> {
+    const user = await this.userRepository.findById(userId);
+    if (!user) {
+      throw new UserNotFoundError(userId);
+    }
+    return this.toDTO(user);
+  }
+
+  private toDTO(user: User): UserDTO {
+    return {
+      id: user.id,
+      email: user.email,
+      name: user.name,
+      isAdmin: user.canAccessAdminPanel()
+    };
+  }
+}
+
+// Infrastructure Layer - Repository Implementation
+export class PrismaUserRepository implements UserRepository {
+  constructor(private prisma: PrismaClient) {}
+
+  async findById(id: string): Promise<User | null> {
+    const userData = await this.prisma.user.findUnique({ where: { id } });
+    if (!userData) return null;
+    return new User(
+      userData.id,
+      userData.email,
+      userData.name,
+      userData.role as UserRole
+    );
+  }
+}
+
+// Presentation Layer - Controller
+export class UserController {
+  constructor(private getUserUseCase: GetUserUseCase) {}
+
+  async getUser(req: Request, res: Response) {
+    try {
+      const userDTO = await this.getUserUseCase.execute(req.params.id);
+      res.json(userDTO);
+    } catch (error) {
+      if (error instanceof UserNotFoundError) {
+        res.status(404).json({ message: error.message });
+      } else {
+        res.status(500).json({ message: 'Internal server error' });
+      }
+    }
+  }
+}
+</example>
+
+<example type="invalid">
+// Bad: Mixed concerns and no clear architecture (Backend)
+
+// Mixed domain and infrastructure concerns
+export class UserService {
+  constructor(private db: any) {}
+
+  async getUser(id: string) {
+    // Direct database access mixed with business logic
+    const user = await this.db.query('SELECT * FROM users WHERE id = ?', [id]);
+    
+    // Business logic mixed with data access
+    if (user.role === 'admin') {
+      user.permissions = await this.db.query('SELECT * FROM permissions WHERE role = ?', ['admin']);
+    }
+    
+    return user;
+  }
+  
+  // UI concerns mixed with business logic
+  formatUserForDisplay(user) {
+    return {
+      ...user,
+      formattedDate: new Date(user.createdAt).toLocaleDateString()
+    };
+  }
+}
+</example>
+
+## Frontend Architecture (Feature-based Architecture)
+
+### Feature Organization
+- Organize code by business features rather than technical concerns
+- Each feature should be self-contained with its own components, hooks, and state
+- Shared components should be placed in a common UI library
+- Features should communicate through well-defined interfaces
+
+### Feature Structure
+- Each feature should have a clear entry point (index.ts/tsx)
+- Keep feature-specific components within the feature directory
+- Implement feature-specific hooks for business logic
+- Use feature-specific types for type definitions
+
+### State Management
+- Keep state as close as possible to where it's used
+- Use global state only for truly global concerns
+- Implement proper state isolation between features
+- Use context or state management libraries judiciously
+
+### Component Organization
+- Separate container components (with logic) from presentational components
+- Keep components focused on a single responsibility
+- Implement proper prop validation with TypeScript
+- Use composition over inheritance for component reuse
+
+### Frontend Examples
+
+<example>
+// Good: Feature-based Architecture in practice (Frontend)
+
+// Feature structure
+// /features/user-management/
+//   /components/
+//     UserList.tsx
+//     UserDetails.tsx
+//     UserForm.tsx
+//   /hooks/
+//     useUsers.ts
+//     useUserDetails.ts
+//   /types/
+//     user.types.ts
+//   /api/
+//     userApi.ts
+//   index.ts
+
+// Feature entry point
+// features/user-management/index.ts
+export { UserList } from './components/UserList';
+export { UserDetails } from './components/UserDetails';
+export { UserForm } from './components/UserForm';
+export { useUsers, useUserDetails } from './hooks';
+export type { User, UserRole } from './types/user.types';
+
+// Feature-specific hook
+// features/user-management/hooks/useUsers.ts
+export function useUsers() {
+  const [users, setUsers] = useState<User[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<Error | null>(null);
+
+  const fetchUsers = useCallback(async () => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      const data = await userApi.getUsers();
+      setUsers(data);
+    } catch (err) {
+      setError(err instanceof Error ? err : new Error('Failed to fetch users'));
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchUsers();
+  }, [fetchUsers]);
+
+  return { users, isLoading, error, refetch: fetchUsers };
+}
+
+// Feature component
+// features/user-management/components/UserList.tsx
+export function UserList() {
+  const { users, isLoading, error } = useUsers();
+
+  if (isLoading) return <LoadingSpinner />;
+  if (error) return <ErrorMessage message={error.message} />;
+
+  return (
+    <div>
+      <h1>Users</h1>
+      <ul>
+        {users.map(user => (
+          <li key={user.id}>
+            <Link to={`/users/${user.id}`}>{user.name}</Link>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+</example>
+
+<example type="invalid">
+// Bad: Technical-based organization (Frontend)
+
+// Technical structure
+// /components/
+//   Button.tsx
+//   UserList.tsx
+//   ProductList.tsx
+// /pages/
+//   UserPage.tsx
+//   ProductPage.tsx
+// /utils/
+//   userUtils.ts
+//   productUtils.ts
+
+// Mixed concerns in a single file
+// pages/UserPage.tsx
+export function UserPage() {
+  const [users, setUsers] = useState([]);
+  const [loading, setLoading] = useState(true);
+  
+  // API call directly in component
+  useEffect(() => {
+    fetch('/api/users')
+      .then(res => res.json())
+      .then(data => {
+        setUsers(data);
+        setLoading(false);
+      });
+  }, []);
+  
+  // UI logic mixed with business logic
+  const filteredUsers = users.filter(user => user.isActive);
+  
+  return (
+    <div>
+      <h1>Users</h1>
+      {loading ? (
+        <p>Loading...</p>
+      ) : (
+        <ul>
+          {filteredUsers.map(user => (
+            <li key={user.id}>{user.name}</li>
+          ))}
+        </ul>
+      )}
+    </div>
+  );
+}
+</example>
+
+## Critical Rules
+
+<critical>
+- NEVER allow outer layers to depend on inner layers in backend architecture
+- ALWAYS define clear boundaries between layers
+- NEVER mix business logic with infrastructure concerns
+- ALWAYS organize frontend code by features, not technical concerns
+- NEVER mix feature concerns in frontend components
+- ALWAYS keep feature-specific code within its feature directory
+</critical>

@@ -1,0 +1,73 @@
+---
+description: APPLY testing standards WHEN writing tests TO ensure comprehensive and maintainable test suites
+globs: apps/**/*.{test,spec}.{js,jsx,ts,tsx}, apps/**/test/**/*
+alwaysApply: false
+---
+
+# Testing Standards
+
+<version>1.0.0</version>
+
+## Context
+- These rules apply to all test code across the monorepo
+- They ensure consistent implementation of testing patterns
+- They promote maintainable and reliable test suites
+
+## Requirements
+
+### Test Organization
+- Organize tests by feature/domain
+- Group related tests in describe blocks
+- Name tests descriptively
+- Follow the AAA pattern (Arrange, Act, Assert)
+- Use action based testing to test real user interactions.
+- - AAA pattern with no comments.
+- DO NOT test functions, DO TEST behaviors.
+
+### Common Rules
+- Do not create types, use existing or ask user where they are if not found.
+
+### Frontend Tests
+- Only mock external calls (like API, `window` object from browser etc).
+- Test that errors are correclty throws, do not check `console` output.
+
+### Backend Tests
+- Use action based testing to test real user interactions.
+- DO NOT test functions, DO TEST behaviors.
+- Use `describe` to group user scenarios by business logic.
+- Use `it` to assert a user action in the functionnal flow.
+- Use DRY, use `beforeEach`, `beforeAll`, `afterEach`, `afterAll` etc to reduce code repetition.
+
+### Unit Tests
+- Test one unit of functionality at a time
+- Mock dependencies appropriately
+- Test edge cases and error conditions
+- Keep tests fast and independent
+- Avoid fragile testing like excpeting exact message.
+
+### Integration Tests
+- Test interactions between components/modules
+- Minimize mocking for integration tests
+- Test realistic user flows
+- Focus on critical paths
+
+### E2E Tests
+- Test complete user journeys
+- Use realistic test data
+- Test in an environment close to production
+- Focus on critical business flows
+
+### Test Quality
+- Avoid test duplication
+- Keep tests simple and readable
+- Avoid testing implementation details
+- Use appropriate assertions
+
+## Critical Rules
+
+<critical>
+- NEVER test implementation details
+- ALWAYS follow the AAA pattern
+- ALWAYS test error conditions
+- NEVER use sleep/setTimeout in tests without proper justification
+</critical>

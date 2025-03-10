@@ -1,0 +1,135 @@
+---
+description: APPLY React best practices WHEN developing components and hooks TO ensure performant and maintainable UI code
+globs: apps/frontend/app/**/*.{jsx,tsx}, apps/frontend/app/**/*.hooks.{ts,js}
+alwaysApply: false
+---
+
+# React Framework Standards
+
+<version>1.0.0</version>
+
+## Context
+- These rules apply to all React components and hooks in the frontend application
+- They ensure consistent implementation of React patterns
+- They promote maintainable, performant, and accessible UI code
+
+## Requirements
+
+### Component Structure
+- Use functional components
+- Keep components very light and small, focused on a single responsibility
+- Implement proper prop validation with TypeScript
+- Organize components by feature/domain
+
+### Rules
+- Follow smart/dumb component pattern, React components are dumb
+- State and logic are deported in a dedicated state manager
+- Avoid using React core methods such as `useEffect`, `useCallback`, prefer using state manager
+- `useRef` is allowed, as well as framework hooks (e.g. `useForm` from NextJS or Remix)
+- Declare vars on top of component for small calculatation
+- Use `observer` if MobX
+- use static `displayName` at bottom
+- No default export for components.
+- return `null` if mandatory props does not exist
+- Pass parent parameters `store` to children components and UI if necessary (e.g. `formRef`)
+- One component per file, except for tiny private component for readability
+- Early returns.
+
+### Style and Accessibility
+- Mobile first.
+- Use existing component from Design System in @components.json
+- Use semantic HTML elements
+- Implement proper ARIA attributes
+- Ensure keyboard navigation works
+- Test with screen readers
+
+## Examples
+
+<example>
+import { User } from 'lucide-react';
+import { observer } from 'mobx-react-lite';
+import type { FC } from 'react';
+
+interface HeaderProfileAvatarProps {
+  name: string;
+  avatar?: string;
+}
+
+export const HeaderProfileAvatar: FC<HeaderProfileAvatarProps> = observer(({ name, avatar }) => {
+  const hasName = name.length > 0;
+  const hasAvatar = avatar !== undefined;
+
+  return (
+    <div className="flex items-center gap-3" role="group" aria-label="Profile information">
+      {hasName && (
+        <span className="text-sm font-medium" aria-label={`User name: ${name}`}>
+          {name}
+        </span>
+      )}
+
+      {hasAvatar ? (
+        <img
+          src={avatar}
+          alt={`Profile picture of ${name}`}
+          width={36}
+          height={36}
+          className="rounded-full border-2 border-gray-100 shadow-xs"
+          crossOrigin="anonymous"
+        />
+      ) : (
+        <div
+          className="h-9 w-9 rounded-full bg-gray-100 flex items-center justify-center"
+          role="img"
+          aria-label="Default profile icon"
+        >
+          <User className="h-5 w-5 text-gray-600" aria-hidden="true" />
+        </div>
+      )}
+    </div>
+  );
+});
+
+HeaderProfileAvatar.displayName = 'HeaderProfileAvatar';
+
+</example>
+
+<example type="invalid">
+import { useState, useEffect } from 'react';
+
+const UserProfile = ({ userId }) => { // ❌ Pas de typage explicite
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  // ❌ Fetch dans le composant (doit être géré dans un state manager)
+  useEffect(() => {
+    fetch(`/api/users/${userId}`)
+      .then(res => res.json())
+      .then(data => {
+        setUser(data);
+        setLoading(false);
+      });
+  }, [userId]);
+
+  if (loading) return <p>Loading...</p>;
+
+  return (
+    <div>
+      <h2>{user.name}</h2>
+
+      {/* ❌ Mauvaise pratique : bouton non accessible */}
+      <button onClick={() => alert("Clicked")}>Click me</button>
+    </div>
+  );
+};
+
+export default UserProfile;
+
+</example>
+
+## Critical Rules
+
+<critical>
+- ALWAYS follow the Rules of Hooks
+- ALWAYS implement proper loading and error states
+- NEVER mutate props or state directly
+</critical> 

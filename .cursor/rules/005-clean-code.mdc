@@ -1,0 +1,70 @@
+---
+description: APPLY Clean Code principles WHEN writing code TO ensure readability, maintainability, and simplicity
+globs: apps/**/*.{js,jsx,ts,tsx}, packages/**/*.{js,jsx,ts,tsx}
+alwaysApply: false
+---
+
+# Clean Code Standards
+
+<version>1.0.0</version>
+
+## Context
+- These rules apply to all code across the monorepo
+- They ensure code is readable, maintainable, and simple
+- They promote consistent coding practices and reduce technical debt
+
+## Requirements
+
+### Code Generation
+- Strongly type everythink
+- Never us untyped values (`any`, `unknown`, `mixed`, `object` etc. are prohibited)
+- Force explicit constants instead of magic numbers.
+- Write clear and simple conditions.
+- No double negatives.
+- Prioritize readable variable names, even if longer.
+- Simplify loops using `map()`, `filter()`, or `reduce()`.
+
+### Function Design
+- Keep functions small and focused on a single responsibility
+- Limit function length to 20-30 lines
+- Limit function parameters to 3 or fewer
+- Avoid flag parameters; split into multiple functions instead
+- Anemic models (avoid trivial `getId`/`setId`).
+- Function names with no actions (avoid `setUsers`, prefer `loadUsers`). 
+
+### Code Organization
+- One file per feature, split responsibility across files (SRP).
+- Keep files small (under 300 lines)
+- When folders exceed 7 files, create sub-folders
+- Group related code together
+- Follow the principle of least surprise
+- Maintain a consistent level of abstraction within functions
+- Group code by business domain rather than technical layer
+- Focus on functional specifications over technical specifications
+- Keep business logic separate from technical implementation
+
+### Comments
+- Write self-documenting code that minimizes the need for comments
+- Use comments to explain "why" not "what" or "how"
+- Keep comments up-to-date with code changes
+
+### Error Handling
+- Use custom domain error for different error categories
+- Error messages must be meaningful and SHOULD be translated to the user's language (e.g. French) for display.
+- Fail fast: early throws errors, avoid returning null or undefined
+- Errors in logs are tracked with error codes, in English
+
+### Code Duplication
+- Follow the DRY (Don't Repeat Yourself) principle
+- Extract common functionality into reusable functions
+- Use composition over inheritance
+- Create utility functions for repeated operations
+
+## Critical Rules
+
+<critical>
+- NEVER write functions longer than 30 lines
+- ALWAYS give functions and variables descriptive names
+- NEVER have more than 3 parameters for a function
+- ALWAYS write tests for your code
+</critical>

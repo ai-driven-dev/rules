@@ -1,0 +1,67 @@
+---
+description: APPLY documentation standards WHEN writing project documentation TO ensure clarity, completeness, and maintainability
+globs: **/*.md, **/docs/**/*,  **/documentations/**/*
+alwaysApply: false
+---
+
+# Project Documentation Standards
+
+<version>1.0.0</version>
+
+## Context
+- These rules apply to all project documentation
+- They ensure documentation is clear, complete, and maintainable
+- They promote consistency across all documentation
+- They help new team members onboard efficiently
+
+## Requirements
+
+### Documentation Structure
+- Organize documentation by domain/feature
+- Use a consistent structure across similar documents
+- Include a table of contents for documents longer than 500 lines
+- Maintain a clear hierarchy with proper heading levels
+- Document the "why" more than the "how"
+
+### README Files
+- Each project/module must have a README.md
+- Include purpose, installation, and usage instructions
+- Document environment requirements
+- Provide quick start examples
+- Link to more detailed documentation
+
+### API Documentation
+- Document all public APIs using `OpenAPI`
+- Include parameters, return values, and error responses
+- Provide usage examples
+- Document authentication requirements
+- Keep API documentation in sync with implementation
+
+### Architecture Documentation
+- Document system architecture with diagrams
+- Explain key design decisions and trade-offs
+- Document integration points with external systems
+- Keep architecture documentation up-to-date with implementation
+
+### User Documentation
+- Write in clear, non-technical language
+- Include step-by-step instructions
+- Provide screenshots for UI-related instructions
+- Organize by user tasks rather than system features
+- Include troubleshooting sections for common issues
+
+### Language and Style
+- Write in English
+- Use present tense
+- Use active voice
+- Be concise and specific
+- Define technical terms and acronyms on first use
+
+## Critical Rules
+
+<critical>
+- NEVER leave documentation outdated after code changes
+- ALWAYS include installation and setup instructions
+- ALWAYS document API endpoints with examples
+- NEVER use technical jargon without explanation in user-facing documentation
+</critical> 

@@ -1,0 +1,134 @@
+---
+description: ALWAYS use when writing or updating Markdown files to ensure consistent formatting and readability. This rule enforces standardized Markdown practices across all documentation.
+globs: **/*.{md,mdx}
+---
+# Markdown Documentation Standards
+
+## Requirements
+
+- Follow the official [Markdown Guide](mdc:https:/www.markdownguide.org) for all basic and extended syntax
+- Maintain clear document structure and readability
+- Include appropriate metadata when required
+- Use Mermaid diagrams for visual documentation where appropriate
+- Always Include YAML front matter for metadata but Keep metadata concise
+
+## Markdown Reference
+
+For all basic and extended Markdown syntax, refer to:
+- [Basic Syntax Guide](mdc:https:/www.markdownguide.org/basic-syntax)
+- [Extended Syntax Guide](mdc:https:/www.markdownguide.org/extended-syntax)
+
+## Formatting Rules
+
+- Use ATX-style headings with space after hash: `# Heading`
+- Maintain proper heading hierarchy (don't skip levels)
+- Maximum heading depth: 4 levels
+- Add blank line before and after headings
+- Indent content within XML tags by 2 spaces
+- Close XML tags on their own line at the parent indentation level
+- Use blockquotes with emoji for different types of callouts:
+
+<example>
+  > 🚨 **Warning:** Critical information here.
+
+  > 💡 **Tip:** Helpful suggestion.
+
+  > ℹ️ **Note:** Additional context.
+</example>
+
+## Code Blocks
+
+- Use triple backticks with language specification
+- Indent code blocks properly
+- Add blank line before and after
+- Use inline code for short references
+
+<example>
+```typescript
+function example(): void {
+  console.log('Hello, Universe!');
+}
+```
+
+Reference the `example()` function inline.
+</example>
+
+## Tables
+
+- Use alignment indicators
+- Include header row separator
+- Keep tables simple and readable
+- Add blank lines before and after
+
+<example>
+| Name    | Type    | Description     |
+|:--------|:-------:|---------------:|
+| id      | number  | Primary key    |
+| name    | string  | User's name    |
+</example>
+
+## Special Elements
+
+### Callouts
+
+Use blockquotes with emoji for different types of callouts:
+
+<example>
+> 🚨 **Warning:** Critical information here.
+
+> 💡 **Tip:** Helpful suggestion.
+
+> ℹ️ **Note:** Additional context.
+</example>
+
+### Mermaid Diagrams
+
+Use Mermaid diagrams to visualize:
+- Architecture flows
+- Process sequences
+- Decision trees
+- State machines
+- Component relationships
+- AI agent rule flows
+
+### When to Use Mermaid
+
+- Simple and Complex workflows need visualization
+- System architecture needs to be explained
+- Process flows have multiple branches
+- State transitions need to be clear
+- AI decision trees need to be mapped
+
+### Diagram Best Practices
+
+1. Include clear titles using the `---` syntax
+2. Use descriptive node labels
+3. Add comments for complex flows
+4. Group related components using subgraphs
+5. Use consistent direction (TD/LR/TB)
+6. Keep diagrams focused and specific
+
+<example>
+```mermaid
+---
+title: Example Workflow
+---
+graph TD
+    A[Start] --> B{Decision}
+    B -->|Yes| C[Process 1]
+    B -->|No| D[Process 2]
+    C --> E[End]
+    D --> E
+```
+</example>
+
+<example type="invalid">
+```mermaid
+graph TD
+A-->B
+B-->C
+```
+
+No title, unclear labels, no context
+</example>
+
