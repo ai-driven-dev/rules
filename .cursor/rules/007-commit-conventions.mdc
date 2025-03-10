@@ -1,6 +1,6 @@
 ---
 description: APPLY commit message conventions WHEN creating commits TO ensure clear and consistent version history
-globs: **/*
+globs: **/*.{js,jsx,ts,tsx,md,json,prisma}
 ---
 ---
 description: APPLY commit message conventions WHEN creating commits TO ensure clear and consistent version history
@@ -22,6 +22,7 @@ globs: **/*
 
 ### Commit Structure
 - Use the Conventional Commits format: `<type>(<scope>)[!]: :<gitmoji>: <description>`
+- Use relevant gitmoji for the type
 - Keep the first line under 72 characters
 - Write description in imperative, present tense (e.g., "add" not "added")
 - Use the body to explain what and why, not how
@@ -29,7 +30,36 @@ globs: **/*
 - Include a blank line between the description and body
 - Include a blank line between the body and footer
 
-### Commit Types and Corresponding Gitmojis
+### Gitmoji 
+
+Here's a list of commonly used Gitmoji - emoji used in Git commit messages:
+
+- 🎨 `:art:` - Improve structure/format of the code
+- ⚡️ `:zap:` - Improve performance
+- 🔥 `:fire:` - Remove code or files
+- 🐛 `:bug:` - Fix a bug
+- 🚑️ `:ambulance:` - Critical hotfix
+- ✨ `:sparkles:` - Introduce new features
+- 📝 `:memo:` - Add or update documentation
+- 🚀 `:rocket:` - Deploy stuff
+- 💄 `:lipstick:` - Add or update the UI and style files
+- 🎉 `:tada:` - Begin a project
+- ✅ `:white_check_mark:` - Add, update, or pass tests
+- 🔒️ `:lock:` - Fix security issues
+- 🔖 `:bookmark:` - Release / Version tags
+- 🚧 `:construction:` - Work in progress
+- 💚 `:green_heart:` - Fix CI Build
+- ⬇️ `:arrow_down:` - Downgrade dependencies
+- ⬆️ `:arrow_up:` - Upgrade dependencies
+- 👷 `:construction_worker:` - Add or update CI build system
+- 📈 `:chart_with_upwards_trend:` - Add or update analytics or track code
+- ♻️ `:recycle:` - Refactor code
+- ➕ `:heavy_plus_sign:` - Add a dependency
+- ➖ `:heavy_minus_sign:` - Remove a dependency
+- 🔧 `:wrench:` - Add or update configuration files
+- 🔨 `:hammer:` - Add or update development scripts
+
+### Commit Types and common corresponding Gitmojis
 - `feat`: `✨` (`:sparkles:`) – A new feature
 - `fix`: `🐛` (`:bug:`) – A bug fix
 - `docs`: `📝` (`:memo:`) – Documentation changes
@@ -148,5 +178,6 @@ updated file
 - ALWAYS write in English using imperative, present tense
 - NEVER mix multiple unrelated changes in a single commit
 - ALWAYS include the appropriate Gitmoji for the commit type
+- ALWAYS include Refs to footer when it is possible
 - ALWAYS mark breaking changes with ! and BREAKING CHANGE: footer
 </critical>
