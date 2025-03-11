@@ -21,7 +21,6 @@ alwaysApply: false
 - Name tests descriptively
 - Follow the AAA pattern (Arrange, Act, Assert)
 - Use action based testing to test real user interactions.
-- - AAA pattern with no comments.
 - DO NOT test functions, DO TEST behaviors.
 
 ### Common Rules
@@ -29,13 +28,13 @@ alwaysApply: false
 
 ### Frontend Tests
 - Only mock external calls (like API, `window` object from browser etc).
-- Test that errors are correclty throws, do not check `console` output.
+- Test that errors are correctly throws, do not check `console` output.
 
 ### Backend Tests
 - Use action based testing to test real user interactions.
 - DO NOT test functions, DO TEST behaviors.
 - Use `describe` to group user scenarios by business logic.
-- Use `it` to assert a user action in the functionnal flow.
+- Use `it` to assert a user action in the functional flow.
 - Use DRY, use `beforeEach`, `beforeAll`, `afterEach`, `afterAll` etc to reduce code repetition.
 
 ### Unit Tests
@@ -43,7 +42,7 @@ alwaysApply: false
 - Mock dependencies appropriately
 - Test edge cases and error conditions
 - Keep tests fast and independent
-- Avoid fragile testing like excpeting exact message.
+- Avoid fragile testing like excepting exact message.
 
 ### Integration Tests
 - Test interactions between components/modules
