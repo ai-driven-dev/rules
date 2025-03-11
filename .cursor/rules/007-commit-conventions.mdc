@@ -2,35 +2,75 @@
 description: APPLY commit message conventions WHEN creating commits TO ensure clear and consistent version history
 globs: **/*.{js,jsx,ts,tsx,md,json,prisma}
 ---
+---
+description: APPLY commit message conventions WHEN creating commits TO ensure clear and consistent version history
+globs: **/*
+---
 
 # Commit Message Conventions
 
-<version>1.0.0</version>
+<version>1.1.0</version>
 
 ## Context
 - These rules apply to all commit messages in the project
 - They ensure a clear and searchable commit history
 - They facilitate automated changelog generation
 - They promote consistency across the development team
+- They incorporate Gitmoji for visual representation of change types
 
 ## Requirements
 
 ### Commit Structure
-- Use the Conventional Commits format: `<type>(<scope>): <description>`
+- Use the Conventional Commits format: `<type>(<scope>)[!]: :<gitmoji>: <description>`
+- Use relevant gitmoji for the type
 - Keep the first line under 72 characters
 - Write description in imperative, present tense (e.g., "add" not "added")
 - Use the body to explain what and why, not how
 - Reference issues and pull requests at the end of the body
+- Include a blank line between the description and body
+- Include a blank line between the body and footer
 
-### Commit Types
-- `feat`: A new feature
-- `fix`: A bug fix
-- `docs`: Documentation changes
-- `style`: Changes that don't affect code functionality (formatting, etc.)
-- `refactor`: Code changes that neither fix bugs nor add features
-- `perf`: Performance improvements
-- `test`: Adding or correcting tests
-- `chore`: Changes to build process, dependencies, etc.
+### Gitmoji 
+
+Here's a list of commonly used Gitmoji - emoji used in Git commit messages:
+
+- 🎨 `:art:` - Improve structure/format of the code
+- ⚡️ `:zap:` - Improve performance
+- 🔥 `:fire:` - Remove code or files
+- 🐛 `:bug:` - Fix a bug
+- 🚑️ `:ambulance:` - Critical hotfix
+- ✨ `:sparkles:` - Introduce new features
+- 📝 `:memo:` - Add or update documentation
+- 🚀 `:rocket:` - Deploy stuff
+- 💄 `:lipstick:` - Add or update the UI and style files
+- 🎉 `:tada:` - Begin a project
+- ✅ `:white_check_mark:` - Add, update, or pass tests
+- 🔒️ `:lock:` - Fix security issues
+- 🔖 `:bookmark:` - Release / Version tags
+- 🚧 `:construction:` - Work in progress
+- 💚 `:green_heart:` - Fix CI Build
+- ⬇️ `:arrow_down:` - Downgrade dependencies
+- ⬆️ `:arrow_up:` - Upgrade dependencies
+- 👷 `:construction_worker:` - Add or update CI build system
+- 📈 `:chart_with_upwards_trend:` - Add or update analytics or track code
+- ♻️ `:recycle:` - Refactor code
+- ➕ `:heavy_plus_sign:` - Add a dependency
+- ➖ `:heavy_minus_sign:` - Remove a dependency
+- 🔧 `:wrench:` - Add or update configuration files
+- 🔨 `:hammer:` - Add or update development scripts
+
+### Commit Types and common corresponding Gitmojis
+- `feat`: `✨` (`:sparkles:`) – A new feature
+- `fix`: `🐛` (`:bug:`) – A bug fix
+- `docs`: `📝` (`:memo:`) – Documentation changes
+- `style`: `💄` (`:lipstick:`) – Changes that don't affect code functionality (formatting, etc.)
+- `refactor`: `♻️` (`:recycle:`) – Code changes that neither fix bugs nor add features
+- `perf`: `⚡️` (`:zap:`) – Performance improvements
+- `test`: `✅` (`:white_check_mark:`) – Adding or correcting tests
+- `build`: `🛠️` (`:hammer:`) – Changes affecting the build system
+- `ci`: `👷` (`:construction_worker:`) – Continuous Integration related changes
+- `chore`: `🔧` (`:wrench:`) – Changes to build process, dependencies, etc.
+- `revert`: `⏪️` (`:rewind:`) – Reverting changes
 
 ### Commit Scope
 - Use scope to indicate the component affected (e.g., `auth`, `api`, `ui`)
@@ -39,9 +79,22 @@ globs: **/*.{js,jsx,ts,tsx,md,json,prisma}
 - Omit scope for changes that affect multiple components
 
 ### Breaking Changes
-- Mark breaking changes with `!` after type/scope: `feat(api)!: change authentication API`
+- Mark breaking changes with `!` after type/scope: `feat(api)!: ✨ change authentication API`
 - Include `BREAKING CHANGE:` in the commit body with explanation
 - Provide migration instructions when possible
+
+### Body
+- Provide a detailed explanation of the commit
+- Begin one blank line after the description
+- Use imperative, present tense
+- Explain the "why" and "what" of the change, not the "how"
+
+### Footer
+- Include metadata such as breaking changes and issue references
+- Begin one blank line after the body
+- Each entry starts on a new line
+- For issue references, use format: `Refs: #<issue-number>` or `Fixes: #<issue-number>`
+- For review references, use format: `Reviewed-by: <reviewer>`
 
 ### Language Standards
 - Write all commit messages in English
@@ -52,27 +105,44 @@ globs: **/*.{js,jsx,ts,tsx,md,json,prisma}
 ## Examples
 
 <example>
-# Good commit message
+# Good commit message with Gitmoji
 
-feat(auth): implement JWT authentication
+feat(auth): ✨ implement JWT authentication
 
 - Add JWT token generation and validation
 - Create authentication middleware
 - Update user repository to support token storage
 
-Closes #123
+Fixes: #123
 </example>
 
 <example>
 # Good commit message with breaking change
 
-feat(api)!: change response format to follow JSON:API spec
+feat(api)!: ✨ change response format to follow JSON:API spec
+
+- Updated all API endpoints to use new format
+- Created serializers for consistent output
 
 BREAKING CHANGE: API responses now follow the JSON:API specification.
 All response objects are now wrapped in a data property and include
 type and id fields.
 
 Migration guide: https://example.com/api-migration-guide
+</example>
+
+<example>
+# Good commit message with review reference
+
+docs(readme): 📝 update installation instructions
+
+Updated installation instructions to include Docker setup.
+
+- Added Docker installation steps
+- Provided examples for Docker commands
+
+Reviewed-by: jdoe
+Refs: #88
 </example>
 
 <example type="invalid">
@@ -84,11 +154,30 @@ fixed the login bug that was causing problems when users tried to
 login with their email, spent a lot of time on this one!
 </example>
 
+<example type="invalid">
+# Bad commit message - missing Gitmoji
+
+fix(auth): corrected token validation
+
+Fixed the token validation logic to handle expired tokens properly.
+</example>
+
+<example type="invalid">
+# Bad commit message - incomplete structure
+
+updated file
+
+// Lacks proper type, scope, and description
+</example>
+
 ## Critical Rules
 
 <critical>
 - NEVER use vague commit messages
-- ALWAYS follow the Conventional Commits format
-- ALWAYS write in English
+- ALWAYS follow the Conventional Commits format with Gitmoji
+- ALWAYS write in English using imperative, present tense
 - NEVER mix multiple unrelated changes in a single commit
-</critical> 
+- ALWAYS include the appropriate Gitmoji for the commit type
+- ALWAYS include Refs to footer when it is possible
+- ALWAYS mark breaking changes with ! and BREAKING CHANGE: footer
+</critical>
