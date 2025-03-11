@@ -1,64 +1,189 @@
 ---
 description: APPLY Clean Code principles WHEN writing code TO ensure readability, maintainability, and simplicity
-globs: apps/**/*.{js,jsx,ts,tsx}, packages/**/*.{js,jsx,ts,tsx}
-alwaysApply: false
+globs: **/*
 ---
 
 # Clean Code Standards
 
-<version>1.0.0</version>
+<version>1.1.0</version>
 
 ## Context
-- These rules apply to all code across the monorepo
-- They ensure code is readable, maintainable, and simple
+- Apply these rules to all code in the repository
+- These principles ensure code is readable, maintainable, and simple
 - They promote consistent coding practices and reduce technical debt
+- Follow the "Boy Scout Rule": Leave the code cleaner than you found it
 
 ## Requirements
 
-### Code Generation
-- Strongly type everythink
-- Never us untyped values (`any`, `unknown`, `mixed`, `object` etc. are prohibited)
-- Force explicit constants instead of magic numbers.
-- Write clear and simple conditions.
-- No double negatives.
-- Prioritize readable variable names, even if longer.
-- Simplify loops using `map()`, `filter()`, or `reduce()`.
+### General Principles
+- KISS (Keep It Simple, Stupid): Always aim for simplicity
+- DRY (Don't Repeat Yourself): Avoid code duplication
+- YAGNI (You Aren't Gonna Need It): Do not implement unnecessary features
+- Always look for the root cause of a problem before applying a fix
+- Follow standard conventions for naming and structuring
+
+### SOLID Design Principles
+- Single Responsibility Principle (SRP): A class/function should have only one reason to change
+- Open/Closed Principle (OCP): Software entities should be open for extension but closed for modification
+- Liskov Substitution Principle (LSP): Objects should be replaceable with instances of their subtypes
+- Interface Segregation Principle (ISP): Many client-specific interfaces are better than one general-purpose interface
+- Dependency Inversion Principle (DIP): Depend on abstractions, not concretions
+- Follow the Law of Demeter: A class should only know its direct dependencies
+- Use dependency injection instead of direct instantiation
+- Prefer polymorphism over if/else or switch/case statements
 
 ### Function Design
 - Keep functions small and focused on a single responsibility
 - Limit function length to 20-30 lines
 - Limit function parameters to 3 or fewer
 - Avoid flag parameters; split into multiple functions instead
-- Anemic models (avoid trivial `getId`/`setId`).
-- Function names with no actions (avoid `setUsers`, prefer `loadUsers`). 
+- Use descriptive function names that reflect their purpose
+- Avoid side effects in functions
+- Prefer multiple specialized functions over a single generic one
+- Prefer non-static methods unless absolutely necessary
 
 ### Code Organization
-- One file per feature, split responsibility across files (SRP).
 - Keep files small (under 300 lines)
-- When folders exceed 7 files, create sub-folders
 - Group related code together
-- Follow the principle of least surprise
-- Maintain a consistent level of abstraction within functions
-- Group code by business domain rather than technical layer
-- Focus on functional specifications over technical specifications
-- Keep business logic separate from technical implementation
+- When folders exceed 7 files, create sub-folders
+- Separate concepts vertically to improve clarity
+- Declare variables close to their usage
+- Place related functions and classes near each other
+- Avoid long lines of code (max 80-100 characters)
+- Use whitespace strategically for readability
+
+### Objects & Data Structures
+- Hide internal structure of objects
+- Classes should be small and have a single responsibility
+- Limit the number of instance variables
+- Base classes should not know anything about their derived classes
+- Prefer data structures over hybrid structures
+- Encapsulate data and follow encapsulation principles
+- Encapsulate boundary conditions in dedicated logic
+- Prefer dedicated value objects over primitive types
+
+### Naming Conventions
+- Use descriptive and unambiguous names
+- Prioritize readable variable names, even if longer
+- Replace magic numbers with named constants
+- Avoid abbreviations unless they are standard (e.g., id, URL)
+- Use pronounceable names
+- Make names searchable
+- Avoid unnecessary prefixes or Hungarian notation
+- Be consistent: Keep similar things structured in the same way
+
+### Type Safety and Error Handling
+- Strongly type everything
+- Never use untyped values (`any`, `unknown`, `mixed`, `object` etc.)
+- Use custom domain errors for different error categories
+- Fail fast: throw errors early, avoid returning null or undefined
+- Write clear and simple conditions
+- No double negatives
+- Avoid logical dependencies within methods
+- Error messages must be meaningful and should be translated for display
 
 ### Comments
 - Write self-documenting code that minimizes the need for comments
 - Use comments to explain "why" not "what" or "how"
 - Keep comments up-to-date with code changes
+- Do not comment out dead code, just remove it
+- Do not add redundant comments or comment on obvious things
+- Do not use closing brace comments
 
-### Error Handling
-- Use custom domain error for different error categories
-- Error messages must be meaningful and SHOULD be translated to the user's language (e.g. French) for display.
-- Fail fast: early throws errors, avoid returning null or undefined
-- Errors in logs are tracked with error codes, in English
+### Testing
+- Always write tests for your code
+- Keep tests readable and self-explanatory
+- One assert per test for better readability
+- Tests should be fast to avoid slowing down development
+- Tests should be independent of each other
+- Tests should be repeatable and free of side effects
 
-### Code Duplication
-- Follow the DRY (Don't Repeat Yourself) principle
-- Extract common functionality into reusable functions
-- Use composition over inheritance
-- Create utility functions for repeated operations
+### Code Smells to Avoid
+- Rigidity: Code is difficult to change, small modifications cause widespread changes
+- Fragility: A single change breaks multiple parts of the code
+- Immobility: Code cannot be reused in other projects due to complexity
+- Unnecessary complexity: Over-engineering where simplicity would suffice
+- Unnecessary repetition: Violating the DRY principle
+- Opacity: Code is difficult to understand
+
+## Examples
+
+<example>
+// Good: Small function with clear purpose and descriptive naming
+function calculateTotalPrice(items, taxRate, discountRate) {
+  const subtotal = items.reduce((sum, item) => sum + item.price, 0);
+  const taxAmount = subtotal * taxRate;
+  const discountAmount = subtotal * discountRate;
+  
+  return subtotal + taxAmount - discountAmount;
+}
+</example>
+
+<example type="invalid">
+// Bad: Too many parameters, unclear function purpose
+function process(a, b, c, d, e, f) {
+  // Complex logic with many responsibilities
+  let temp = 0;
+  if (a > 0) {
+    temp = b * c;
+  } else {
+    temp = d * e;
+  }
+  return temp + f;
+}
+</example>
+
+<example>
+// Good: Self-documenting code with clear intent
+const MINIMUM_WORKING_AGE = 16;
+
+function isEligibleForEmployment(person) {
+  return person.age >= MINIMUM_WORKING_AGE;
+}
+</example>
+
+<example type="invalid">
+// Bad: Magic numbers, unclear naming
+function check(p) {
+  return p.a >= 16;  // What does 16 represent? What is p.a?
+}
+</example>
+
+<example>
+// Good: Following SOLID principles
+class ReportGenerator {
+  constructor(dataFetcher, formatter) {
+    this.dataFetcher = dataFetcher;
+    this.formatter = formatter;
+  }
+
+  generateReport(reportId) {
+    const data = this.dataFetcher.fetchData(reportId);
+    return this.formatter.format(data);
+  }
+}
+</example>
+
+<example type="invalid">
+// Bad: Class with multiple responsibilities
+class UserManager {
+  constructor(database) {
+    this.db = database;
+  }
+
+  createUser(userData) {
+    // User creation logic
+  }
+
+  generateUserReport(userId) {
+    // Report generation logic
+  }
+
+  sendEmail(userId, message) {
+    // Email sending logic
+  }
+}
+</example>
 
 ## Critical Rules
 
@@ -67,4 +192,9 @@ alwaysApply: false
 - ALWAYS give functions and variables descriptive names
 - NEVER have more than 3 parameters for a function
 - ALWAYS write tests for your code
+- NEVER use untyped values (any, unknown, etc.)
+- ALWAYS follow the DRY principle
+- NEVER implement features you don't need yet (YAGNI)
+- ALWAYS seek simplicity over complexity (KISS)
 </critical>
+
