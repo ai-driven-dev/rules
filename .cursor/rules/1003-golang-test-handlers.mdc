@@ -1,0 +1,243 @@
+---
+description: APPLY golang-test-handlers TO handlers test in GO
+globs: *_test.go
+alwaysApply: false
+---
+
+# Testing handlers
+
+<version>1.0.0</version>
+
+## Context
+- These rule apply to all tests about handlers (TestXXXHandler)
+- They ensure consistency between tests
+- A handler is responsible of receiving an http request, parse the params and call the relevant logic
+
+## Requirements
+
+### Database
+- Always mock repository when testing handlers
+- Database is only useful for user auth and company to handle permissions
+
+### Test structure
+1. Initialize the database
+2. Initialize the mocks and router
+3. Define tests cases
+4. Loop on the tests cases
+
+### Test cases
+- Use an array of struct to define the testCases
+- Try to cover different http codes: 200, 404, 401, 500
+- Try to cover different roles: manager, not_manager
+- Use "manager" and "not_manager" as user_id
+
+### Mock
+- Use mockery for mocks
+- Use mockedStuff.EXPECT()
+- Don't use mockedStuff.On()
+
+## Examples
+</example>
+# How to initialize the database
+InitializeDB()
+defer TeardownTestDB()
+</example>
+
+<example>
+# How to initialize the mocks and router
+var router *gin.Engine
+personaServiceMock := mocks.NewPersonaService(t)
+
+app := fxtest.New(
+    t,
+    app.Module,
+    fx.Decorate(func() lc.PersonaService {
+        return personaServiceMock
+    }),
+    fx.Populate(&router),
+    fx.NopLogger,
+)
+defer app.RequireStart().RequireStop()
+</example>
+
+<example>
+# How to loop on test cases
+for _, testCase := range testCases {
+    t.Run(testCase.name, func(*testing.T) {
+        w, err := PutRequest(router, testCase.userID, testCase.apiRequest, testCase.body)
+        require.NoError(t, err)
+        assert.Equal(t, testCase.expectedStatusCode, w.Code)
+    })
+}
+</example>
+
+
+<example>
+# Typical struct definition
+
+struct {
+    name               string
+    apiRequest         string
+    userID             string
+    expectedStatusCode int
+    mockFunc           func()
+}
+</example>
+
+<example>
+# Full test cases struct example
+	testCases := []struct {
+		name               string
+		apiRequest         string
+		userID             string
+		expectedStatusCode int
+		mockFunc           func()
+	}{
+		{
+			name:               "Success",
+			apiRequest:         "/api/ai/personas/0ab814bb-8531-4554-8050-f848468d466c/duplicate",
+			userID:             "manager",
+			expectedStatusCode: 200,
+			mockFunc: func() {
+				personaServiceMock.EXPECT().FindPersonaByID(mock.Anything, uuid.MustParse("0ab814bb-8531-4554-8050-f848468d466c")).Return(
+					&lcd.Persona{
+						ID:           uuid.MustParse("0ab814bb-8531-4554-8050-f848468d466c"),
+						Name:         "fifth persona",
+						Descriptions: []string{"even longer text"},
+						Language:     "en",
+						Gender:       "male",
+						CompanyID:    "64c8be4c6c31ccce245c27c1",
+					}, nil)
+				personaServiceMock.EXPECT().DuplicatePersona(mock.Anything, &lcd.Persona{
+					ID:           uuid.MustParse("0ab814bb-8531-4554-8050-f848468d466c"),
+					Name:         "fifth persona",
+					Descriptions: []string{"even longer text"},
+					Language:     "en",
+					Gender:       "male",
+					CompanyID:    "64c8be4c6c31ccce245c27c1",
+				}).Return(&lcd.Persona{}, nil)
+			},
+		},
+		{
+			name:               "Not manager",
+			apiRequest:         "/api/ai/personas/0ab814bb-8531-4554-8050-f848468d466b/duplicate",
+			userID:             "not_manager",
+			expectedStatusCode: 401,
+			mockFunc: func() {
+				personaServiceMock.EXPECT().FindPersonaByID(mock.Anything, uuid.MustParse("0ab814bb-8531-4554-8050-f848468d466b")).Return(
+					&lcd.Persona{
+						ID:           uuid.MustParse("0ab814bb-8531-4554-8050-f848468d466b"),
+						Name:         "fifth persona",
+						Descriptions: []string{"even longer text"},
+						Language:     "en",
+						Gender:       "male",
+						CompanyID:    "64c8be4c6c31ccce245c27c1",
+					}, nil)
+			},
+		},
+		{
+			name:               "Not found",
+			apiRequest:         "/api/ai/personas/0ab814bb-8531-4554-8050-f848468d466d/duplicate",
+			userID:             "manager",
+			expectedStatusCode: 404,
+			mockFunc: func() {
+				personaServiceMock.EXPECT().FindPersonaByID(mock.Anything, uuid.MustParse("0ab814bb-8531-4554-8050-f848468d466d")).Return(nil, sql.ErrNoRows)
+			},
+		},
+		{
+			name:               "Another company",
+			apiRequest:         "/api/ai/personas/0ab814bb-8531-4554-8050-f848468d466e/duplicate",
+			userID:             "manager",
+			expectedStatusCode: 401,
+			mockFunc: func() {
+				personaServiceMock.EXPECT().FindPersonaByID(mock.Anything, uuid.MustParse("0ab814bb-8531-4554-8050-f848468d466e")).Return(
+					&lcd.Persona{
+						ID:        uuid.MustParse("0ab814bb-8531-4554-8050-f848468d466e"),
+						CompanyID: "64c8be4c6c31ccce245c27c2",
+					}, nil)
+			},
+		},
+	}
+</example>
+
+<example>
+# Complete handler test
+
+func TestGetCurrentSprintHandler(t *testing.T) {
+	InitializeDB()
+	defer TeardownTestDB()
+
+	var router *gin.Engine
+	sprintServiceMock := mocks.NewSprintService(t)
+	groupRepoMock := mocks.NewGroupRepository(t)
+
+	app := fxtest.New(
+		t,
+		app.Module,
+		fx.Decorate(func() sp.SprintService {
+			return sprintServiceMock
+		}),
+		fx.Decorate(func() ad.GroupRepository {
+			return groupRepoMock
+		}),
+		fx.NopLogger,
+		fx.Populate(&router),
+	)
+	defer app.RequireStart().RequireStop()
+
+	testCases := []struct {
+		name           string
+		apiRequest     string
+		userID         string
+		expectedStatus int
+		mockFunc       func()
+	}{
+		{
+			name:           "Get current sprint for company",
+			apiRequest:     "/api/company/64c8be4c6c31ccce245c27c1/sprint/current",
+			userID:         "not_manager",
+			expectedStatus: 200,
+			mockFunc: func() {
+				groupRepoMock.EXPECT().GetGroupByUserIDAndCompanyID("not_manager", "64c8be4c6c31ccce245c27c1").Return(&ad.Group{ID: uuid.Nil}, nil)
+				sprintServiceMock.EXPECT().GetCurrentSprint("64c8be4c6c31ccce245c27c1", uuid.Nil, "not_manager").Return(&sp.SprintResponse{ID: "64c8be4c6c31ccce245c27c4"}, nil).Once()
+			},
+		},
+		{
+			name:           "Unauthorized",
+			apiRequest:     "/api/company/64c8be4c6c31ccce245c27c2/sprint/current",
+			userID:         "not_manager",
+			expectedStatus: 401,
+			mockFunc:       func() {},
+		},
+		{
+			name:           "Get current sprint for group",
+			apiRequest:     "/api/company/64c8be4c6c31ccce245c27c1/sprint/current?group_id=024edcda-84fe-4529-b7fb-8be2ec306a82",
+			userID:         "manager",
+			expectedStatus: 200,
+			mockFunc: func() {
+				sprintServiceMock.EXPECT().GetCurrentSprint("64c8be4c6c31ccce245c27c1", uuid.MustParse("024edcda-84fe-4529-b7fb-8be2ec306a82"), "").Return(&sp.SprintResponse{ID: "64c8be4c6c31ccce245c27c4"}, nil).Once()
+			},
+		},
+		{
+			name:           "No current sprint",
+			apiRequest:     "/api/company/64c8be4c6c31ccce245c27c1/sprint/current?group_id=024edcda-84fe-4529-b7fb-8be2ec306a82",
+			userID:         "manager",
+			expectedStatus: 200,
+			mockFunc: func() {
+				sprintServiceMock.EXPECT().GetCurrentSprint("64c8be4c6c31ccce245c27c1", uuid.MustParse("024edcda-84fe-4529-b7fb-8be2ec306a82"), "").Return(&sp.SprintResponse{}, nil).Once()
+			},
+		},
+	}
+
+	for _, testCase := range testCases {
+		t.Run(testCase.name, func(t *testing.T) {
+			testCase.mockFunc()
+			w, err := GetRequest(router, testCase.userID, testCase.apiRequest)
+			require.NoError(t, err)
+			assert.Equal(t, testCase.expectedStatus, w.Code)
+		})
+	}
+}
+</example>
+
+
