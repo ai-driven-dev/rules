@@ -1,6 +1,6 @@
 ---
 description: APPLY MobX state management patterns WHEN managing application state TO ensure predictable and efficient state updates
-globs: apps/frontend/app/stores/**/*.{ts,js}, apps/frontend/app/**/*.store.{ts,js}
+globs: *.store.ts,*.store.tsx
 alwaysApply: false
 ---
 

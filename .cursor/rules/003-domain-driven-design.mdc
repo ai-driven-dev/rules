@@ -1,6 +1,6 @@
 ---
 description: APPLY Domain-Driven Design principles WHEN modeling business domains TO ensure software aligns with business needs
-globs: apps/**/*.{js,jsx,ts,tsx}
+globs: apps/backend/**
 alwaysApply: false
 ---
 

@@ -1,6 +1,7 @@
 ---
 description: APPLY Prisma ORM standards WHEN working with database models TO ensure efficient and type-safe database operations
-globs: apps/backend/prisma/**/*.prisma, apps/backend/src/**/*repository.ts
+globs: schema.prisma
+alwaysApply: false
 ---
 
 # Prisma ORM Standards

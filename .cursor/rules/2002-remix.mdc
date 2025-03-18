@@ -1,6 +1,6 @@
 ---
 description: APPLY Remix framework standards WHEN developing with Remix TO ensure consistent and maintainable full-stack applications
-globs: apps/frontend/app/**/*.{js,jsx,ts,tsx}, apps/frontend/remix.config.js
+globs: remix.config.js,*.component.tsx
 alwaysApply: false
 ---
 

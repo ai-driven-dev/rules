@@ -1,14 +1,16 @@
 ---
 description: Use ALWAYS when asked to CREATE A RULE or UPDATE A RULE or taught a lesson from the user that should be retained as a new rule for Cursor
 globs: .cursor/rules/*.mdc
+alwaysApply: false
 ---
 # Cursor Rules Format
-## Core Structure
+## Template Structure for Rules Files
 
 ```mdc
 ---
 description: ACTION when TRIGGER to OUTCOME
-globs: *.mdc
+globs: .cursor/rules/**/*.mdc
+alwaysApply: {true or false}
 ---
 
 # Rule Title
@@ -29,6 +31,10 @@ Good concise example with explanation
 <example type="invalid">
 Invalid concise example with explanation
 </example>
+
+## Critical Rules
+  - Always do X
+  - NEVER do Y
 ```
 
 ## File Organization
@@ -65,50 +71,31 @@ Common glob patterns for different rule types:
 ### Frontmatter
 - description: ACTION TRIGGER OUTCOME format
 - globs: `glob pattern for files and folders`
+- alwaysApply: {true or false} - when true will be attached to every conversation (but front matter still is important for it to be used!)
 
 ### Body
-- <version>X.Y.Z</version>
 - context: Usage conditions
 - requirements: Actionable items
 - examples: Both valid and invalid
+- critical-rules: summary of short rule bullets that are the most critical to abide by
 
 ## Formatting Guidelines
 
 - Use Concise Markdown primarily
-- XML tags limited to:
+- Use some XML tags limited to:
   - <example>
   - <danger>
   - <required>
-  - <rules>
-  - <rule>
-  - <critical>
-  - <version>
 - Always indent content within XML or nested XML tags by 2 spaces
-- Keep rules as short as possbile
-- Use Mermaid syntax if it will be shorter or clearer than describing a complex rule
-- Use Emojis where appropriate to convey meaning that will improve rule understanding by the AI Agent
-- Keep examples as short as possible to clearly convey the positive or negative example
+- Emojies and Mermaid diagrams are allowed if it is not redundant and better explains the rule for the AI comprehension.
 
-## AI Optimization Tips
 
-1. Use precise, deterministic ACTION TRIGGER OUTCOME format in descriptions
-2. Provide concise positive and negative example of rule application in practice
-3. Optimize for AI context window efficiency
-4. Remove any non-essential or redundant information
-5. Use standard glob patterns without quotes (e.g., *.js, src/**/*.ts)
-
-## AI Context Efficiency
-
-1. Keep frontmatter description under 120 characters (or less) while maintaining clear intent for rule selection by AI AGent
-2. Limit examples to essential patterns only
-3. Use hierarchical structure for quick parsing
-4. Remove redundant information across sections
-5. Maintain high information density with minimal tokens
-6. Focus on machine-actionable instructions over human explanations
-
-<critical>
-  - NEVER include verbose explanations or redundant context that increases AI token overhead
-  - Keep file as short and to the point as possible BUT NEVER at the expense of sacrificing rule impact and usefulness for the AI Agent.
-  - the front matter can ONLY have the fields description and globs.
-</critical>
-
+## Critical Rules
+  - Keep frontmatter description under 120 characters (or less) while maintaining clear intent for rule selection by AI Agent
+  - Keep the rule DRY - do not repeate or be redundant or overly explanetory.
+  - Use susinct markdown the agent can easily understand.
+  - the front matter MUST ALWAYS have description, globs, and alwaysApply, even if the value is null
+  - Use standard glob patterns without quotes (e.g., *.js, src/**/*.ts)
+  - TRY to keep the total rule line count under 50, better under 25, lines (unless there are diagrams or longer required examples, as that will increase the overall line count)
+  - Always include a valid and invalid example
+  - Quotes are not needed around glob patterns

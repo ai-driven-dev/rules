@@ -1,6 +1,6 @@
 ---
 description: APPLY React best practices WHEN developing components and hooks TO ensure performant and maintainable UI code
-globs: apps/frontend/app/**/*.{jsx,tsx}, apps/frontend/app/**/*.hooks.{ts,js}
+globs: apps/frontend/**/*.tsx,apps/frontend/**/*.hook.ts
 alwaysApply: false
 ---
 

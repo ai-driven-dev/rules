@@ -1,6 +1,6 @@
 ---
 description: APPLY shared types standards WHEN creating DTOs and interfaces TO ensure consistent data structures across frontend and backend
-globs: packages/shared-types/**/*.{ts,tsx}
+globs: packages/shared-types/*.ts
 alwaysApply: false
 ---
 

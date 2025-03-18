@@ -1,6 +1,6 @@
 ---
 description: APPLY TypeScript best practices WHEN writing code TO ensure type safety, readability, and maintainability
-globs: **/*.{ts,tsx}
+globs: *.ts
 alwaysApply: false
 ---
 

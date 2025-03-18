@@ -1,6 +1,6 @@
 ---
 description: APPLY Clean Architecture principles WHEN organizing code TO ensure separation of concerns and testability
-globs: apps/backend/**/*.{js,jsx,ts,tsx}
+globs: apps/backend/**
 alwaysApply: false
 ---
 

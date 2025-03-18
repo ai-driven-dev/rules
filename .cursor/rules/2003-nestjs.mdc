@@ -1,6 +1,6 @@
 ---
 description: APPLY NestJS framework standards WHEN developing with NestJS TO ensure scalable and maintainable server-side applications
-globs: apps/backend/src/**/*.{controller,service,module,guard,filter,pipe,interceptor}.ts
+globs: apps/backend/**/*.ts
 alwaysApply: false
 ---
 

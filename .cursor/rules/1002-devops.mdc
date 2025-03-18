@@ -1,6 +1,6 @@
 ---
 description: APPLY DevOps best practices WHEN managing infrastructure and deployment TO ensure reliability, scalability, and security
-globs: **/docker-compose.yml, **/Dockerfile, **/.github/workflows/*.yml, **/k8s/*.{yml,yaml}
+globs: **/docker-compose.yml, **/Dockerfile, **/.github/workflows/*.yml
 alwaysApply: false
 ---
 

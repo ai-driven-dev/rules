@@ -1,7 +1,7 @@
 ---
-description: APPLY Clean Code principles WHEN writing code TO ensure readability, maintainability, and simplicity
-globs: apps/**/*.{js,jsx,ts,tsx}, packages/**/*.{js,jsx,ts,tsx}
-alwaysApply: false
+description: 
+globs: 
+alwaysApply: true
 ---
 
 # Clean Code Standards

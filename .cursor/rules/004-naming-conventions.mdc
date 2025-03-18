@@ -1,7 +1,7 @@
 ---
-description: APPLY naming conventions WHEN writing code TO ensure consistency and clarity across the codebase
-globs: apps/**/*.{ts,tsx}, packages/**/*.{ts,tsx}
-alwaysApply: false
+description: 
+globs: 
+alwaysApply: true
 ---
 
 # Naming Conventions Standards
