@@ -1,6 +1,6 @@
 ---
 description: APPLY testing standards WHEN writing tests TO ensure comprehensive and maintainable test suites
-globs: *.spec.ts,*.test.ts
+globs: *.spec.*,*.test.*
 alwaysApply: false
 ---
 
