@@ -60,28 +60,28 @@ Voici le tableau des règles existantes.
 
 > Vous pouvez modifier et améliorer ces règles à tout moment !
 
-| Règle | Description | Fichiers | Application |
-| --- | --- | --- | --- |
-| `000-cursor-rules.mdc` | Use ALWAYS when asked to CREATE A RULE or UPDATE A RULE or taught a lesson from the user | `.cursor/rules/*.mdc` | Match |
-| `001-feature-based-architecture.mdc` | APPLY Clean Architecture principles WHEN organizing code TO ensure separation of concerns and testability | `apps/frontend/**` | Match |
-| `002-clean-architecture.mdc` | APPLY Clean Architecture principles WHEN organizing code TO ensure separation of concerns and testability | `apps/backend/**` | Match |
-| `003-domain-driven-design.mdc` | APPLY Domain-Driven Design principles WHEN modeling business domains TO ensure software aligns with business needs | `apps/backend/**` | Match |
-| `004-naming-conventions.mdc` | Naming Conventions Standards | `*` | Permanent |
-| `005-clean-code.mdc` | Clean Code Standards | `*` | Permanent |
-| `006-shared-types.mdc` | APPLY shared types standards WHEN creating DTOs and interfaces TO ensure consistent data structures across frontend and backend | `packages/shared-types/*.ts` | Match |
-| `007-commit-conventions.mdc` | APPLY commit message conventions WHEN creating commits TO ensure clear and consistent version history | `-` | Manuel |
-| `008-project-documentation.mdc` | APPLY documentation standards WHEN writing project documentation TO ensure clarity, completeness, and maintainability | `**/*.md, **/docs/**/*, **/documentations/**/*` | Match |
-| `009-versions.mdc` | APPLY version management standards WHEN installing or updating dependencies TO ensure consistency and stability | `**/package.json` | Permanent |
-| `301-testing-standards.mdc` | APPLY testing standards WHEN writing tests TO ensure comprehensive and maintainable test suites | `*.spec.*,*.test.*` | Match |
-| `400-md-docs.mdc` | ALWAYS use when writing or updating Markdown files | `.md,.mdx` | Match |
-| `900-project-specific.mdc` | APPLY project-specific rules TO ensure consistent documentation across projects | `**/*` | Permanent |
-| `1001-typescript.mdc` | APPLY TypeScript best practices WHEN writing code TO ensure type safety, readability, and maintainability | `*.ts` | Match |
-| `1002-devops.mdc` | APPLY DevOps best practices WHEN managing infrastructure and deployment TO ensure reliability, scalability, and security | `**/docker-compose.yml,**/Dockerfile,**/.github/workflows/*.yml` | Match |
-| `2001-mobx.mdc` | APPLY MobX state management patterns WHEN managing application state TO ensure predictable and efficient state updates | `*.store.ts,*.store.tsx` | Match |
-| `2002-remix.mdc` | APPLY Remix framework standards WHEN developing with Remix TO ensure consistent and maintainable full-stack applications | `remix.config.js,*.component.tsx` | Match |
-| `2003-nestjs.mdc` | APPLY NestJS framework standards WHEN developing with NestJS TO ensure scalable and maintainable server-side applications | `apps/backend/**/*.ts` | Match |
-| `2004-prisma.mdc` | APPLY Prisma ORM standards WHEN working with database models TO ensure efficient and type-safe database operations | `schema.prisma` | Match |
-| `2005-react.mdc` | APPLY React best practices WHEN developing components and hooks TO ensure performant and maintainable UI code | `apps/frontend/**/*.tsx,apps/frontend/**/*.hook.ts` | Match |
+| Règle | Fichiers | Application |
+| --- | --- | --- |
+| `000-cursor-rules.mdc` | `.cursor/rules/*.mdc` | Match |
+| `001-feature-based-architecture.mdc` | `apps/frontend/**` | Match |
+| `002-clean-architecture.mdc` | `apps/backend/**` | Match |
+| `003-domain-driven-design.mdc` | `apps/backend/**` | Match |
+| `004-naming-conventions.mdc` | `*` | Permanent |
+| `005-clean-code.mdc` | `*` | Permanent |
+| `006-shared-types.mdc` | `packages/shared-types/*.ts` | Match |
+| `007-commit-conventions.mdc` | `-` | Manuel |
+| `008-project-documentation.mdc` | `**/*.md, **/docs/**/*, **/documentations/**/*` | Match |
+| `009-versions.mdc` | `**/package.json` | Permanent |
+| `301-testing-standards.mdc` | `*.spec.*,*.test.*` | Match |
+| `400-md-docs.mdc` | `.md,.mdx` | Match |
+| `900-project-specific.mdc` | `**/*` | Permanent |
+| `1001-typescript.mdc` | `*.ts` | Match |
+| `1002-devops.mdc` | `**/docker-compose.yml,**/Dockerfile,**/.github/workflows/*.yml` | Match |
+| `2001-mobx.mdc` | `*.store.ts,*.store.tsx` | Match |
+| `2002-remix.mdc` | `remix.config.js,*.component.tsx` | Match |
+| `2003-nestjs.mdc` | `apps/backend/**/*.ts` | Match |
+| `2004-prisma.mdc` | `schema.prisma` | Match |
+| `2005-react.mdc` | `apps/frontend/**/*.tsx,apps/frontend/**/*.hook.ts` | Match |
 
 ## Installer ces règles sur votre projet
 
