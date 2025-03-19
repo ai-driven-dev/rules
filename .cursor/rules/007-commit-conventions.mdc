@@ -1,6 +1,7 @@
 ---
 description: APPLY commit message conventions WHEN creating commits TO ensure clear and consistent version history
-globs: **/*.{js,jsx,ts,tsx,md,json,prisma}
+globs: **/*
+alwaysApply: true
 ---
 
 # Commit Message Conventions

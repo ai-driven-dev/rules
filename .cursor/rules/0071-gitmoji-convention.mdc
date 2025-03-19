@@ -1,0 +1,88 @@
+---
+description: APPLY gitmoji conventions WHEN creating commits TO enhance commit message clarity with visual indicators
+globs: **/*
+alwaysApply: true
+---
+
+# Gitmoji Commit Standards
+
+<version>1.0.0</version>
+
+## Context
+- Enhance commit messages with visual indicators
+- Provide quick visual identification of commit purpose
+- Standardize emoji usage across the project
+- Complement conventional commits with visual context
+
+## Requirements
+
+### Basic Structure
+- Add gitmoji after the commit type: `<type>(<scope>)[!]: :<gitmoji>: <description>`
+- Place gitmoji before the commit message
+- Use only one primary gitmoji per commit
+- Ensure the gitmoji relates to the commit type
+
+### Common Gitmojis by Type
+
+#### Features and Fixes
+- ✨ `:sparkles:` - New features (feat)
+- 🐛 `:bug:` - Bug fixes (fix)
+- 🚑️ `:ambulance:` - Critical hotfixes
+- ✅ `:white_check_mark:` - Add/update tests
+
+#### Code Changes
+- ♻️ `:recycle:` - Refactor code
+- 🎨 `:art:` - Improve structure/format
+- ⚡️ `:zap:` - Improve performance
+- 💄 `:lipstick:` - UI/style updates
+
+#### Documentation and Metadata
+- 📝 `:memo:` - Add/update documentation
+- 🔖 `:bookmark:` - Release/Version tags
+- 💡 `:bulb:` - Add/update comments
+
+#### Dependencies
+- ⬆️ `:arrow_up:` - Upgrade dependencies
+- ⬇️ `:arrow_down:` - Downgrade dependencies
+- ➕ `:heavy_plus_sign:` - Add dependency
+- ➖ `:heavy_minus_sign:` - Remove dependency
+
+#### Infrastructure
+- 🔧 `:wrench:` - Configuration files
+- 👷 `:construction_worker:` - CI build system
+- 🚀 `:rocket:` - Deployment stuff
+- 💚 `:green_heart:` - Fix CI Build
+
+## Examples
+
+<example>
+# Good commit with gitmoji
+feat(auth): ✨ implement JWT authentication
+
+Adds JWT-based authentication system with token validation.
+
+Refs: #123
+</example>
+
+<example>
+# Good fix commit with gitmoji
+fix(api): 🐛 correct token validation logic
+
+Fixed the token validation to properly handle expired tokens.
+
+Fixes: #456
+</example>
+
+<example type="invalid">
+# Bad gitmoji usage
+feat: 🐛 add new user registration
+
+// Wrong emoji for a feature - should use ✨
+</example>
+
+<critical>
+- ALWAYS include appropriate gitmoji for the commit type
+- NEVER use multiple primary gitmojis in a single commit
+- ALWAYS place gitmoji before the commit message
+- NEVER use emojis that don't match the commit type
+</critical>
