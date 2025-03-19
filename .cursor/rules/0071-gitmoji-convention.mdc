@@ -1,6 +1,6 @@
 ---
 description: APPLY gitmoji conventions WHEN creating commits TO enhance commit message clarity with visual indicators
-globs: **/*
+globs:
 alwaysApply: true
 ---
 
