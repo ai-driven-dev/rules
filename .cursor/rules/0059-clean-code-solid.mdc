@@ -1,0 +1,95 @@
+---
+description: APPLY SOLID principles TO ensure maintainable and extensible object-oriented design
+globs:
+alwaysApply: true
+---
+
+# Clean Code SOLID Standards
+
+## Context
+- SOLID principles guide object-oriented design
+- Ensures code is maintainable, extensible, and testable
+- Promotes loose coupling and high cohesion
+
+## Requirements
+
+### Single Responsibility (S)
+- Each class should have one reason to change
+- Split classes with multiple responsibilities
+- Keep methods focused on one task
+
+### Open/Closed (O)
+- Open for extension, closed for modification
+- Use abstractions to allow behavior changes
+- Avoid modifying existing code for new features
+
+### Liskov Substitution (L)
+- Subtypes must be substitutable for base types
+- Maintain base class contracts
+- Don't violate parent class assumptions
+
+### Interface Segregation (I)
+- Keep interfaces small and focused
+- Don't force clients to implement unnecessary methods
+- Split large interfaces into smaller ones
+
+### Dependency Inversion (D)
+- Depend on abstractions, not concretions
+- Use dependency injection
+- Define stable high-level interfaces
+
+## Examples
+<example>
+// Good: Following SOLID principles
+interface Logger {
+  log(message: string): void;
+}
+
+interface EmailSender {
+  send(email: Email): Promise<void>;
+}
+
+class UserService {
+  constructor(
+    private readonly logger: Logger,
+    private readonly emailSender: EmailSender
+  ) {}
+
+  async createUser(user: User): Promise<void> {
+    this.logger.log(`Creating user: ${user.email}`);
+    await this.emailSender.send({
+      to: user.email,
+      subject: 'Welcome!'
+    });
+  }
+}
+</example>
+
+<example type="invalid">
+// Bad: Violating SOLID principles
+class UserService {
+  // Violates SRP: Handles logging, emails, and user logic
+  // Violates DIP: Direct dependency on concrete classes
+  private logger = new ConsoleLogger();
+  private mailer = new SmtpMailer();
+
+  // Violates OCP: Switch statement needs modification for new types
+  async handleUser(user: User, type: 'create' | 'update') {
+    switch(type) {
+      case 'create':
+        // Creation logic
+        break;
+      case 'update':
+        // Update logic
+        break;
+    }
+  }
+}
+</example>
+
+## Critical Rules
+- ALWAYS give classes single responsibility
+- NEVER modify existing code for new features
+- ALWAYS make subtypes substitutable
+- NEVER create large interfaces
+- ALWAYS depend on abstractions 

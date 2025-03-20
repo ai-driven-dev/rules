@@ -1,1 +1,4 @@
 .cursor/rules/_*.mdc
+
+# Specstory
+.specstory/
