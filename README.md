@@ -143,6 +143,7 @@ Si vous cherchez de l'inspiration pour vos règles.
 - [giak](https://github.com/giak/cv-generator/tree/main/.cursor/rules) - Vue 3
 - [Melvynx](https://github.com/Melvynx/cursor.rules) - TypeScript : React + NextJS
 - [mckaywrigley](https://github.com/mckaywrigley/mckays-app-template/tree/main/.cursor/rules) - TypeScript : React + NextJS
+- [cmnemoi](https://github.com/cmnemoi/cursor-rules/tree/main/emush/.cursor/rules) - Symfony
 
 ### .cursorrules
 
