@@ -1,0 +1,72 @@
+---
+description: APPLY DRY principles TO eliminate code duplication and ensure maintainable abstractions
+globs:
+alwaysApply: true
+---
+
+# Clean Code DRY Standards
+
+## Context
+- DRY = Don't Repeat Yourself
+- Applies to code, configuration, and documentation
+- Each piece of knowledge should have a single, unambiguous representation
+
+## Requirements
+1. Code Duplication
+   - Extract repeated logic into reusable functions
+   - Create shared utilities for common operations
+   - Use inheritance or composition for shared behavior
+
+2. Configuration Duplication
+   - Centralize configuration values
+   - Use constants for repeated values
+   - Share configuration between similar components
+
+3. Knowledge Duplication
+   - Centralize business rules
+   - Create single source of truth for domain logic
+   - Use shared types and interfaces
+
+## Examples
+<example>
+// Good: Shared validation logic
+const emailValidator = {
+  pattern: /^[^@]+@[^@]+\.[^@]+$/,
+  validate(email: string): boolean {
+    return this.pattern.test(email);
+  }
+};
+
+class UserService {
+  validateUser(user: User) {
+    return emailValidator.validate(user.email);
+  }
+}
+
+class ContactForm {
+  validateEmail(email: string) {
+    return emailValidator.validate(email);
+  }
+}
+</example>
+
+<example type="invalid">
+// Bad: Duplicated validation logic
+class UserService {
+  validateEmail(email: string) {
+    return /^[^@]+@[^@]+\.[^@]+$/.test(email);
+  }
+}
+
+class ContactForm {
+  isEmailValid(email: string) {
+    return /^[^@]+@[^@]+\.[^@]+$/.test(email);
+  }
+}
+</example>
+
+## Critical Rules
+- NEVER copy-paste code
+- ALWAYS extract repeated logic
+- NEVER duplicate business rules
+- ALWAYS centralize configuration 

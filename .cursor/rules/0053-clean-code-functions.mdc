@@ -1,0 +1,40 @@
+---
+description: APPLY Clean Code function principles TO ensure focused and maintainable functions
+globs:
+alwaysApply: true
+---
+
+# Clean Code Function Standards
+
+## Context
+- These rules ensure functions are small and focused
+- They promote maintainable and testable code
+
+## Requirements
+1. Keep functions small
+2. Do one thing
+3. Use descriptive names
+4. Prefer fewer arguments
+5. Have no side effects
+6. Avoid flag arguments
+
+## Examples
+<example>
+// Good: Small, focused function
+function calculateTotalPrice(items: Item[]): number {
+  return items.reduce((sum, item) => sum + item.price, 0);
+}
+</example>
+
+<example type="invalid">
+// Bad: Multiple responsibilities, flag parameter
+function processItems(items: Item[], shouldCalculate: boolean, shouldSort: boolean) {
+  // Multiple responsibilities based on flags
+}
+</example>
+
+## Critical Rules
+- NEVER write functions longer than 20 lines
+- ALWAYS ensure functions do one thing
+- NEVER use flag arguments
+- ALWAYS use descriptive function names 

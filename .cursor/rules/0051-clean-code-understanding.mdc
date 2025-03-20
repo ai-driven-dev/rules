@@ -1,0 +1,41 @@
+---
+description: APPLY Clean Code understandability principles TO ensure readable and maintainable code
+globs:
+alwaysApply: true
+---
+
+# Clean Code Understandability Standards
+
+## Context
+- These rules ensure code is easily understood by all team members
+- They promote consistent and clear code patterns
+
+## Requirements
+1. Be consistent in similar operations
+2. Use explanatory variables
+3. Encapsulate boundary conditions
+4. Prefer dedicated value objects to primitive type
+5. Avoid logical dependency
+6. Avoid negative conditionals
+
+## Examples
+<example>
+// Good: Clear boundary condition encapsulation
+const MINIMUM_AGE = 18;
+function isAdult(age: number): boolean {
+  return age >= MINIMUM_AGE;
+}
+</example>
+
+<example type="invalid">
+// Bad: Unclear boundary and negative conditional
+function isNotMinor(a: number): boolean {
+  return !(a < 18);
+}
+</example>
+
+## Critical Rules
+- ALWAYS be consistent with similar patterns
+- NEVER use unclear variable names
+- ALWAYS encapsulate boundary conditions
+- NEVER create hidden logical dependencies 

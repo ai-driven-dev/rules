@@ -1,0 +1,83 @@
+---
+description: APPLY YAGNI principles TO ensure code stays focused on current requirements without speculative features
+globs:
+alwaysApply: true
+---
+
+# Clean Code YAGNI Standards
+
+## Context
+- YAGNI = You Aren't Gonna Need It
+- These rules prevent overengineering and speculative coding
+- They ensure code remains focused on actual requirements
+
+## Requirements
+1. Only implement features that are needed now
+   - No "future-proof" abstractions
+   - No speculative functionality
+   - No "just in case" code paths
+
+2. Remove unused code
+   - Delete commented-out code
+   - Remove dead code paths
+   - Clean up unused abstractions
+
+3. Keep interfaces minimal
+   - Only add methods that are currently used
+   - Don't create interfaces for potential future use
+   - Don't add parameters that might be needed later
+
+## Examples
+<example>
+// Good: Focused on current needs
+interface UserService {
+  createUser(user: User): Promise<User>;
+  findUserById(id: string): Promise<User>;
+}
+
+class UserServiceImpl implements UserService {
+  constructor(private readonly db: Database) {}
+  
+  async createUser(user: User): Promise<User> {
+    return this.db.users.create(user);
+  }
+  
+  async findUserById(id: string): Promise<User> {
+    return this.db.users.findUnique({ where: { id } });
+  }
+}
+</example>
+
+<example type="invalid">
+// Bad: Speculative features and "future-proof" design
+interface UserService {
+  createUser(user: User): Promise<User>;
+  findUserById(id: string): Promise<User>;
+  // Methods that might be needed in the future
+  updateUserPreferences?(prefs: unknown): Promise<void>;
+  migrateUserData?(options?: unknown): Promise<void>;
+  // Generic handlers for potential future use
+  handleUserEvent?(event: unknown): Promise<void>;
+}
+
+class UserServiceImpl implements UserService {
+  private cache?: Cache; // Premature optimization
+  private eventHandlers: Map<string, Function>; // Unnecessary complexity
+  
+  constructor(
+    private readonly db: Database,
+    private readonly logger?: Logger, // Not needed yet
+    private readonly metrics?: Metrics, // Not needed yet
+  ) {
+    this.eventHandlers = new Map(); // Unused feature
+  }
+  // ... implementation
+}
+</example>
+
+## Critical Rules
+- NEVER add features "just in case"
+- ALWAYS remove unused code
+- NEVER create interfaces for potential future use
+- ALWAYS implement only what is needed now
+- NEVER add parameters or methods that aren't used yet 

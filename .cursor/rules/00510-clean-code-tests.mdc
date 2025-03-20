@@ -1,0 +1,75 @@
+---
+description: APPLY Clean Code testing principles TO ensure reliable and maintainable test suites
+globs:
+alwaysApply: true
+---
+
+# Clean Code Test Standards
+
+## Context
+- These rules ensure tests are reliable and maintainable
+- They promote good testing practices
+- They help create meaningful test suites
+
+## Requirements
+1. One Assert Per Test
+   - Each test should verify one concept
+   - Keep tests focused and clear
+   - Use descriptive test names
+
+2. Readable Tests
+   - Tests should be self-documenting
+   - Use clear setup and assertions
+   - Follow Arrange-Act-Assert pattern
+
+3. Fast Tests
+   - Tests should run quickly
+   - Avoid unnecessary setup
+   - Mock external dependencies
+
+4. Independent Tests
+   - No dependencies between tests
+   - Each test should run in isolation
+   - Clean up after each test
+
+5. Repeatable Tests
+   - Tests should be deterministic
+   - Avoid flaky tests
+   - Control external dependencies
+
+## Examples
+<example>
+// Good: Clear, focused test
+describe('UserService', () => {
+  it('should validate email format', () => {
+    // Arrange
+    const service = new UserService();
+    const email = 'invalid-email';
+
+    // Act
+    const isValid = service.isValidEmail(email);
+
+    // Assert
+    expect(isValid).toBe(false);
+  });
+});
+</example>
+
+<example type="invalid">
+// Bad: Multiple assertions, unclear purpose
+test('user operations', () => {
+  const service = new UserService();
+  
+  // Multiple concepts tested
+  expect(service.isValidEmail('test@example.com')).toBe(true);
+  expect(service.isAdult(20)).toBe(true);
+  expect(service.hasPermission('admin')).toBe(false);
+});
+</example>
+
+## Critical Rules
+- ALWAYS write one assert per test
+- NEVER create dependencies between tests
+- ALWAYS make tests repeatable
+- NEVER write non-deterministic tests
+- ALWAYS keep tests readable and focused 

@@ -1,0 +1,44 @@
+---
+description: APPLY Clean Code comment principles TO ensure meaningful and necessary documentation
+globs:
+alwaysApply: true
+---
+
+# Clean Code Comment Standards
+
+## Context
+- These rules ensure comments add value
+- They promote self-documenting code
+
+## Requirements
+1. Always try to explain yourself in code
+2. Don't be redundant
+3. Don't add obvious noise
+4. Don't use closing brace comments
+5. Don't comment out code
+6. Use as explanation of intent
+7. Use as clarification of code
+8. Use as warning of consequences
+
+## Examples
+<example>
+// Good: Comment explains why, not what
+// Retry 3 times due to occasional network instability
+async function fetchUserData(userId: string) {
+  return await withRetry(3, () => api.getUser(userId));
+}
+</example>
+
+<example type="invalid">
+// Bad: Redundant comment
+// This function gets the user
+function getUser(id: string) { // gets user by id
+  return users.find(u => u.id === id);
+}
+</example>
+
+## Critical Rules
+- NEVER write comments for obvious code
+- ALWAYS explain the why, not the what
+- NEVER leave commented-out code
+- ALWAYS keep comments up to date 

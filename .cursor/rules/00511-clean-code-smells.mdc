@@ -1,0 +1,88 @@
+---
+description: APPLY Clean Code smell detection TO identify and fix code quality issues
+globs:
+alwaysApply: true
+---
+
+# Clean Code Smells Standards
+
+## Context
+- Code smells indicate potential problems
+- They help identify areas needing refactoring
+- They guide code quality improvements
+
+## Requirements
+
+1. Rigidity
+   - Identify when software is difficult to change
+   - Watch for cascading changes
+   - Monitor tight coupling
+
+2. Fragility
+   - Detect when changes cause unrelated breaks
+   - Identify poor error handling
+   - Watch for brittle tests
+
+3. Immobility
+   - Identify hard-to-reuse code
+   - Watch for tightly coupled components
+   - Monitor excessive dependencies
+
+4. Needless Complexity
+   - Remove over-engineered solutions
+   - Eliminate unnecessary abstractions
+   - Simplify complex conditions
+
+5. Needless Repetition
+   - Identify duplicated code
+   - Watch for repeated patterns
+   - Monitor copied business rules
+
+6. Opacity
+   - Identify unclear code
+   - Watch for poor naming
+   - Monitor complex logic
+
+## Examples
+<example>
+// Good: Clear, simple code
+class OrderProcessor {
+  async process(order: Order): Promise<void> {
+    const isValid = await this.validateOrder(order);
+    if (!isValid) {
+      throw new InvalidOrderError(order.id);
+    }
+    await this.saveOrder(order);
+  }
+}
+</example>
+
+<example type="invalid">
+// Bad: Complex, rigid, and opaque code
+class Manager {
+  async handle(data: any) {
+    let result;
+    try {
+      if (data.type === 'A') {
+        result = await this.handleTypeA(data);
+        if (result && result.status) {
+          await this.updateOtherSystem(result);
+          // Cascading changes needed when adding new types
+        }
+      } else if (data.type === 'B') {
+        // Duplicated pattern with slight variations
+      }
+    } catch (e) {
+      // Generic error handling
+      console.log(e);
+    }
+  }
+}
+</example>
+
+## Critical Rules
+- NEVER ignore code smells
+- ALWAYS refactor rigid code
+- NEVER accept needless complexity
+- ALWAYS fix fragile code
+- NEVER leave opaque code unchanged 
