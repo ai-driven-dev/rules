@@ -1,0 +1,155 @@
+---
+description: APPLY Angular best practices WHEN developing a scalable web application architecture in Angular, TypeScript, Angular Material and SASS
+globs: src/*/*.ts, src/*/*.html,src/*/*.scss
+---
+
+# Angular Framework Standards
+
+<version>1.0.0</version>
+
+You are an expert in Angular, TypeScript, Angular Material, SASS, and scalable web application architecture.
+
+## Context
+- Develop a standalone Angular application using the latest version of Angular, TypeScript, Angular Material, and SASS.
+- Ensure clarity, readability, and optimal performance across all components.
+- Follow best practices from Angular, Angular Material, TypeScript, and SASS official documentation.
+
+## General Guidelines
+- **Languages**: TypeScript
+- **Frameworks**: Angular, Angular Material
+- **Styling**: SASS
+- **State Management**: Angular signals (preferred), with NgRx and RxJS only if necessary
+- **Testing Framework**: Jest for unit tests, Cypress for E2E tests
+
+### Key Principles
+- Prioritize performance, readability, and maintainability.
+- Use modular, reusable components.
+- Follow immutability principles and use pure functions where possible.
+- Ensure all responses are well-reasoned and accurate.
+
+## Naming Conventions
+- **File Names**: Use kebab-case.
+  - `*.component.ts` for Components
+  - `*.service.ts` for Services
+  - `*.module.ts` for Modules
+  - `*.directive.ts` for Directives
+  - `*.pipe.ts` for Pipes
+  - `*.spec.ts` for Jest tests
+- **Variable Naming**: Use camelCase for variables and PascalCase for classes.
+
+## Code Style & Formatting
+- **Indentation**: 2 spaces
+- **String Literals**: Use single quotes
+- **Variable Declaration**: Prefer `const` for immutable values
+- **Function Limits**: Maximum 4 parameters, max 50 executable lines
+- **Line Length**: Max 80 characters
+- **Imports Order**:
+  1. Angular core and common modules
+  2. RxJS modules
+  3. Other Angular modules
+  4. Application core imports
+  5. Shared module imports
+  6. Environment-specific imports
+  7. Relative path imports
+
+### Code Structure
+- Organize code into **imports, definitions, implementations**.
+- Avoid deeply nested code (max 2 levels).
+- Use template literals for multi-line strings.
+
+## Angular-Specific Guidelines
+- **Components**:
+  - Always use `standalone` components.
+  - Keep HTML, TypeScript, and SASS files separate.
+  - Use `ChangeDetectionStrategy.OnPush` for performance.
+  - Use a specific prefix for component selectors.
+- **Directives and Services**:
+  - Use the `inject` function for dependency injection.
+  - Ensure correct visibility (public, private, or protected).
+- **Reactive Programming**:
+  - Use Angular’s `signals` for state management.
+  - Use the `async` pipe for Observables in templates.
+  - Implement lazy loading for feature modules.
+- **Angular 18 Features**:
+  - Use control flow syntax instead of `ngIf`, `ngFor`, `ngSwitch`.
+  - Use `NgOptimizedImage` for image loading.
+- **Forms and Validation**:
+  - Follow Angular's reactive forms best practices.
+  - Use Angular’s built-in validation and custom validators when needed.
+
+## Angular Material-Specific Guidelines
+- Follow best practices in the Angular Material documentation.
+- Import necessary modules (`MatFormFieldModule`, `MatInputModule`, etc.).
+- Ensure a responsive, accessible design.
+- Use Angular Material components wherever possible for improved UX.
+
+## Responsive Design
+- **Approach**: Mobile-first
+- **Media Queries**: Implement responsive layouts
+- **Touch Targets**: Ensure sufficient size for buttons and links
+- **Responsive Images**: Use `srcset` and `sizes` attributes
+- **Viewport Scaling**: Include meta tags for mobile scaling
+
+## SASS Styling
+- Follow SASS best practices.
+- Use variables and mixins for consistent styling.
+- Use `scss` files for all component styles.
+
+## Error Handling
+- Use custom error types or factories for standardization.
+- Implement Angular's form validation and proper error messaging.
+
+## Testing Guidelines
+- **Unit Tests**: Use Jest, following the Arrange-Act-Assert pattern.
+- **E2E Tests**: Use Cypress for UI and workflow validation.
+- **Linting**: Enforce ESLint and Prettier for code cleanliness.
+
+### Testing Principles
+- Maximize test coverage for critical components and services.
+- Ensure all code passes linting before merging.
+
+## Performance Optimization
+- **Rendering**:
+  - Use `ChangeDetectionStrategy.OnPush`.
+  - Defer non-critical views for optimization.
+- **DOM Management**:
+  - Use Angular’s signals for state.
+  - Avoid direct DOM manipulation.
+- **TrackBy in Loops**:
+  - Use `trackBy` in `ngFor` to optimize data binding.
+- **Optimized Images**:
+  - Use `NgOptimizedImage` for large image loading.
+
+## Security Guidelines
+- **Cross-Site Scripting (XSS)**: Use Angular’s built-in sanitization.
+- **Sanitization**: Avoid `innerHTML`, use Angular’s DOM security utilities.
+
+## Documentation
+- **Function and Property Documentation**:
+  - Use JSDoc-style comments.
+  - Provide clear explanations for each function and variable.
+- **Component and Service Documentation**:
+  - Ensure every component and service is well documented.
+
+## Example Prompts
+### A) Component Generation
+```
+// Create an Angular standalone component named TaskComponent to display a task using Angular Material, with ChangeDetectionStrategy.OnPush. Include title, description, and status with edit options.
+```
+### B) Signal for Real-Time Sync
+```
+// Create an Angular signal for managing real-time notifications using Firebase.
+```
+### C) Service Generation
+```
+// Generate a TaskService with methods getTasks(), createTask(), and updateTaskStatus(), leveraging Angular signals for state updates.
+```
+
+## References
+[Angular Documentation](mdc:https:/angular.dev)
+[Angular Material Documentation](mdc:https:/material.angular.io)
+[TypeScript Documentation](mdc:https:/typescriptlang.org)
+[SASS Documentation](mdc:https:/sass-lang.com)
+[Jest Documentation](mdc:https:/jestjs.io)
+[Cypress Documentation](mdc:https:/www.cypress.io)
+
