@@ -1,0 +1,50 @@
+---
+description: APPLY Clean Code object principles TO ensure proper object-oriented design
+globs:
+alwaysApply: true
+---
+
+# Clean Code Object Standards
+
+## Context
+- These rules ensure proper object design
+- They promote encapsulation and maintainability
+
+## Requirements
+1. Hide internal structure
+2. Prefer data structures
+3. Avoid hybrid structures
+4. Keep classes small
+5. Do one thing
+6. Small number of instance variables
+7. Base class should know nothing about derivatives
+8. Prefer many functions to passing code
+9. Prefer non-static methods to static
+
+## Examples
+<example>
+// Good: Small, focused class
+class EmailValidator {
+  private readonly pattern = /^[^@]+@[^@]+\.[^@]+$/;
+  
+  isValid(email: string): boolean {
+    return this.pattern.test(email);
+  }
+}
+</example>
+
+<example type="invalid">
+// Bad: Hybrid structure, too many responsibilities
+class UserManager {
+  users = [];  // Public data
+  addUser() {} // Behavior
+  deleteUser() {}
+  validateEmail() {}  // Unrelated responsibility
+}
+</example>
+
+## Critical Rules
+- ALWAYS hide internal implementation
+- NEVER mix data structures with behavior
+- ALWAYS keep classes focused and small
+- NEVER let base classes know about derivatives 

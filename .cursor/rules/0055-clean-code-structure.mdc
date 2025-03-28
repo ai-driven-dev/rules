@@ -1,0 +1,54 @@
+---
+description: APPLY Clean Code structure principles TO ensure organized and maintainable codebase
+globs:
+alwaysApply: true
+---
+
+# Clean Code Structure Standards
+
+## Context
+- These rules ensure proper code organization
+- They promote maintainable file structure
+
+## Requirements
+1. Separate concepts vertically
+2. Related code should appear vertically dense
+3. Declare variables close to usage
+4. Keep dependent functions close
+5. Keep similar functions close
+6. Place functions in downward direction
+7. Keep lines short
+8. Don't use horizontal alignment
+9. Use white space to associate/disassociate related things
+10. Don't break indentation
+
+## Examples
+<example>
+// Good: Related code together, variables near usage
+function processOrder(order: Order) {
+  const total = calculateTotal(order);
+  const tax = calculateTax(total);
+  return { total, tax };
+  
+  function calculateTotal(order: Order): number {
+    return order.items.reduce((sum, item) => sum + item.price, 0);
+  }
+  
+  function calculateTax(amount: number): number {
+    return amount * TAX_RATE;
+  }
+}
+</example>
+
+<example type="invalid">
+// Bad: Unrelated code mixed, distant variable declaration
+const total = 0;
+// ... 100 lines of unrelated code ...
+total = calculateTotal();
+</example>
+
+## Critical Rules
+- ALWAYS keep related code together
+- NEVER break vertical formatting
+- ALWAYS declare variables close to usage
+- NEVER exceed line length limits 

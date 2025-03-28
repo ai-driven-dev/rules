@@ -1,70 +1,80 @@
 ---
-description: 
-globs: 
+description: APPLY fundamental Clean Code principles TO ensure code quality and maintainability
+globs:
 alwaysApply: true
 ---
 
-# Clean Code Standards
-
-<version>1.0.0</version>
+# Clean Code Core Principles
 
 ## Context
-- These rules apply to all code across the monorepo
-- They ensure code is readable, maintainable, and simple
-- They promote consistent coding practices and reduce technical debt
+- These are the foundational principles for clean code
+- They guide all code writing and review decisions
+- Detailed guidelines are provided in specialized rules
 
 ## Requirements
 
-### Code Generation
-- Strongly type everythink
-- Never us untyped values (`any`, `unknown`, `mixed`, `object` etc. are prohibited)
-- Force explicit constants instead of magic numbers.
-- Write clear and simple conditions.
-- No double negatives.
-- Prioritize readable variable names, even if longer.
-- Simplify loops using `map()`, `filter()`, or `reduce()`.
+### General Rules
+1. Follow standard conventions
+2. Keep it simple stupid (KISS)
+3. Boy scout rule: Leave code cleaner than found
+4. Always find root cause
 
-### Function Design
-- Keep functions small and focused on a single responsibility
-- Limit function length to 20-30 lines
-- Limit function parameters to 3 or fewer
-- Avoid flag parameters; split into multiple functions instead
-- Anemic models (avoid trivial `getId`/`setId`).
-- Function names with no actions (avoid `setUsers`, prefer `loadUsers`). 
+### Design Rules
+1. Keep configurable data at high levels
+2. Prefer polymorphism to if/else or switch/case
+3. Separate multi-threading code
+4. Prevent over-configurability
+5. Use dependency injection
+6. Follow Law of Demeter
+
+## Specialized Rules
+
+### Core Principles
+- [YAGNI](mdc:.cursor/rules/0057-clean-code-yagni.mdc)
+- [DRY](mdc:.cursor/rules/0058-clean-code-dry.mdc)
+- [SOLID](mdc:.cursor/rules/0059-clean-code-solid.mdc)
+
+### Testing and Quality
+- [Testing Standards](mdc:.cursor/rules/00510-clean-code-tests.mdc)
+- [Code Smells](mdc:.cursor/rules/00511-clean-code-smells.mdc)
 
 ### Code Organization
-- One file per feature, split responsibility across files (SRP).
-- Keep files small (under 300 lines)
-- When folders exceed 7 files, create sub-folders
-- Group related code together
-- Follow the principle of least surprise
-- Maintain a consistent level of abstraction within functions
-- Group code by business domain rather than technical layer
-- Focus on functional specifications over technical specifications
-- Keep business logic separate from technical implementation
+- [Understanding](mdc:.cursor/rules/0051-clean-code-understanding.mdc)
+- [Naming](mdc:.cursor/rules/0052-clean-code-naming.mdc)
+- [Functions](mdc:.cursor/rules/0053-clean-code-functions.mdc)
+- [Comments](mdc:.cursor/rules/0054-clean-code-comments.mdc)
+- [Structure](mdc:.cursor/rules/0055-clean-code-structure.mdc)
+- [Objects](mdc:.cursor/rules/0056-clean-code-objects.mdc)
 
-### Comments
-- Write self-documenting code that minimizes the need for comments
-- Use comments to explain "why" not "what" or "how"
-- Keep comments up-to-date with code changes
+## Examples
+<example>
+// Good: Following core principles
+class EmailService {
+  constructor(private readonly emailProvider: IEmailProvider) {}
+  
+  async sendEmail(email: Email): Promise<void> {
+    await this.emailProvider.send(email);
+  }
+}
+</example>
 
-### Error Handling
-- Use custom domain error for different error categories
-- Error messages must be meaningful and SHOULD be translated to the user's language (e.g. French) for display.
-- Fail fast: early throws errors, avoid returning null or undefined
-- Errors in logs are tracked with error codes, in English
+<example type="invalid">
+// Bad: Violating multiple principles
+class UserManager {
+  // Violates SRP, DRY, and YAGNI
+  private logger = new ConsoleLogger();
+  private mailer = new SmtpMailer();
+  private unusedFeature: any; // YAGNI violation
 
-### Code Duplication
-- Follow the DRY (Don't Repeat Yourself) principle
-- Extract common functionality into reusable functions
-- Use composition over inheritance
-- Create utility functions for repeated operations
+  async processUser(user: any) { // Type safety ignored
+    // Complex, duplicated logic
+  }
+}
+</example>
 
 ## Critical Rules
-
-<critical>
-- NEVER write functions longer than 30 lines
-- ALWAYS give functions and variables descriptive names
-- NEVER have more than 3 parameters for a function
-- ALWAYS write tests for your code
-</critical>
+- ALWAYS follow standard conventions
+- ALWAYS keep it simple (KISS)
+- ALWAYS leave code cleaner than found
+- NEVER ignore root causes
+- ALWAYS refer to specialized rules for detailed guidance
