@@ -1,1 +1,5 @@
 .cursor/rules/_*.mdc
+
+node_modules
+out
+dist
