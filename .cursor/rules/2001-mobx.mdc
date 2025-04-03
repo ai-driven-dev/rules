@@ -21,7 +21,7 @@ alwaysApply: false
 - Implement proper dependency injection between stores
 - Inject the store into the parent component for better state management
 
-### Dommain logic
+### Domain logic
 - Keep stores focused on a single responsibility
 - Avoid technical function (e.g. `setDialogOpen`), prefer user actions (`openDialog`, `closeDialog`).
 
