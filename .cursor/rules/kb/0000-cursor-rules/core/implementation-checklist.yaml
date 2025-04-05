@@ -1,0 +1,176 @@
+# Cursor Rules Implementation Checklist
+# This file defines requirements for proper rule implementation
+
+implementation_levels:
+  minimal:
+    description: "Basic rule implementation with minimal KB structure"
+    required_components:
+      - rule_file_with_correct_format
+      - basic_kb_directory_structure
+      - at_least_one_guideline_file
+      - at_least_one_example
+    certification: "provisional"
+  
+  standard:
+    description: "Complete rule with comprehensive KB structure"
+    required_components:
+      - rule_file_with_correct_format
+      - complete_kb_directory_structure
+      - comprehensive_guidelines
+      - good_and_bad_examples
+      - templates_if_applicable
+      - documentation_file
+    certification: "certified"
+  
+  comprehensive:
+    description: "Rich ecosystem with extensive examples and documentation"
+    required_components:
+      - rule_file_with_correct_format
+      - complete_kb_directory_structure
+      - comprehensive_guidelines
+      - multiple_good_and_bad_examples
+      - templates_with_variations
+      - detailed_documentation
+      - diagrams_and_visualizations
+    certification: "exemplary"
+
+required_files:
+  rule_file:
+    path: ".cursor/rules/{rule_id}.mdc"
+    requirements:
+      - correct_header_metadata
+      - at_least_one_kb_reference
+      - at_least_one_cognitive_operation
+      - at_least_one_llm_delegation
+  
+  kb_structure:
+    base_path: ".cursor/kb/{rule_id}/"
+    required_directories:
+      - "guidelines"
+      - "examples"
+      - "templates"
+      - "references"
+    minimum_files:
+      - "guidelines/structure_guide.md"
+      - "examples/good_examples.md"
+      - "examples/bad_examples.md"
+  
+  documentation:
+    path: ".cursor/documentation/{rule_id}-documentation.md"
+    requirements:
+      - summary_section
+      - fundamental_concepts
+      - principles_section
+      - processes_section
+      - examples_section
+      - guidelines_section
+
+validation_rules:
+  reference_integrity:
+    description: "Ensure all KB references in the rule file point to actual files"
+    severity: "critical"
+    validation_process:
+      - extract_all_kb_references_from_rule
+      - verify_each_referenced_file_exists
+      - report_missing_references
+  
+  content_quality:
+    description: "Ensure KB files contain meaningful, high-quality content"
+    severity: "high"
+    validation_criteria:
+      - files_not_empty
+      - content_follows_markdown_standards
+      - content_provides_actual_guidance
+      - examples_illustrate_principles
+  
+  documentation_completeness:
+    description: "Ensure documentation covers all aspects of the rule"
+    severity: "high"
+    validation_criteria:
+      - all_required_sections_present
+      - references_to_kb_files
+      - clear_explanations_of_usage
+
+implementation_process:
+  steps:
+    - name: "Create rule file with proper structure"
+      importance: "critical"
+      validation: "check_rule_file_format"
+    
+    - name: "Create KB directory structure"
+      importance: "critical"
+      validation: "verify_kb_directories"
+    
+    - name: "Generate guideline files"
+      importance: "high"
+      validation: "check_guideline_content"
+    
+    - name: "Create example files"
+      importance: "high"
+      validation: "verify_examples_quality"
+    
+    - name: "Generate templates if applicable"
+      importance: "medium"
+      validation: "check_templates_usability"
+    
+    - name: "Create documentation file"
+      importance: "high"
+      validation: "verify_documentation_completeness"
+    
+    - name: "Validate entire ecosystem"
+      importance: "critical"
+      validation: "run_ecosystem_validation"
+
+error_handling:
+  critical_failures:
+    - missing_rule_file
+    - invalid_rule_format
+    - missing_required_kb_directories
+    - broken_references
+  
+  warnings:
+    - incomplete_documentation
+    - low_quality_examples
+    - missing_optional_components
+  
+  resolution_process:
+    - identify_specific_issues
+    - provide_clear_error_messages
+    - suggest_corrective_actions
+    - offer_templates_for_missing_components
+
+certification_process:
+  levels:
+    uncertified:
+      description: "Rule fails to meet minimum requirements"
+      criteria:
+        - missing_critical_components
+        - broken_references
+        - invalid_format
+      allowed_usage: "none"
+    
+    provisional:
+      description: "Basic implementation with some gaps"
+      criteria:
+        - meets_minimal_requirements
+        - may_have_quality_issues
+        - documentation_may_be_incomplete
+      allowed_usage: "with_warnings"
+    
+    certified:
+      description: "Complete implementation meeting all standards"
+      criteria:
+        - meets_standard_requirements
+        - all_references_valid
+        - high_quality_content
+        - complete_documentation
+      allowed_usage: "full"
+    
+    exemplary:
+      description: "Exceeds requirements with exceptional quality"
+      criteria:
+        - meets_comprehensive_requirements
+        - exceptional_documentation
+        - innovative_approaches
+        - extensive_examples
+      allowed_usage: "model_for_others" 

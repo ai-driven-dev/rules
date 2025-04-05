@@ -1,0 +1,87 @@
+# External References for {rule_id}
+# This file contains references to external resources related to the {rule_id} rule
+
+references:
+  # Core documentation
+  - category: "Core Documentation"
+    items:
+      - title: "Official Documentation"
+        url: "https://example.com/docs"
+        description: "Official documentation for {domain}"
+        relevance: "Primary resource for understanding {domain} fundamentals"
+      
+      - title: "Best Practices Guide"
+        url: "https://example.com/best-practices"
+        description: "Comprehensive guide to {domain} best practices"
+        relevance: "Provides foundation for rule constraints and validation"
+
+  # Standards and specifications
+  - category: "Standards and Specifications"
+    items:
+      - title: "Industry Standard 1"
+        url: "https://example.com/standard1"
+        description: "Official standard for {aspect of domain}"
+        relevance: "Defines formal requirements implemented by this rule"
+      
+      - title: "Specification Document"
+        url: "https://example.com/specification"
+        description: "Technical specification for {domain}"
+        relevance: "Details technical requirements enforced by this rule"
+
+  # Tutorials and guides
+  - category: "Tutorials and Guides"
+    items:
+      - title: "Beginner's Guide"
+        url: "https://example.com/beginners-guide"
+        description: "Introduction to {domain} for beginners"
+        relevance: "Helpful for understanding basic concepts"
+      
+      - title: "Advanced Tutorial"
+        url: "https://example.com/advanced"
+        description: "Advanced techniques for {domain}"
+        relevance: "Provides context for advanced rule features"
+
+  # Tools and utilities
+  - category: "Tools and Utilities"
+    items:
+      - title: "Validation Tool"
+        url: "https://example.com/validator"
+        description: "Tool for validating {domain} implementations"
+        relevance: "Can be used to supplement rule validation"
+      
+      - title: "Generator Tool"
+        url: "https://example.com/generator"
+        description: "Tool for generating {domain} boilerplate"
+        relevance: "Useful for creating compliant implementations"
+
+  # Community resources
+  - category: "Community Resources"
+    items:
+      - title: "Community Forum"
+        url: "https://example.com/forum"
+        description: "Discussion forum for {domain}"
+        relevance: "Valuable for troubleshooting and community insights"
+      
+      - title: "GitHub Repository"
+        url: "https://github.com/example/repo"
+        description: "Open source repository for {domain} examples"
+        relevance: "Contains example implementations conforming to standards"
+
+  # Research and papers
+  - category: "Research and Papers"
+    items:
+      - title: "Research Paper"
+        url: "https://example.com/paper"
+        description: "Academic research on {domain} optimization"
+        relevance: "Provides theoretical foundation for rule principles"
+      
+      - title: "Case Study"
+        url: "https://example.com/case-study"
+        description: "Case study on effective {domain} implementation"
+        relevance: "Real-world example of rule principles in action"
+
+# Release information
+release_info:
+  version: "1.0.0"
+  last_updated: "YYYY-MM-DD"
+  curator: "Cursor Team" 
