@@ -1,0 +1,218 @@
+# Ecosystem Validation Rules
+# Defines requirements and validation processes for Cursor rule ecosystems
+
+validation_categories:
+  file_existence:
+    description: "Validates that all required files exist"
+    severity: "critical"
+    validation_methods:
+      - method: "check_file_existence"
+        description: "Verifies that a file exists at the specified path"
+        parameters:
+          - name: "file_path"
+            description: "Path to the file to check"
+          - name: "is_required"
+            description: "Whether the file is required or optional"
+        failure_action: "Report critical error if required file missing"
+      
+      - method: "check_directory_structure"
+        description: "Verifies that the directory structure exists as required"
+        parameters:
+          - name: "base_directory"
+            description: "Base directory to check"
+          - name: "required_subdirectories"
+            description: "List of required subdirectories"
+        failure_action: "Report critical error if required directory missing"
+
+  content_quality:
+    description: "Validates the quality of content in KB files"
+    severity: "high"
+    validation_methods:
+      - method: "check_file_content"
+        description: "Verifies that a file has meaningful content"
+        parameters:
+          - name: "file_path"
+            description: "Path to the file to check"
+          - name: "min_content_length"
+            description: "Minimum required content length"
+          - name: "required_sections"
+            description: "List of required sections in the file"
+        failure_action: "Report high severity warning if content inadequate"
+      
+      - method: "validate_examples"
+        description: "Verifies that example files properly illustrate the rule"
+        parameters:
+          - name: "good_examples_path"
+            description: "Path to good examples file"
+          - name: "bad_examples_path"
+            description: "Path to bad examples file"
+          - name: "required_example_count"
+            description: "Minimum number of examples required"
+        failure_action: "Report high severity warning if examples inadequate"
+
+  reference_integrity:
+    description: "Validates that all references between files are intact"
+    severity: "critical"
+    validation_methods:
+      - method: "check_kb_references"
+        description: "Verifies that all KB references in the rule file point to existing files"
+        parameters:
+          - name: "rule_file_path"
+            description: "Path to the rule file"
+          - name: "kb_base_path"
+            description: "Base path for KB files"
+        failure_action: "Report critical error if references broken"
+      
+      - method: "check_documentation_references"
+        description: "Verifies that documentation references KB files correctly"
+        parameters:
+          - name: "documentation_path"
+            description: "Path to the documentation file"
+          - name: "kb_base_path"
+            description: "Base path for KB files"
+        failure_action: "Report high severity warning if documentation references broken"
+
+validation_workflows:
+  basic_ecosystem_validation:
+    description: "Basic validation of rule ecosystem completeness"
+    steps:
+      - name: "Verify rule file exists"
+        method: "check_file_existence"
+        parameters:
+          file_path: ".cursor/rules/{rule_id}.mdc"
+          is_required: true
+      
+      - name: "Verify KB directory structure"
+        method: "check_directory_structure"
+        parameters:
+          base_directory: ".cursor/kb/{rule_id}"
+          required_subdirectories:
+            - "guidelines"
+            - "examples"
+            - "references"
+            - "templates"
+      
+      - name: "Verify minimum required files"
+        method: "check_file_existence"
+        parameters:
+          file_paths:
+            - ".cursor/kb/{rule_id}/guidelines/structure_guide.md"
+            - ".cursor/kb/{rule_id}/examples/good_examples.md"
+            - ".cursor/kb/{rule_id}/examples/bad_examples.md"
+          is_required: true
+      
+      - name: "Verify documentation exists"
+        method: "check_file_existence"
+        parameters:
+          file_path: ".cursor/documentation/{rule_id}-documentation.md"
+          is_required: true
+
+  comprehensive_ecosystem_validation:
+    description: "Comprehensive validation of rule ecosystem quality and completeness"
+    steps:
+      - name: "Run basic ecosystem validation"
+        workflow: "basic_ecosystem_validation"
+      
+      - name: "Verify rule file format"
+        method: "validate_rule_format"
+        parameters:
+          rule_file_path: ".cursor/rules/{rule_id}.mdc"
+          required_sections:
+            - "kb_references"
+            - "principles"
+            - "cognitive_operations"
+            - "llm_delegation"
+      
+      - name: "Check KB references integrity"
+        method: "check_kb_references"
+        parameters:
+          rule_file_path: ".cursor/rules/{rule_id}.mdc"
+          kb_base_path: ".cursor/kb/{rule_id}"
+      
+      - name: "Validate content quality"
+        method: "check_content_quality"
+        parameters:
+          files:
+            - ".cursor/kb/{rule_id}/guidelines/structure_guide.md"
+            - ".cursor/kb/{rule_id}/examples/good_examples.md"
+            - ".cursor/kb/{rule_id}/examples/bad_examples.md"
+          min_quality_score: 0.7
+      
+      - name: "Validate documentation completeness"
+        method: "check_documentation_completeness"
+        parameters:
+          documentation_path: ".cursor/documentation/{rule_id}-documentation.md"
+          required_sections:
+            - "summary"
+            - "fundamental_concepts"
+            - "principles"
+            - "processes"
+            - "architecture"
+            - "delegates"
+            - "examples"
+            - "checklist"
+
+reporting:
+  formats:
+    - name: "console"
+      enabled: true
+      color_coded: true
+    
+    - name: "json"
+      enabled: true
+      file_path: ".cursor/validation_reports/{rule_id}_validation.json"
+    
+    - name: "markdown"
+      enabled: true
+      file_path: ".cursor/validation_reports/{rule_id}_validation.md"
+  
+  severity_levels:
+    - name: "critical"
+      description: "Issues that must be fixed before the rule can be used"
+      color: "red"
+      action: "block_usage"
+    
+    - name: "high"
+      description: "Important issues that should be fixed"
+      color: "orange"
+      action: "warn_strongly"
+    
+    - name: "medium"
+      description: "Issues that would improve the rule quality"
+      color: "yellow"
+      action: "recommend_fix"
+    
+    - name: "low"
+      description: "Minor suggestions for improvement"
+      color: "blue"
+      action: "suggest"
+
+certification_criteria:
+  uncertified:
+    description: "Rule fails critical validation checks"
+    requirements:
+      - "All critical validation checks must pass"
+    allowed_usage: "none"
+  
+  provisional:
+    description: "Rule passes critical checks but has high severity issues"
+    requirements:
+      - "All critical validation checks must pass"
+      - "May have high severity issues"
+    allowed_usage: "with_warnings"
+  
+  certified:
+    description: "Rule passes all critical and high severity checks"
+    requirements:
+      - "All critical validation checks must pass"
+      - "All high severity validation checks must pass"
+      - "May have medium or low severity issues"
+    allowed_usage: "full"
+  
+  exemplary:
+    description: "Rule passes all checks with high quality"
+    requirements:
+      - "All validation checks must pass"
+      - "Documentation must be exceptional"
+      - "Examples must be comprehensive"
+    allowed_usage: "model_for_others" 

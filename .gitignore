@@ -1,1 +1,6 @@
+.specstory/
+.cursorignore
+.cursorrules
+
+
 .cursor/rules/_*.mdc

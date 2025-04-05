@@ -1,0 +1,50 @@
+---
+title: "Global Patterns Library"
+description: "Standard glob patterns for file targeting across all Cursor rules"
+---
+
+patterns:
+  # Rule patterns
+  rules: ".cursor/rules/*.mdc"
+  
+  # Source code patterns
+  src: "src/**/*.{js,ts}"
+  test: "**/*.test.{js,ts}"
+  react: "src/components/**/*.{jsx,tsx}"
+  vue: "src/components/**/*.vue"
+  angular: "src/app/**/*.ts"
+  
+  # Documentation patterns
+  docs: "docs/**/*.md"
+  readme: "README.md"
+  
+  # Configuration patterns
+  config: "*.config.{js,json}"
+  package: "package.json"
+  
+  # Build patterns 
+  dist: "dist/**/*"
+  build: "build/**/*"
+  
+  # Multi-extension patterns
+  js_all: "**/*.{js,jsx}"
+  ts_all: "**/*.{ts,tsx}"
+  all_code: "src/**/*.{js,jsx,ts,tsx}"
+  styles: "**/*.{css,scss,less}"
+  
+  # Backend patterns
+  api: "src/api/**/*.{js,ts}"
+  models: "src/models/**/*.{js,ts}"
+  controllers: "src/controllers/**/*.{js,ts}"
+  
+  # KB patterns
+  kb_all: ".cursor/kb/**/*.{yaml,md,json}"
+  kb_core: ".cursor/kb/core/*.yaml"
+  kb_rule: ".cursor/kb/[0-9][0-9][0-9][0-9]-*/**"
+
+usage_tips:
+  - multi_patterns: "Combine patterns with comma for multiple: '{pattern1,pattern2}'"
+  - exclusions: "Use '!' to exclude patterns: '!node_modules/**'"
+  - alternatives: "Use brackets for character alternatives: 'src/[mt]odels/'"
+  - specificity: "Start with more specific patterns before using broad patterns"
+  - testing: "Always test your patterns against actual directory structure" 
