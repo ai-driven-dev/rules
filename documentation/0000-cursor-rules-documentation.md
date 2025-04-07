@@ -1,5 +1,34 @@
 # Documentation de la Méta-Règle pour la Création de Règles Cursor
 
+- [📋 Résumé](#-résumé)
+- [🧠 Concepts Fondamentaux](#-concepts-fondamentaux)
+  - [Principes de Compression Sémantique](#principes-de-compression-sémantique)
+  - [Les Trois Piliers d'une Règle Cursor](#les-trois-piliers-dune-règle-cursor)
+  - [Adaptation Basée sur la Complexité (Nouveauté v3.x)](#adaptation-basée-sur-la-complexité-nouveauté-v3x)
+  - [Architecture de la Base de Connaissances (KB) - **Mise à jour**](#architecture-de-la-base-de-connaissances-kb---mise-à-jour)
+- [⚙️ Nouveaux Modules Clés (v3.x)](#️-nouveaux-modules-clés-v3x)
+  - [1. Module d'Évaluation de Complexité (`Ω•assess•complexity`)](#1-module-dévaluation-de-complexité-ωassesscomplexity)
+  - [2. Module d'Adaptation de Stratégie (`Ω•adapt•workflow•strategy`)](#2-module-dadaptation-de-stratégie-ωadaptworkflowstrategy)
+  - [3. Module de Création d'Écosystème (`Ω•create•rule•ecosystem`)](#3-module-de-création-décosystème-ωcreateruleecosystem)
+- [🔄 Workflow de Création des Règles (Ω•create•rule) Refactorisé (v3.x)](#-workflow-de-création-des-règles-ωcreaterule-refactorisé-v3x)
+- [🔍 Protocole de Validation de l'Écosystème (Ω.validate•ecosystem) Adapté (v3.x)](#-protocole-de-validation-de-lécosystème-ωvalidateecosystem-adapté-v3x)
+- [🔄 Processus de Génération de Documentation (Ω•create•documentation)](#-processus-de-génération-de-documentation-ωcreatedocumentation)
+  - [Étapes du processus de documentation](#étapes-du-processus-de-documentation)
+- [🤖 Stratégie de Délégation au LLM (v2.2)](#-stratégie-de-délégation-au-llm-v22)
+    - [LLM•kb•content•generator](#llmkbcontentgenerator)
+    - [LLM•documentation•generator](#llmdocumentationgenerator)
+- [🌲 Arborescence des Fichiers de la Méta-Règle - **Mise à jour**](#-arborescence-des-fichiers-de-la-méta-règle---mise-à-jour)
+  - [Représentation Graphique](#représentation-graphique)
+  - [Représentation Textuelle Détaillée - **Mise à jour**](#représentation-textuelle-détaillée---mise-à-jour)
+  - [Relations entre les composants - **Mis à jour**](#relations-entre-les-composants---mis-à-jour)
+- [🧩 Modules Factorisés - **Mis à jour**](#-modules-factorisés---mis-à-jour)
+- [🍳 Cookbook / Scénarios Pratiques](#-cookbook--scénarios-pratiques)
+  - [Scénario 1 : Création d'une Règle de Scaffolding Vue 3 (Complexité Moyenne)](#scénario-1--création-dune-règle-de-scaffolding-vue-3-complexité-moyenne)
+  - [Scénario 2 : Création d'une Règle de Configuration d'Outil (Tailwind + Vite + SCSS)](#scénario-2--création-dune-règle-de-configuration-doutil-tailwind--vite--scss)
+  - [Enseignements Clés des Scénarios](#enseignements-clés-des-scénarios)
+- [✅ Liste de Vérification v3.x](#-liste-de-vérification-v3x)
+- [📚 Ressources Additionnelles - **Mis à jour**](#-ressources-additionnelles---mis-à-jour)
+
 ## 📋 Résumé
 
 La méta-règle `0000-cursor-rules.mdc` définit le standard et le processus de création des règles Cursor. Elle établit une méthodologie complète pour garantir des règles cohérentes, compréhensibles et efficaces à travers un système de compression sémantique, d'externalisation des connaissances et de processus cognitifs clairs. La version actuelle (3.1+) met l'accent sur la modularité, l'adaptation à la complexité, et la factorisation des connaissances tout en maintenant la séparation claire entre connaissances, processus cognitifs et rôles du LLM.
