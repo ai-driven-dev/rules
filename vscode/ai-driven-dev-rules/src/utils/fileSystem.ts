@@ -3,7 +3,7 @@ import * as https from "https";
 import * as path from "path";
 import { URL } from "url";
 import * as vscode from "vscode";
-import { GithubExplorerItem } from "../views/treeItem";
+import { ExplorerTreeItem } from "../views/explorer/treeItem";
 
 /**
  * Service for file system operations
@@ -33,7 +33,7 @@ export class FileSystemService {
    * @param items Selected items to download
    * @returns Promise that resolves when all files are downloaded
    */
-  public async downloadFiles(items: GithubExplorerItem[]): Promise<void> {
+  public async downloadFiles(items: ExplorerTreeItem[]): Promise<void> {
     if (items.length === 0) {
       vscode.window.showInformationMessage("No files selected for download");
       return;
@@ -110,7 +110,7 @@ export class FileSystemService {
    * @param downloadedFiles Number of files downloaded so far
    */
   private async downloadItem(
-    item: GithubExplorerItem,
+    item: ExplorerTreeItem,
     workspaceFolder: string,
     progress: vscode.Progress<{ message?: string; increment?: number }>,
     token: vscode.CancellationToken,
@@ -251,7 +251,7 @@ export class FileSystemService {
    * @param items Items to count
    * @returns Total number of files
    */
-  private countFiles(items: GithubExplorerItem[]): number {
+  private countFiles(items: ExplorerTreeItem[]): number {
     let count = 0;
 
     for (const item of items) {
