@@ -1,5 +1,34 @@
 # Documentation de la Méta-Règle pour la Création de Règles Cursor
 
+- [📋 Résumé](#-résumé)
+- [🧠 Concepts Fondamentaux](#-concepts-fondamentaux)
+  - [Principes de Compression Sémantique](#principes-de-compression-sémantique)
+  - [Les Trois Piliers d'une Règle Cursor](#les-trois-piliers-dune-règle-cursor)
+  - [Adaptation Basée sur la Complexité (Nouveauté v3.x)](#adaptation-basée-sur-la-complexité-nouveauté-v3x)
+  - [Architecture de la Base de Connaissances (KB) - **Mise à jour**](#architecture-de-la-base-de-connaissances-kb---mise-à-jour)
+- [⚙️ Nouveaux Modules Clés (v3.x)](#️-nouveaux-modules-clés-v3x)
+  - [1. Module d'Évaluation de Complexité (`Ω•assess•complexity`)](#1-module-dévaluation-de-complexité-ωassesscomplexity)
+  - [2. Module d'Adaptation de Stratégie (`Ω•adapt•workflow•strategy`)](#2-module-dadaptation-de-stratégie-ωadaptworkflowstrategy)
+  - [3. Module de Création d'Écosystème (`Ω•create•rule•ecosystem`)](#3-module-de-création-décosystème-ωcreateruleecosystem)
+- [🔄 Workflow de Création des Règles (Ω•create•rule) Refactorisé (v3.x)](#-workflow-de-création-des-règles-ωcreaterule-refactorisé-v3x)
+- [🔍 Protocole de Validation de l'Écosystème (Ω.validate•ecosystem) Adapté (v3.x)](#-protocole-de-validation-de-lécosystème-ωvalidateecosystem-adapté-v3x)
+- [🔄 Processus de Génération de Documentation (Ω•create•documentation)](#-processus-de-génération-de-documentation-ωcreatedocumentation)
+  - [Étapes du processus de documentation](#étapes-du-processus-de-documentation)
+- [🤖 Stratégie de Délégation au LLM (v2.2)](#-stratégie-de-délégation-au-llm-v22)
+    - [LLM•kb•content•generator](#llmkbcontentgenerator)
+    - [LLM•documentation•generator](#llmdocumentationgenerator)
+- [🌲 Arborescence des Fichiers de la Méta-Règle - **Mise à jour**](#-arborescence-des-fichiers-de-la-méta-règle---mise-à-jour)
+  - [Représentation Graphique](#représentation-graphique)
+  - [Représentation Textuelle Détaillée - **Mise à jour**](#représentation-textuelle-détaillée---mise-à-jour)
+  - [Relations entre les composants - **Mis à jour**](#relations-entre-les-composants---mis-à-jour)
+- [🧩 Modules Factorisés - **Mis à jour**](#-modules-factorisés---mis-à-jour)
+- [🍳 Cookbook / Scénarios Pratiques](#-cookbook--scénarios-pratiques)
+  - [Scénario 1 : Création d'une Règle de Scaffolding Vue 3 (Complexité Moyenne)](#scénario-1--création-dune-règle-de-scaffolding-vue-3-complexité-moyenne)
+  - [Scénario 2 : Création d'une Règle de Configuration d'Outil (Tailwind + Vite + SCSS)](#scénario-2--création-dune-règle-de-configuration-doutil-tailwind--vite--scss)
+  - [Enseignements Clés des Scénarios](#enseignements-clés-des-scénarios)
+- [✅ Liste de Vérification v3.x](#-liste-de-vérification-v3x)
+- [📚 Ressources Additionnelles - **Mis à jour**](#-ressources-additionnelles---mis-à-jour)
+
 ## 📋 Résumé
 
 La méta-règle `0000-cursor-rules.mdc` définit le standard et le processus de création des règles Cursor. Elle établit une méthodologie complète pour garantir des règles cohérentes, compréhensibles et efficaces à travers un système de compression sémantique, d'externalisation des connaissances et de processus cognitifs clairs. La version actuelle (3.1+) met l'accent sur la modularité, l'adaptation à la complexité, et la factorisation des connaissances tout en maintenant la séparation claire entre connaissances, processus cognitifs et rôles du LLM.
@@ -77,12 +106,12 @@ flowchart TD
 
 Pour pallier la rigidité potentielle d'un workflow unique, la version 3.x introduit une approche adaptative basée sur une évaluation préliminaire de la complexité de la règle à créer.
 
-1.  **Classification S/M/C :** Avant la création complète, la complexité de la demande de règle est évaluée et classifiée comme **Simple (S)**, **Moyenne (M)**, ou **Complexe (C)**.
-2.  **Modules Dédiés :** Deux nouveaux modules principaux gèrent ce processus :
+1. **Classification S/M/C :** Avant la création complète, la complexité de la demande de règle est évaluée et classifiée comme **Simple (S)**, **Moyenne (M)**, ou **Complexe (C)**.
+2. **Modules Dédiés :** Deux nouveaux modules principaux gèrent ce processus :
     - `Ω•assess•complexity` : Évalue la demande.
     - `Ω•adapt•workflow•strategy` : Détermine la stratégie de création (niveau KB, profondeur de validation) en fonction de l'évaluation.
-3.  **Workflow Adapté :** Le workflow principal (`Ω•create•rule`) utilise la stratégie déterminée pour paramétrer les étapes de création de l'écosystème (`Ω•create•rule•ecosystem`) et de validation (`Ω.validate•ecosystem`).
-4.  **Externalisation Maintenue :** Le principe d'externalisation stricte des connaissances est conservé. Même une règle "Simple" requiert un écosystème KB externe minimal. La flexibilité réside dans la **quantité** et le **type** de fichiers KB exigés, ainsi que dans la **profondeur** de la validation.
+3. **Workflow Adapté :** Le workflow principal (`Ω•create•rule`) utilise la stratégie déterminée pour paramétrer les étapes de création de l'écosystème (`Ω•create•rule•ecosystem`) et de validation (`Ω.validate•ecosystem`).
+4. **Externalisation Maintenue :** Le principe d'externalisation stricte des connaissances est conservé. Même une règle "Simple" requiert un écosystème KB externe minimal. La flexibilité réside dans la **quantité** et le **type** de fichiers KB exigés, ainsi que dans la **profondeur** de la validation.
 
 Cette approche permet d'ajuster l'effort et la rigueur du processus à la nature de la règle, optimisant l'efficacité sans sacrifier la qualité pour les règles complexes.
 
@@ -319,12 +348,12 @@ flowchart TB
 
 **Étapes Clés du Workflow Refactorisé :**
 
-1.  **Évaluation & Stratégie :** Appel séquentiel de `Ω•assess•complexity` et `Ω•adapt•workflow•strategy`. Le bloc de configuration est parsé.
-2.  **Clarification Utilisateur (Optionnelle) :** Si le score de confiance est bas, un dialogue est initié pour confirmer/ajuster la stratégie.
-3.  **Création de l'Écosystème :** Appel de `Ω•create•rule•ecosystem` avec les paramètres `kb_creation_level`, `required_kb_types`, et `additional_guidance` issus de la stratégie.
-4.  **Implémentation de la Règle Cœur :** Génération du fichier `.mdc` principal. Le `kb_creation_level` peut influencer légèrement le détail de la règle elle-même.
-5.  **Validation :** Appel de `Ω.validate•ecosystem` avec les fichiers créés et le paramètre `validation_depth` issu de la stratégie.
-6.  **Documentation & Finalisation :** Génération de la documentation (`Ω•create•documentation`) et finalisation.
+1. **Évaluation & Stratégie :** Appel séquentiel de `Ω•assess•complexity` et `Ω•adapt•workflow•strategy`. Le bloc de configuration est parsé.
+2. **Clarification Utilisateur (Optionnelle) :** Si le score de confiance est bas, un dialogue est initié pour confirmer/ajuster la stratégie.
+3. **Création de l'Écosystème :** Appel de `Ω•create•rule•ecosystem` avec les paramètres `kb_creation_level`, `required_kb_types`, et `additional_guidance` issus de la stratégie.
+4. **Implémentation de la Règle Cœur :** Génération du fichier `.mdc` principal. Le `kb_creation_level` peut influencer légèrement le détail de la règle elle-même.
+5. **Validation :** Appel de `Ω.validate•ecosystem` avec les fichiers créés et le paramètre `validation_depth` issu de la stratégie.
+6. **Documentation & Finalisation :** Génération de la documentation (`Ω•create•documentation`) et finalisation.
 
 Ce workflow modulaire permet une adaptation fine du processus tout en gardant une structure claire.
 

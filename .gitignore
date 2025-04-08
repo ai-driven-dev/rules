@@ -1,6 +1,3 @@
 .specstory/
 .cursorignore
-.cursorrules
-
-
-.cursor/rules/_*.mdc
+.cursorrules # might be used later for cognitive agent
