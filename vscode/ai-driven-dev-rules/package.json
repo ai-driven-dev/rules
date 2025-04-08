@@ -1,6 +1,6 @@
 {
-  "name": "github-explorer",
-  "displayName": "GitHub Explorer",
+  "name": "ai-driven-dev-rules",
+  "displayName": "AI-Driven Dev Rules",
   "description": "Browse and download files from GitHub repositories directly within VS Code",
   "version": "0.0.1",
   "engines": {
@@ -14,77 +14,77 @@
   "contributes": {
     "commands": [
       {
-        "command": "githubExplorer.setRepository",
+        "command": "aidd.setRepository",
         "title": "GitHub Explorer: Set Repository",
         "icon": "$(repo)"
       },
       {
-        "command": "githubExplorer.refresh",
+        "command": "aidd.refresh",
         "title": "GitHub Explorer: Refresh",
         "icon": "$(refresh)"
       },
       {
-        "command": "githubExplorer.toggleSelection",
+        "command": "aidd.toggleSelection",
         "title": "GitHub Explorer: Toggle Selection",
         "icon": "$(check)"
       },
       {
-        "command": "githubExplorer.downloadSelected",
+        "command": "aidd.downloadSelected",
         "title": "GitHub Explorer: Download Selected Files",
         "icon": "$(cloud-download)"
       },
       {
-        "command": "githubExplorer.welcome",
+        "command": "aidd.welcome",
         "title": "GitHub Explorer: Show Welcome Message"
       }
     ],
     "viewsContainers": {
       "activitybar": [
         {
-          "id": "github-explorer",
-          "title": "GitHub Explorer",
+          "id": "ai-driven-dev-rules",
+          "title": "AI-Driven Dev Rules",
           "icon": "$(github)"
         }
       ]
     },
     "views": {
-      "github-explorer": [
+      "ai-driven-dev-rules": [
         {
-          "id": "githubExplorer.welcomeView",
+          "id": "aidd.welcomeView",
           "name": "Get Started",
           "type": "webview",
           "visibility": "visible"
         },
         {
-          "id": "githubExplorer",
+          "id": "ai-driven-dev-rules",
           "name": "Repository Explorer",
           "icon": "$(github)",
-          "contextualTitle": "GitHub Explorer"
+          "contextualTitle": "AI-Driven Dev Rules"
         }
       ]
     },
     "menus": {
       "view/title": [
         {
-          "command": "githubExplorer.setRepository",
-          "when": "view == githubExplorer",
+          "command": "aidd.setRepository",
+          "when": "view == ai-driven-dev-rules",
           "group": "navigation"
         },
         {
-          "command": "githubExplorer.refresh",
-          "when": "view == githubExplorer",
+          "command": "aidd.refresh",
+          "when": "view == ai-driven-dev-rules",
           "group": "navigation"
         },
         {
-          "command": "githubExplorer.downloadSelected",
-          "when": "view == githubExplorer",
+          "command": "aidd.downloadSelected",
+          "when": "view == ai-driven-dev-rules",
           "group": "navigation"
         }
       ],
       "view/item/context": [
         {
-          "command": "githubExplorer.toggleSelection",
-          "when": "view == githubExplorer",
+          "command": "aidd.toggleSelection",
+          "when": "view == ai-driven-dev-rules",
           "group": "inline"
         }
       ]

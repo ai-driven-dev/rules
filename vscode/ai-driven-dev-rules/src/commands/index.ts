@@ -24,7 +24,7 @@ export function registerCommands(
 ): void {
   // Command to show settings
   context.subscriptions.push(
-    vscode.commands.registerCommand("githubExplorer.showSettings", async () => {
+    vscode.commands.registerCommand("aidd.showSettings", async () => {
       logger.debug("Show settings command executed");
 
       // Show settings in quick pick
@@ -148,7 +148,7 @@ export function registerCommands(
 
   // Command to clear all storage
   context.subscriptions.push(
-    vscode.commands.registerCommand("githubExplorer.clearStorage", async () => {
+    vscode.commands.registerCommand("aidd.clearStorage", async () => {
       logger.debug("Clear storage command executed");
 
       const confirm = await vscode.window.showWarningMessage(
@@ -168,7 +168,7 @@ export function registerCommands(
 
   // Command to show output channel
   context.subscriptions.push(
-    vscode.commands.registerCommand("githubExplorer.showOutput", () => {
+    vscode.commands.registerCommand("aidd.showOutput", () => {
       logger.show();
     })
   );

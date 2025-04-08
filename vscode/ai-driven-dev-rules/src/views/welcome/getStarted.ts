@@ -8,7 +8,7 @@ export function getWelcomeViewContent(): string {
         <head>
             <meta charset="UTF-8">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>GitHub Explorer</title>
+            <title>AI-Driven Dev Rules</title>
             <style>
                 body {
                     font-family: var(--vscode-font-family);
@@ -126,7 +126,7 @@ export function getWelcomeViewContent(): string {
             </style>
         </head>
         <body>
-            <h1>GitHub Explorer</h1>
+            <h1>AI-Driven Dev Rules</h1>
             
             <div class="section">
                 <div class="description">
@@ -135,10 +135,10 @@ export function getWelcomeViewContent(): string {
                 
                 <div class="action-container">
                     <button class="action-button" onclick="setRepository()">
-                        <span class="icon">$(repo)</span>Connect to Repository
+                        Connect to Repository
                     </button>
                     <button class="action-button secondary-button" onclick="showDocumentation()">
-                        <span class="icon">$(book)</span>View Documentation
+                        View Documentation
                     </button>
                 </div>
             </div>
@@ -217,7 +217,7 @@ export function getWelcomeViewContent(): string {
                         const item = document.createElement('div');
                         item.className = 'recent-repo-item';
                         item.innerHTML = \`
-                            <span class="icon">$(github)</span>
+                            <span class="icon codicon codicon-github"></span>
                             <span>\${repo.owner}/\${repo.name}\${repo.branch ? \` (\${repo.branch})\` : ''}</span>
                         \`;
                         item.addEventListener('click', () => {

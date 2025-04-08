@@ -52,7 +52,7 @@ export function activate(context: vscode.ExtensionContext): void {
 
   // Show welcome view on first launch
   if (settings.showWelcomeOnStartup) {
-    vscode.commands.executeCommand("githubExplorer.welcomeView.focus");
+    vscode.commands.executeCommand("aidd.welcomeView.focus");
   }
 
   // Setup auto-refresh if enabled
@@ -81,7 +81,7 @@ function setupAutoRefresh(
     logger.debug(
       `Auto-refreshing repository (interval: ${settings.autoRefreshInterval}s)`
     );
-    vscode.commands.executeCommand("githubExplorer.refresh");
+    vscode.commands.executeCommand("aidd.refresh");
   }, intervalMs);
 
   // Clean up interval on deactivation

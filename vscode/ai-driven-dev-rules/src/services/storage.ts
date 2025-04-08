@@ -5,9 +5,9 @@ import { GithubRepository } from "../api/types";
  * Keys for stored values
  */
 export enum StorageKey {
-  RECENT_REPOSITORIES = "githubExplorer.recentRepositories",
-  LAST_REPOSITORY = "githubExplorer.lastRepository",
-  SETTINGS = "githubExplorer.settings",
+  RECENT_REPOSITORIES = "aidd.recentRepositories",
+  LAST_REPOSITORY = "aidd.lastRepository",
+  SETTINGS = "aidd.settings",
 }
 
 /**

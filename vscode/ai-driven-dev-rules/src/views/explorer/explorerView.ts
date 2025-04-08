@@ -11,7 +11,7 @@ import { ExplorerTreeProvider } from "./treeProvider";
  * Explorer view for GitHub repositories
  */
 export class ExplorerView {
-  public static readonly VIEW_ID = "githubExplorer";
+  public static readonly VIEW_ID = "ai-driven-dev-rules";
 
   private treeProvider: ExplorerTreeProvider;
   private treeView: vscode.TreeView<ExplorerTreeItem>;
@@ -55,14 +55,14 @@ export class ExplorerView {
   private registerCommands(): void {
     // Command to set repository
     this.context.subscriptions.push(
-      vscode.commands.registerCommand("githubExplorer.setRepository", () => {
+      vscode.commands.registerCommand("aidd.setRepository", () => {
         this.promptForRepository();
       })
     );
 
     // Command to refresh view
     this.context.subscriptions.push(
-      vscode.commands.registerCommand("githubExplorer.refresh", () => {
+      vscode.commands.registerCommand("aidd.refresh", () => {
         this.refreshView();
       })
     );
@@ -70,7 +70,7 @@ export class ExplorerView {
     // Command to toggle selection
     this.context.subscriptions.push(
       vscode.commands.registerCommand(
-        "githubExplorer.toggleSelection",
+        "aidd.toggleSelection",
         (item: ExplorerTreeItem) => {
           this.toggleItemSelection(item);
         }
@@ -79,7 +79,7 @@ export class ExplorerView {
 
     // Command to download selected files
     this.context.subscriptions.push(
-      vscode.commands.registerCommand("githubExplorer.downloadSelected", () => {
+      vscode.commands.registerCommand("aidd.downloadSelected", () => {
         this.downloadSelectedFiles();
       })
     );

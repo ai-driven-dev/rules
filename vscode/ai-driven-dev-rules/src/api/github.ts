@@ -158,7 +158,7 @@ export class GitHubApiService implements IGitHubApiService {
 
       const options = {
         headers: {
-          "User-Agent": "VS-Code-GitHub-Explorer-Extension",
+          "User-Agent": "VS-Code-AIDD-Extension",
           Accept: isRawContent
             ? "application/vnd.github.raw"
             : "application/vnd.github.v3+json",

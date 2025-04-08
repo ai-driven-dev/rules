@@ -8,7 +8,7 @@ import { getWelcomeViewContent } from "./getStarted";
  * Displays a welcome message with instructions and action buttons
  */
 export class WelcomeView {
-  public static readonly VIEW_ID = "githubExplorer.welcomeView";
+  public static readonly VIEW_ID = "aidd.welcomeView";
 
   /**
    * Create a welcome view
@@ -59,7 +59,7 @@ export class WelcomeView {
           break;
 
         case "setRepository":
-          vscode.commands.executeCommand("githubExplorer.setRepository");
+          vscode.commands.executeCommand("aidd.setRepository");
           break;
 
         case "showDocumentation":
@@ -109,12 +109,10 @@ export class WelcomeView {
     branch?: string;
   }): void {
     try {
-      vscode.commands
-        .executeCommand("githubExplorer.setRepository")
-        .then(() => {
-          // This will show the repository picker, and the user can select the repository
-          // Another approach would be to have a command that accepts a repository parameter
-        });
+      vscode.commands.executeCommand("aidd.setRepository").then(() => {
+        // This will show the repository picker, and the user can select the repository
+        // Another approach would be to have a command that accepts a repository parameter
+      });
     } catch (error) {
       this.logger.error("Error opening repository", error);
     }
