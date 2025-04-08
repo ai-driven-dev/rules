@@ -1,8 +1,8 @@
 import * as vscode from 'vscode';
+import { GitHubApiService } from "../github/api";
+import { FileSystemService } from "../utils/fileSystem";
 import { GithubExplorerProvider } from './treeDataProvider';
-import { GithubExplorerItem } from './treeItem';
-import { GitHubApiService } from '../github/api';
-import { FileSystemService } from '../utils/fileSystem';
+import { GithubExplorerItem } from "./treeItem";
 
 /**
  * GitHub Explorer view

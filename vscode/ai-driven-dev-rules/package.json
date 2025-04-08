@@ -50,6 +50,12 @@
     "views": {
       "github-explorer": [
         {
+          "id": "githubExplorer.welcomeView",
+          "name": "Get Started",
+          "type": "webview",
+          "visibility": "visible"
+        },
+        {
           "id": "githubExplorer",
           "name": "Repository Explorer",
           "icon": "$(github)",
