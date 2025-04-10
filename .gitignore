@@ -1,3 +1,7 @@
 .specstory/
 .cursorignore
 .cursorrules # might be used later for cognitive agent
+
+node_modules
+out
+dist

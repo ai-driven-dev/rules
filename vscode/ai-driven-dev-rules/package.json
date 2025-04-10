@@ -1,0 +1,112 @@
+{
+  "name": "ai-driven-dev-rules",
+  "displayName": "AI-Driven Dev Rules",
+  "description": "Browse and download files from GitHub repositories directly within VS Code",
+  "version": "0.0.1",
+  "engines": {
+    "vscode": "^1.98.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "aidd.setRepository",
+        "title": "GitHub Explorer: Set Repository",
+        "icon": "$(repo)"
+      },
+      {
+        "command": "aidd.refresh",
+        "title": "GitHub Explorer: Refresh",
+        "icon": "$(refresh)"
+      },
+      {
+        "command": "aidd.toggleSelection",
+        "title": "GitHub Explorer: Toggle Selection",
+        "icon": "$(check)"
+      },
+      {
+        "command": "aidd.downloadSelected",
+        "title": "GitHub Explorer: Download Selected Files",
+        "icon": "$(cloud-download)"
+      },
+      {
+        "command": "aidd.welcome",
+        "title": "GitHub Explorer: Show Welcome Message"
+      }
+    ],
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "ai-driven-dev-rules",
+          "title": "AI-Driven Dev Rules",
+          "icon": "$(github)"
+        }
+      ]
+    },
+    "views": {
+      "ai-driven-dev-rules": [
+        {
+          "id": "aidd.welcomeView",
+          "name": "Get Started",
+          "type": "webview",
+          "visibility": "visible"
+        },
+        {
+          "id": "ai-driven-dev-rules",
+          "name": "Repository Explorer",
+          "icon": "$(github)",
+          "contextualTitle": "AI-Driven Dev Rules"
+        }
+      ]
+    },
+    "menus": {
+      "view/title": [
+        {
+          "command": "aidd.setRepository",
+          "when": "view == ai-driven-dev-rules",
+          "group": "navigation"
+        },
+        {
+          "command": "aidd.refresh",
+          "when": "view == ai-driven-dev-rules",
+          "group": "navigation"
+        },
+        {
+          "command": "aidd.downloadSelected",
+          "when": "view == ai-driven-dev-rules",
+          "group": "navigation"
+        }
+      ],
+      "view/item/context": [
+        {
+          "command": "aidd.toggleSelection",
+          "when": "view == ai-driven-dev-rules",
+          "group": "inline"
+        }
+      ]
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "pretest": "npm run compile && npm run lint",
+    "lint": "eslint src",
+    "test": "vscode-test"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.98.0",
+    "@types/mocha": "^10.0.10",
+    "@types/node": "20.x",
+    "@typescript-eslint/eslint-plugin": "^8.28.0",
+    "@typescript-eslint/parser": "^8.28.0",
+    "eslint": "^9.23.0",
+    "typescript": "^5.8.2",
+    "@vscode/test-cli": "^0.0.10",
+    "@vscode/test-electron": "^2.4.1"
+  }
+}
