@@ -18,14 +18,9 @@ If you have any requirements or dependencies, add a section describing those and
 
 ## Extension Settings
 
-Include if your extension adds any VS Code settings through the `contributes.configuration` extension point.
-
-For example:
-
 This extension contributes the following settings:
 
-* `myExtension.enable`: Enable/disable this extension.
-* `myExtension.thing`: Set to `blah` to do something.
+*   `aidd.githubToken`: Votre token d'accès personnel (PAT) GitHub. Optionnel, mais recommandé pour augmenter les limites de taux de l'API GitHub et accéder aux dépôts privés si le token a les permissions nécessaires. Vous pouvez générer un token [ici](https://github.com/settings/personal-access-tokens). Ajoutez ce token via les paramètres VS Code (UI ou `settings.json`).
 
 ## Known Issues
 

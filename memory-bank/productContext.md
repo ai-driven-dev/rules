@@ -27,7 +27,7 @@ Developers often need to explore GitHub repositories to understand code structur
 - **Intuitive Interface**: The extension should feel like a natural part of VS Code
 - **Minimal Friction**: Users should be able to start exploring repositories with minimal steps
 - **Visual Clarity**: Repository structure should be clearly displayed with appropriate icons
-- **Responsive Feedback**: Users should receive clear feedback during operations
+- **Responsive Feedback**: Users should receive clear feedback during operations (e.g., clear error messages when repository loading fails, as improved in recent changes).
 - **Seamless Integration**: Downloaded files should integrate naturally with the current project
 
 ## Key Features

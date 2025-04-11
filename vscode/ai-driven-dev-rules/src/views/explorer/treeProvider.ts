@@ -1,8 +1,9 @@
 import * as vscode from "vscode";
 import { IGitHubApiService } from "../../api/github";
-import { GithubRepository } from "../../api/types";
+import { GithubRepository, GithubContent } from "../../api/types"; // Import GithubContent
 import { ILogger } from "../../services/logger";
-import { ExplorerTreeItem, getSelectedItems } from "./treeItem";
+import { ISelectionService } from "../../services/selection"; // Import ISelectionService
+import { ExplorerTreeItem } from "./treeItem"; // Remove getSelectedItems import
 
 /**
  * Tree data provider for GitHub Explorer
@@ -15,13 +16,12 @@ export class ExplorerTreeProvider
   >();
   readonly onDidChangeTreeData = this._onDidChangeTreeData.event;
 
-  private _onDidChangeCheckboxState = new vscode.EventEmitter<
-    vscode.TreeCheckboxChangeEvent<ExplorerTreeItem>
-  >();
-  readonly onDidChangeCheckboxState = this._onDidChangeCheckboxState.event;
+  // Remove onDidChangeCheckboxState as selection is handled by the service event
+  // readonly onDidChangeCheckboxState = this._onDidChangeCheckboxState.event;
 
   private repository: GithubRepository | null = null;
   private rootItems: ExplorerTreeItem[] = [];
+  private itemMap: Map<string, ExplorerTreeItem> = new Map(); // Map to store items by path
 
   // Cache to avoid refetching the same data
   private loadingPaths = new Map<string, Promise<ExplorerTreeItem[]>>();
@@ -30,19 +30,21 @@ export class ExplorerTreeProvider
    * Create a tree data provider
    * @param githubService GitHub API service
    * @param logger Logger service
+   * @param extensionPath Path to the extension's directory
    */
   constructor(
     private readonly githubService: IGitHubApiService,
-    private readonly logger: ILogger
-  ) {}
-
-  /**
-   * Get selected items
-   * @returns Selected items
-   */
-  public getSelectedItems(): ExplorerTreeItem[] {
-    return getSelectedItems(this.rootItems);
+    private readonly logger: ILogger,
+    private readonly extensionPath: string,
+    private readonly selectionService: ISelectionService // Add selectionService
+  ) {
+     // Listen to selection changes to refresh the tree
+     this.selectionService.onDidChangeSelection(() => {
+       this._onDidChangeTreeData.fire(); // Refresh the entire tree for simplicity
+     });
   }
+
+  // Remove internal getSelectedItems, use service instead
 
   /**
    * Set repository to display
@@ -51,8 +53,10 @@ export class ExplorerTreeProvider
   public async setRepository(repository: GithubRepository): Promise<void> {
     this.repository = repository;
     this.rootItems = [];
+    this.itemMap.clear(); // Clear item map
     this.loadingPaths.clear();
-    this._onDidChangeTreeData.fire();
+    this.selectionService.clearSelection(); // Clear selection in the service
+    this._onDidChangeTreeData.fire(); // Trigger refresh
 
     try {
       await this.getRootItems();
@@ -71,56 +75,41 @@ export class ExplorerTreeProvider
    */
   public refresh(item?: ExplorerTreeItem): void {
     if (item) {
-      // Remove cached items for this path
-      this.loadingPaths.delete(item.content.path);
+      // Refresh specific item and its children potentially
+      // For simplicity with the selection service, refresh the whole view for now
+      // TODO: Optimize refresh later if needed
+      this._onDidChangeTreeData.fire();
     } else {
-      // Clear all cached items
+      // Clear all cached items and map
       this.loadingPaths.clear();
+      this.itemMap.clear();
       this.rootItems = [];
+      this._onDidChangeTreeData.fire(); // Refresh entire tree
     }
-
-    this._onDidChangeTreeData.fire(item);
   }
 
   /**
    * Handle checkbox changes
    * @param item Item that was checked/unchecked
-   * @param checked Whether the item was checked
+   * @param checked Whether the item should be checked (true) or unchecked (false)
    */
   public handleCheckboxChange(item: ExplorerTreeItem, checked: boolean): void {
-    // Update selection state
-    item.selected = checked;
-
-    // Update children if it's a directory
-    if (item.content.type === "dir") {
-      item.updateChildrenSelection(checked);
-    }
-
-    // Update parent selection state
-    item.updateParentSelection();
-
-    // Fire event
-    this._onDidChangeCheckboxState.fire({
-      items: [
-        [
-          item,
-          item.selected
-            ? vscode.TreeItemCheckboxState.Checked
-            : vscode.TreeItemCheckboxState.Unchecked,
-        ],
-      ],
-    });
-
-    // Update tree view
-    this.refresh(item);
+    // Use the selection service to toggle the state
+    // Note: The 'checked' parameter from the event might not perfectly align
+    // if the service already changed the state. Rely on toggle.
+    this.selectionService.toggleSelection(item.content.path);
+    // The tree will refresh automatically due to the onDidChangeSelection listener
   }
 
   /**
    * Get tree item for element
    * @param element Tree item
-   * @returns Tree item
+   * @returns Tree item configured with current selection state
    */
   public getTreeItem(element: ExplorerTreeItem): vscode.TreeItem {
+    // Update the element's appearance based on the selection service state
+    const isSelected = this.selectionService.isSelected(element.content.path);
+    element.updateSelectionState(isSelected); // Add this method to ExplorerTreeItem
     return element;
   }
 
@@ -133,23 +122,23 @@ export class ExplorerTreeProvider
     element?: ExplorerTreeItem
   ): Promise<ExplorerTreeItem[]> {
     try {
-      if (!this.repository) {
-        return [];
-      }
+      if (!this.repository) {return [];}
 
+      let items: ExplorerTreeItem[];
       if (!element) {
-        // Root level
-        return this.getRootItems();
+        items = await this.getRootItems();
       } else if (element.content.type === "dir") {
-        // Directory
-        return this.getDirectoryItems(element);
+        items = await this.getDirectoryItems(element);
       } else {
-        // File - no children
-        return [];
+        items = []; // Files have no children
       }
+      // Ensure items are in the map
+      items.forEach(item => this.itemMap.set(item.content.path, item));
+      return items;
     } catch (error) {
-      this.logger.error("Error fetching tree items", error);
-      throw error;
+      this.logger.error("Error fetching tree children", error);
+      // Provide a user-friendly error item?
+      return []; // Return empty on error to avoid crashing VS Code UI
     }
   }
 
@@ -178,9 +167,11 @@ export class ExplorerTreeProvider
         return [];
       }
 
-      this.rootItems = result.data.map(
-        (content) => new ExplorerTreeItem(content)
+      this.rootItems = result.data.map((content) =>
+        this.createTreeItem(content, undefined)
       );
+      // Add root items to map
+      this.rootItems.forEach(item => this.itemMap.set(item.content.path, item));
       return this.rootItems;
     } catch (error) {
       this.logger.error(
@@ -237,17 +228,9 @@ export class ExplorerTreeProvider
         }
 
         // Create tree items for each content item
-        const items = result.data.map((content) => {
-          const item = new ExplorerTreeItem(content, parent);
-
-          // Inherit selection state from parent
-          if (parent.selected) {
-            item.selected = true;
-            item.updateIcon();
-          }
-
-          return item;
-        });
+        const items = result.data.map((content) =>
+          this.createTreeItem(content, parent)
+        );
 
         // Store children in parent
         parent.children = items;
@@ -285,5 +268,31 @@ export class ExplorerTreeProvider
     element: ExplorerTreeItem
   ): vscode.ProviderResult<ExplorerTreeItem> {
     return element.parent;
+  }
+
+  /**
+   * Creates a new ExplorerTreeItem and adds it to the map.
+   * @param content GitHub content
+   * @param parent Parent item
+   * @returns The created ExplorerTreeItem
+   */
+  private createTreeItem(content: GithubContent, parent?: ExplorerTreeItem): ExplorerTreeItem {
+    const item = new ExplorerTreeItem(content, parent, this.extensionPath);
+    this.itemMap.set(content.path, item); // Add item to map
+    return item;
+  }
+
+  /**
+   * Retrieves tree items based on their paths.
+   * Used by the download command to get full item details.
+   * @param paths Array of item paths
+   * @returns A promise resolving to an array of ExplorerTreeItem objects
+   */
+  public async getTreeItemsByPaths(paths: string[]): Promise<ExplorerTreeItem[]> {
+    // This implementation assumes items are already loaded and in the map.
+    // A more robust version might need to fetch missing items if necessary.
+    return paths
+      .map(path => this.itemMap.get(path))
+      .filter((item): item is ExplorerTreeItem => !!item);
   }
 }

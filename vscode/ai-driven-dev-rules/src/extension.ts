@@ -3,6 +3,7 @@ import { GitHubApiService } from "./api/github";
 import { registerCommands } from "./commands";
 import { DownloadService } from "./services/download";
 import { Logger } from "./services/logger";
+import { SelectionService } from "./services/selection"; // Import SelectionService
 import { StorageService } from "./services/storage";
 import { ExplorerView } from "./views/explorer/explorerView";
 import { WelcomeView } from "./views/welcome/welcomeView";
@@ -21,6 +22,7 @@ export function activate(context: vscode.ExtensionContext): void {
 
   const githubService = new GitHubApiService();
   const downloadService = new DownloadService(logger, settings);
+  const selectionService = new SelectionService(); // Instantiate SelectionService
 
   // Initialize explorer view
   const explorerView = new ExplorerView(
@@ -28,7 +30,8 @@ export function activate(context: vscode.ExtensionContext): void {
     githubService,
     logger,
     storageService,
-    downloadService
+    downloadService,
+    selectionService // Pass SelectionService to ExplorerView
   );
 
   // Register welcome view provider

@@ -172,4 +172,16 @@ export function registerCommands(
       logger.show();
     })
   );
+
+  // Command to open extension settings
+  context.subscriptions.push(
+    vscode.commands.registerCommand("aidd.openSettings", () => {
+      logger.debug("Open settings command executed");
+      // Open VS Code settings filtered for this extension
+      vscode.commands.executeCommand(
+        "workbench.action.openSettings",
+        "@ext:ai-driven-dev-rules aidd." // Filter by extension ID and setting prefix
+      );
+    })
+  );
 }

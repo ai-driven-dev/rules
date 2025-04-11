@@ -12,3 +12,7 @@ Dans la philosophie de l'AI-Driven Dev, nous utilisons des règles pour amélior
 >
 
 En cours de rédaction...
+
+## Todo
+
+- [ ] 

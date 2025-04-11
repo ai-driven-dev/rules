@@ -1,4 +1,5 @@
 import * as vscode from "vscode";
+import * as path from "path"; // Import path module
 import { GithubContent } from "../../api/types";
 
 /**
@@ -11,9 +12,13 @@ export class ExplorerTreeItem extends vscode.TreeItem {
   public children: ExplorerTreeItem[] = [];
 
   /**
-   * Whether the item is selected
+  // Remove local selected state, it will be managed by SelectionService
+  // public selected = false;
+
+  /**
+   * Current selection state (used for UI updates)
    */
-  public selected = false;
+  private _isSelected = false;
 
   /**
    * Original GitHub content
@@ -21,13 +26,20 @@ export class ExplorerTreeItem extends vscode.TreeItem {
   public readonly content: GithubContent;
 
   /**
+   * Path to the extension's directory
+   */
+  private readonly extensionPath?: string;
+
+  /**
    * Create a tree item
    * @param content GitHub content
    * @param parent Parent item
+   * @param extensionPath Path to the extension's directory (optional)
    */
   constructor(
     content: GithubContent,
-    public readonly parent?: ExplorerTreeItem
+    public readonly parent?: ExplorerTreeItem,
+    extensionPath?: string
   ) {
     // Create tree item with appropriate label and collapsible state
     super(
@@ -38,6 +50,7 @@ export class ExplorerTreeItem extends vscode.TreeItem {
     );
 
     this.content = content;
+    this.extensionPath = extensionPath; // Store extension path
 
     // Set tooltip to show the full path
     this.tooltip = content.path;
@@ -50,26 +63,23 @@ export class ExplorerTreeItem extends vscode.TreeItem {
       this.description = this.formatFileSize(content.size);
     }
 
-    // Set appropriate icon
+    // Set initial icon (will be updated by updateSelectionState)
     this.updateIcon();
 
     // Add checkbox support if available (VS Code 1.72+)
-    this.setupCheckbox();
+    // The initial state will be set by updateSelectionState via getTreeItem
+    this.setupCheckbox(this._isSelected);
   }
 
   /**
    * Setup checkbox for the tree item
-   * This uses the newer TreeItem2 API if available
+   * @param isSelected The current selection state
    */
-  private setupCheckbox(): void {
+  private setupCheckbox(isSelected: boolean): void {
     try {
-      // Access the TreeItem2 API which supports checkboxes
-      // This is a type assertion to access the experimental API
       const item = this as any;
-
-      // Set checkbox state if the API is available
       if (typeof item.checkboxState !== "undefined") {
-        item.checkboxState = this.selected
+        item.checkboxState = isSelected
           ? vscode.TreeItemCheckboxState.Checked
           : vscode.TreeItemCheckboxState.Unchecked;
       }
@@ -80,100 +90,58 @@ export class ExplorerTreeItem extends vscode.TreeItem {
   }
 
   /**
-   * Update icon based on item type and selection state
+   * Update icon based on item type and internal selection state
    */
-  public updateIcon(): void {
+  private updateIcon(): void {
     if (this.content.type === "dir") {
-      // Directory icon
       this.iconPath = new vscode.ThemeIcon(this.getFolderIconId());
     } else {
-      // File icon
-      this.iconPath = new vscode.ThemeIcon(this.getFileIconId());
+      if (this.extensionPath) {
+        const iconName = this._isSelected ? "check.svg" : "file_icon.svg";
+        const lightIconPath = vscode.Uri.joinPath(vscode.Uri.file(this.extensionPath), 'resources', 'light', iconName);
+        const darkIconPath = vscode.Uri.joinPath(vscode.Uri.file(this.extensionPath), 'resources', 'dark', iconName);
+        if (this._isSelected) {
+             this.iconPath = new vscode.ThemeIcon('check');
+        } else {
+             this.iconPath = { light: lightIconPath, dark: darkIconPath };
+        }
+      } else {
+        this.iconPath = new vscode.ThemeIcon(this.getFileIconId());
+      }
     }
-
-    // Update checkbox state if available
-    this.setupCheckbox();
   }
 
   /**
-   * Get folder icon ID based on selection state
+   * Get folder icon ID based on internal selection state
+   * Note: hasSelectedChild logic is removed as state is centralized.
+   * We might need a way to get this info from the service if needed for icons.
    */
   private getFolderIconId(): string {
-    if (this.selected) {
-      return "folder-active";
-    } else if (this.hasSelectedChild()) {
-      return "folder-opened";
-    } else {
-      return "folder";
-    }
+    // Simplified: just show folder-active if selected, otherwise normal folder.
+    // The "partially selected" state (folder-opened) is harder without traversing
+    // the tree or getting info from the service.
+    return this._isSelected ? "folder-active" : "folder";
   }
 
   /**
-   * Get file icon ID based on selection state
-   */
-  private getFileIconId(): string {
-    if (this.selected) {
-      return "check";
-    } else {
-      return "file";
-    }
-  }
+ * Get file icon ID based on internal selection state (Fallback if no custom SVG)
+ */
+private getFileIconId(): string {
+  return this._isSelected ? "check" : "file";
+}
 
   /**
-   * Toggle selection state
+   * Updates the visual state of the item based on the selection status
+   * provided by the TreeProvider (which gets it from the SelectionService).
+   * @param isSelected Whether the item is currently selected.
    */
-  public toggleSelection(): void {
-    this.selected = !this.selected;
-
-    // Update icon
+  public updateSelectionState(isSelected: boolean): void {
+    if (this._isSelected === isSelected) {
+      return; // No change needed
+    }
+    this._isSelected = isSelected;
     this.updateIcon();
-  }
-
-  /**
-   * Check if this item has any selected children
-   */
-  private hasSelectedChild(): boolean {
-    return this.children.some(
-      (child) => child.selected || child.hasSelectedChild()
-    );
-  }
-
-  /**
-   * Update selection state of all children
-   */
-  public updateChildrenSelection(selected: boolean): void {
-    this.selected = selected;
-    this.updateIcon();
-
-    for (const child of this.children) {
-      child.updateChildrenSelection(selected);
-    }
-  }
-
-  /**
-   * Update parent selection state
-   */
-  public updateParentSelection(): void {
-    if (!this.parent) {
-      return;
-    }
-
-    const allSelected = this.parent.children.every((child) => child.selected);
-    const someSelected = this.parent.children.some(
-      (child) => child.selected || child.hasSelectedChild()
-    );
-
-    if (allSelected) {
-      this.parent.selected = true;
-    } else if (someSelected) {
-      // Keep parent not fully selected, but update its icon
-      this.parent.selected = false;
-    } else {
-      this.parent.selected = false;
-    }
-
-    this.parent.updateIcon();
-    this.parent.updateParentSelection();
+    this.setupCheckbox(isSelected);
   }
 
   /**
@@ -194,29 +162,4 @@ export class ExplorerTreeItem extends vscode.TreeItem {
   }
 }
 
-/**
- * Get all selected items from a list of tree items
- * @param items Tree items
- * @returns Selected items
- */
-export function getSelectedItems(
-  items: ExplorerTreeItem[]
-): ExplorerTreeItem[] {
-  const selectedItems: ExplorerTreeItem[] = [];
-
-  // Recursively collect selected items
-  const collectSelectedItems = (nodes: ExplorerTreeItem[]) => {
-    for (const node of nodes) {
-      if (node.selected) {
-        selectedItems.push(node);
-      }
-
-      if (node.children.length > 0) {
-        collectSelectedItems(node.children);
-      }
-    }
-  };
-
-  collectSelectedItems(items);
-  return selectedItems;
-}
+// Removed getSelectedItems function - use SelectionService.getSelectedItems() instead.

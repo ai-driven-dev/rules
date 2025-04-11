@@ -36,6 +36,11 @@
       {
         "command": "aidd.welcome",
         "title": "GitHub Explorer: Show Welcome Message"
+      },
+      {
+        "command": "aidd.openSettings",
+        "title": "GitHub Explorer: Open Settings",
+        "icon": "$(gear)"
       }
     ],
     "viewsContainers": {
@@ -79,6 +84,11 @@
           "command": "aidd.downloadSelected",
           "when": "view == ai-driven-dev-rules",
           "group": "navigation"
+        },
+        {
+          "command": "aidd.openSettings",
+          "when": "view == ai-driven-dev-rules",
+          "group": "navigation@5"
         }
       ],
       "view/item/context": [
@@ -88,25 +98,39 @@
           "group": "inline"
         }
       ]
+    },
+    "configuration": {
+      "title": "AI-Driven Dev Rules",
+      "properties": {
+        "aidd.githubToken": {
+          "type": "string",
+          "default": "",
+          "description": "Votre token d'accès personnel (PAT) GitHub. Optionnel, mais recommandé pour augmenter les limites de taux de l'API. Générez-en un [ici](https://github.com/settings/personal-access-tokens).",
+          "scope": "machine-overridable"
+        }
+      }
     }
   },
   "scripts": {
     "vscode:prepublish": "npm run compile",
     "compile": "tsc -p ./",
     "watch": "tsc -watch -p ./",
-    "pretest": "npm run compile && npm run lint",
     "lint": "eslint src",
-    "test": "vscode-test"
+    "lint:fix": "eslint src --fix",
+    "test:unit": "mocha -r ts-node/register -r src/test/vscode-mock.js src/test/selection.test.ts"
   },
   "devDependencies": {
-    "@types/vscode": "^1.98.0",
+    "@types/chai": "^5.2.1",
     "@types/mocha": "^10.0.10",
     "@types/node": "20.x",
+    "@types/sinon": "^17.0.4",
+    "@types/vscode": "^1.98.0",
     "@typescript-eslint/eslint-plugin": "^8.28.0",
     "@typescript-eslint/parser": "^8.28.0",
+    "chai": "^5.2.0",
     "eslint": "^9.23.0",
-    "typescript": "^5.8.2",
-    "@vscode/test-cli": "^0.0.10",
-    "@vscode/test-electron": "^2.4.1"
+    "mocha": "^11.1.0",
+    "sinon": "^20.0.0",
+    "typescript": "^5.8.2"
   }
 }

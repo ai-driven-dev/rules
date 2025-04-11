@@ -9,7 +9,7 @@ This document outlines the system architecture, key technical decisions, design 
 The GitHub Explorer VS Code extension follows a modular architecture with clear separation of concerns:
 
 1. **Extension Core**: Central module that initializes the extension and registers commands
-2. **GitHub API Service**: Module for interacting with GitHub's REST API
+2. **GitHub API Service**: Module for interacting with GitHub's REST API, handling optional authentication via a token provided through VS Code settings (`aidd.githubToken`).
 3. **Tree View Provider**: Module for displaying repository content in VS Code's explorer
 4. **File System Service**: Module for downloading and saving files locally
 
@@ -17,6 +17,7 @@ The GitHub Explorer VS Code extension follows a modular architecture with clear 
 
 - **Native Node.js https module**: Using built-in Node.js modules instead of third-party libraries to minimize dependencies and bundle size
 - **VS Code TreeView API**: Leveraging VS Code's native TreeView API for displaying repository structure
+- **VS Code Configuration API**: Using VS Code's configuration system (`aidd.githubToken`) for securely handling the optional GitHub PAT.
 - **Modular Architecture**: Separating concerns into distinct modules for better maintainability
 - **TypeScript Interfaces**: Using TypeScript interfaces for clear contracts between components
 
@@ -54,7 +55,7 @@ Extension Core
 ## Critical Implementation Paths
 
 1. **GitHub API Integration**
-   - Implement HTTPS requests to GitHub API
+   - Implement HTTPS requests to GitHub API, including optional `Authorization` header using the token from VS Code settings.
    - Parse JSON responses into typed objects
    - Handle pagination for large repositories
    - Implement error handling and rate limit awareness
@@ -74,7 +75,7 @@ Extension Core
 ## Error Handling Strategy
 
 - **API Errors**: Catch and display meaningful error messages for GitHub API issues
-- **Rate Limiting**: Detect rate limit errors and inform user with clear instructions
+- **Rate Limiting**: Detect rate limit errors and inform user with clear instructions. Encourage users to provide a token via `aidd.githubToken` setting to increase limits.
 - **Network Issues**: Graceful handling of network failures with retry options
 - **File System Errors**: Proper error handling for file system operations with user feedback
 
@@ -89,7 +90,7 @@ Extension Core
 
 - **Input Validation**: Validate all user inputs before making API requests
 - **Error Message Sanitization**: Ensure error messages don't expose sensitive information
-- **No Credential Storage**: Focus on public repositories to avoid credential management
+- **Secure Credential Handling**: Utilize VS Code's secure configuration storage (`aidd.githubToken`) for the optional GitHub PAT. Avoid storing credentials directly in the extension's code or state.
 
 ## Scalability Approach
 
@@ -101,6 +102,5 @@ The extension is designed to handle repositories of various sizes through:
 
 ## Technical Debt
 
-- Initial version focuses on public repositories only
-- Authentication for private repositories would be a future enhancement
+- Initial version focuses on public repositories, but now supports authenticated requests via `aidd.githubToken`, potentially enabling access to private repositories if the token has sufficient permissions.
 - Advanced filtering and search capabilities deferred to future versions

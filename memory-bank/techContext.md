@@ -69,7 +69,7 @@ This document outlines the technologies used, development setup, technical const
 
 ## Technical Constraints
 
-- Rate limiting on GitHub API for unauthenticated requests (60 requests per hour)
+- Rate limiting on GitHub API for unauthenticated requests (60 requests per hour). This can be mitigated by providing a GitHub Personal Access Token via the `aidd.githubToken` VS Code setting.
 - VS Code extension performance considerations
 - Cross-platform compatibility requirements
 
@@ -81,8 +81,8 @@ This document outlines the technologies used, development setup, technical const
 
 ## Tool Usage Patterns
 
-- **VS Code Extension API**: Following contribution point patterns for views and commands
-- **GitHub API**: RESTful requests with proper error handling
+- **VS Code Extension API**: Following contribution point patterns for views, commands, and configuration (`aidd.githubToken` setting).
+- **GitHub API**: RESTful requests with proper error handling and optional authentication using a token provided via VS Code configuration.
 - **TypeScript**: Strong typing and interfaces for maintainability
 
 ## Testing Strategy

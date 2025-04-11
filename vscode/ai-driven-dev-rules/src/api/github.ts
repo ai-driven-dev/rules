@@ -156,16 +156,26 @@ export class GitHubApiService implements IGitHubApiService {
     return new Promise((resolve) => {
       const parsedUrl = new URL(url);
 
-      const options = {
+      // Retrieve the token from VS Code configuration
+      const configuration = vscode.workspace.getConfiguration("aidd");
+      const token = configuration.get<string>("githubToken");
+
+      const options: https.RequestOptions = { // Explicitly type options
         headers: {
-          "User-Agent": "VS-Code-AIDD-Extension",
+          "User-Agent": "VS-Code-AIDD-Extension", // Keep User-Agent
           Accept: isRawContent
             ? "application/vnd.github.raw"
             : "application/vnd.github.v3+json",
+          // Add Authorization header if token exists
+          ...(token ? { Authorization: `token ${token}` } : {}),
         },
       };
 
-      this.log(`Making request to: ${url}`);
+      if (token) {
+        this.log(`Making authenticated request to: ${url}`);
+      } else {
+        this.log(`Making unauthenticated request to: ${url}`);
+      }
 
       https
         .get(parsedUrl, options, (res) => {

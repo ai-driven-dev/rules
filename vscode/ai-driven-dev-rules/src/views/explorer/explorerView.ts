@@ -3,6 +3,7 @@ import { IGitHubApiService } from "../../api/github";
 import { GithubRepository } from "../../api/types";
 import { DownloadFile, IDownloadService } from "../../services/download";
 import { ILogger } from "../../services/logger";
+import { ISelectionService } from "../../services/selection"; // Import ISelectionService
 import { IStorageService } from "../../services/storage";
 import { ExplorerTreeItem } from "./treeItem";
 import { ExplorerTreeProvider } from "./treeProvider";
@@ -24,22 +25,29 @@ export class ExplorerView {
    * @param logger Logger service
    * @param storageService Storage service
    * @param downloadService Download service
+   * @param selectionService Selection service
    */
   constructor(
     private readonly context: vscode.ExtensionContext,
     private readonly githubService: IGitHubApiService,
     private readonly logger: ILogger,
     private readonly storageService: IStorageService,
-    private readonly downloadService: IDownloadService
+    private readonly downloadService: IDownloadService,
+    private readonly selectionService: ISelectionService // Add selectionService parameter
   ) {
     // Create tree provider
-    this.treeProvider = new ExplorerTreeProvider(githubService, logger);
+    this.treeProvider = new ExplorerTreeProvider(
+      githubService,
+      logger,
+      this.context.extensionPath,
+      selectionService // Pass selectionService to TreeProvider constructor
+    );
 
     // Create tree view
     this.treeView = vscode.window.createTreeView(ExplorerView.VIEW_ID, {
       treeDataProvider: this.treeProvider,
       showCollapseAll: true,
-      canSelectMany: false,
+      canSelectMany: false, // Keep false as service handles multi-select logic
     });
 
     // Restore last repository if available
@@ -67,12 +75,18 @@ export class ExplorerView {
       })
     );
 
-    // Command to toggle selection
+    // Command to toggle selection (Always register for context menu and fallback)
     this.context.subscriptions.push(
       vscode.commands.registerCommand(
         "aidd.toggleSelection",
         (item: ExplorerTreeItem) => {
-          this.toggleItemSelection(item);
+          // Use the service directly
+          if (item?.content?.path) {
+            this.selectionService.toggleSelection(item.content.path);
+            // Refresh is handled by the service event listener in the provider
+          } else {
+            this.logger.warn("toggleSelection called without a valid item.");
+          }
         }
       )
     );
@@ -106,15 +120,20 @@ export class ExplorerView {
             (e: vscode.TreeCheckboxChangeEvent<ExplorerTreeItem>) => {
               for (const [item, state] of e.items) {
                 const checked = state === vscode.TreeItemCheckboxState.Checked;
+                // Delegate checkbox handling entirely to the provider
                 this.treeProvider.handleCheckboxChange(item, checked);
               }
             }
           )
         );
+      } else {
+         // Fallback if checkbox API not available (e.g., older VS Code)
+         // The command is already registered unconditionally above.
+         this.logger.warn("TreeView checkbox API not available. Using fallback command/icons for selection.");
       }
     } catch (e) {
-      // Checkbox API not available, fallback to toggle command
-      this.logger.debug("TreeView checkbox API not available");
+      // Checkbox API detection failed, rely on fallback command/icons
+      this.logger.error("Error setting up checkbox listener, relying on fallback.", e);
     }
   }
 
@@ -128,30 +147,33 @@ export class ExplorerView {
       try {
         await this.setRepository(lastRepo);
         this.logger.info(
-          `Restored last repository: ${lastRepo.owner}/${lastRepo.name}`
-        );
-      } catch (error) {
-        this.logger.error("Failed to restore last repository", error);
-      }
-    }
+           `Restored last repository: ${lastRepo.owner}/${lastRepo.name}`
+         );
+       } catch (error) {
+         this.logger.error("Failed to restore last repository", error);
+         vscode.window.showErrorMessage(
+           `Failed to restore last repository (${lastRepo.owner}/${
+             lastRepo.name
+           }): ${error instanceof Error ? error.message : String(error)}`
+         );
+       }
+     }
   }
 
   /**
    * Prompt user for repository URL
    */
   private async promptForRepository(): Promise<void> {
-    // Show list of recent repositories
-    const recentRepos = this.storageService.getRecentRepositories();
+    // Clear previous selection when changing repository
+    this.selectionService.clearSelection();
 
-    // Quick pick options
+    const recentRepos = this.storageService.getRecentRepositories();
     const items: (vscode.QuickPickItem & { repo?: GithubRepository })[] = [
       {
         label: "$(repo) Enter repository URL...",
         description: "Specify a GitHub repository URL",
       },
     ];
-
-    // Add recent repositories
     for (const repo of recentRepos) {
       items.push({
         label: `$(github) ${repo.owner}/${repo.name}`,
@@ -159,44 +181,40 @@ export class ExplorerView {
         repo,
       });
     }
-
-    // Show quick pick
     const selection = await vscode.window.showQuickPick(items, {
       placeHolder: "Select or enter a GitHub repository",
       matchOnDescription: true,
     });
 
-    if (!selection) {
-      return;
-    }
+    if (!selection) {return;}
 
     if (selection.repo) {
-      // Selected a recent repository
-      await this.setRepository(selection.repo);
+      try {
+        await this.setRepository(selection.repo);
+      } catch (error) {
+        this.logger.error(
+          `Failed to set recent repository: ${selection.repo.owner}/${selection.repo.name}`,
+          error
+        );
+        vscode.window.showErrorMessage(
+          `Failed to load recent repository: ${
+            error instanceof Error ? error.message : String(error)
+          }`
+        );
+      }
     } else {
-      // Enter URL manually
       const repoUrl = await vscode.window.showInputBox({
         prompt: "Enter GitHub repository URL",
         placeHolder: "https://github.com/owner/repo",
         value: "https://github.com/ai-driven-dev/rules",
         validateInput: (value) => {
-          if (!value) {
-            return "Repository URL is required";
-          }
-
+          if (!value) {return "Repository URL is required";}
           const repo = this.githubService.parseRepositoryUrl(value);
-          if (!repo) {
-            return "Invalid GitHub repository URL";
-          }
-
+          if (!repo) {return "Invalid GitHub repository URL";}
           return null;
         },
       });
-
-      if (!repoUrl) {
-        return;
-      }
-
+      if (!repoUrl) {return;}
       const repo = this.githubService.parseRepositoryUrl(repoUrl);
       if (repo) {
         await this.setRepository(repo);
@@ -211,19 +229,13 @@ export class ExplorerView {
   private async setRepository(repository: GithubRepository): Promise<void> {
     try {
       this.currentRepository = repository;
-
-      // Update tree view title
       this.treeView.title = `GitHub: ${repository.owner}/${repository.name}${
         repository.branch ? ` (${repository.branch})` : ""
       }`;
-
-      // Update repository in tree provider
+      // Clear selection when setting a new repository
+      this.selectionService.clearSelection();
       await this.treeProvider.setRepository(repository);
-
-      // Add to recent repositories
       this.storageService.addRecentRepository(repository);
-
-      // Show information message
       vscode.window.showInformationMessage(
         `Connected to GitHub repository: ${repository.owner}/${repository.name}`
       );
@@ -245,39 +257,33 @@ export class ExplorerView {
    * Refresh the view
    */
   private refreshView(): void {
+    // Clear selection on manual refresh? Maybe not desirable.
+    // this.selectionService.clearSelection();
     this.treeProvider.refresh();
   }
 
-  /**
-   * Toggle item selection
-   * @param item Item to toggle
-   */
-  private toggleItemSelection(item: ExplorerTreeItem): void {
-    // Toggle selection
-    item.toggleSelection();
-
-    // Update children if it's a directory
-    if (item.content.type === "dir") {
-      item.updateChildrenSelection(item.selected);
-    }
-
-    // Update parent selection state
-    item.updateParentSelection();
-
-    // Refresh the item in the tree
-    this.treeProvider.refresh(item);
-  }
+  // REMOVED - Selection is handled by the provider/service now
+  // /**
+  //  * Toggle item selection
+  //  * @param item Item to toggle
+  //  */
+  // private toggleItemSelection(item: ExplorerTreeItem): void {
+  //   // Delegate to service
+  //   this.selectionService.toggleSelection(item.content.path);
+  //   // Refresh is triggered by the service event listener in the provider
+  // }
 
   /**
    * Download selected files
    */
   private async downloadSelectedFiles(): Promise<void> {
     try {
-      const selectedItems = this.treeProvider.getSelectedItems();
+      // Get selected paths from the service
+      const selectedPaths = this.selectionService.getSelectedItems();
 
-      if (selectedItems.length === 0) {
+      if (selectedPaths.length === 0) {
         vscode.window.showInformationMessage(
-          "No files selected. Use the checkbox to select files to download."
+          "No items selected. Use the checkbox to select files or directories to download."
         );
         return;
       }
@@ -290,10 +296,22 @@ export class ExplorerView {
         );
         return;
       }
-
       const workspaceFolder = workspaceFolders[0].uri.fsPath;
 
-      // Prepare files for download
+      // We need the full item details (type, url) for the download service.
+      // The TreeProvider needs a way to map paths back to items or fetch details.
+      // Let's modify TreeProvider to provide this mapping or the items directly.
+      // For now, let's assume TreeProvider has a method `getTreeItemsByPaths(paths: string[])`
+      const selectedItems = await this.treeProvider.getTreeItemsByPaths(selectedPaths);
+
+      if (!selectedItems || selectedItems.length === 0) {
+         vscode.window.showErrorMessage("Could not retrieve details for selected items.");
+         this.logger.error("Failed to get TreeItems for selected paths", { selectedPaths });
+         return;
+      }
+
+
+      // Prepare files for download using the retrieved items
       const files: DownloadFile[] = selectedItems.map((item) => ({
         url: item.content.download_url || "",
         targetPath: item.content.path,
@@ -301,21 +319,32 @@ export class ExplorerView {
         size: item.content.size,
       }));
 
-      // Filter out files without download URL
+      // Filter out files without download URL (directories are kept)
       const validFiles = files.filter(
         (file) => file.type === "dir" || file.url
       );
 
-      if (validFiles.filter((f) => f.type === "file").length === 0) {
-        vscode.window.showInformationMessage(
-          "No files selected for download, only directories."
-        );
-        return;
-      }
+      // Check if there are any actual files to download
+      const filesToDownload = validFiles.filter((f) => f.type === "file");
+      if (filesToDownload.length === 0 && validFiles.some(f => f.type === 'dir')) {
+         // Only directories selected - we might want to fetch their contents recursively later
+         // For now, inform the user.
+         vscode.window.showInformationMessage(
+           "Only directories selected. Downloading individual files within selected directories is not yet supported. Please select specific files."
+         );
+         return;
+       } else if (filesToDownload.length === 0) {
+         // No files and no directories (e.g., selection cleared between click and execution)
+         vscode.window.showInformationMessage(
+           "No downloadable files selected."
+         );
+         return;
+       }
+
 
       // Download files
       const results = await this.downloadService.downloadFiles(
-        validFiles,
+        validFiles, // Pass directories as well, service handles creation
         workspaceFolder
       );
 
