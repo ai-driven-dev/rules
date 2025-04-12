@@ -15,31 +15,31 @@
     "commands": [
       {
         "command": "aidd.setRepository",
-        "title": "GitHub Explorer: Set Repository",
+        "title": "AI-Driven Dev Rules: Set Repository",
         "icon": "$(repo)"
       },
       {
         "command": "aidd.refresh",
-        "title": "GitHub Explorer: Refresh",
+        "title": "AI-Driven Dev Rules: Refresh",
         "icon": "$(refresh)"
       },
       {
         "command": "aidd.toggleSelection",
-        "title": "GitHub Explorer: Toggle Selection",
+        "title": "AI-Driven Dev Rules: Toggle Selection",
         "icon": "$(check)"
       },
       {
         "command": "aidd.downloadSelected",
-        "title": "GitHub Explorer: Download Selected Files",
+        "title": "AI-Driven Dev Rules: Download Selected Files",
         "icon": "$(cloud-download)"
       },
       {
         "command": "aidd.welcome",
-        "title": "GitHub Explorer: Show Welcome Message"
+        "title": "AI-Driven Dev Rules: Show Welcome Message"
       },
       {
         "command": "aidd.openSettings",
-        "title": "GitHub Explorer: Open Settings",
+        "title": "AI-Driven Dev Rules: Open Settings",
         "icon": "$(gear)"
       }
     ],
@@ -132,5 +132,6 @@
     "mocha": "^11.1.0",
     "sinon": "^20.0.0",
     "typescript": "^5.8.2"
-  }
+  },
+  "packageManager": "pnpm@10.7.1+sha512.2d92c86b7928dc8284f53494fb4201f983da65f0fb4f0d40baafa5cf628fa31dae3e5968f12466f17df7e97310e30f343a648baea1b9b350685dafafffdf5808"
 }

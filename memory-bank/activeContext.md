@@ -10,6 +10,11 @@ Refining core functionality, improving code structure through refactoring, and e
 
 ## Recent Changes
 
+- [2025-04-12]: Renamed extension from "GitHub Explorer" to "AI-Driven Dev Rules" (aidd)
+  - Updated package.json, README.md, and CHANGELOG.md
+  - Modified command titles in package.json
+  - Updated documentation references
+
 - [2025-04-03]: Initialized memory bank with project documentation
 - [2025-04-03]: Defined project requirements and architecture
 - [2025-04-03]: Researched VS Code extension development best practices

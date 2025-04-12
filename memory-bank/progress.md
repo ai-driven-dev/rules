@@ -39,6 +39,11 @@ Core functionality (repository browsing, file selection, basic download) is impl
 
 ## Recent Milestones
 
+- [2025-04-12]: Renamed extension from "GitHub Explorer" to "AI-Driven Dev Rules" (aidd)
+  - Updated package.json, README.md, and CHANGELOG.md
+  - Modified command titles in package.json
+  - Updated documentation references
+
 - [2025-04-03]: Project requirements and architecture defined
 - [2025-04-03]: Memory bank initialized with comprehensive documentation
 - [2025-04-11]: Implemented optional GitHub token authentication via VS Code setting.
