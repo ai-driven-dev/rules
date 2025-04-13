@@ -41,7 +41,7 @@ Developers often need to explore GitHub repositories to understand code structur
 ## User Flows
 
 1. **Exploring a Repository**
-   - User clicks on GitHub Explorer view in VS Code sidebar
+   - User clicks on AI-Driven Dev Rules view in VS Code sidebar
    - User enters a GitHub repository URL
    - Extension displays the repository structure in a tree view
    - User can expand/collapse directories to explore the structure

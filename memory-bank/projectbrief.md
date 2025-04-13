@@ -6,11 +6,11 @@ This document serves as the foundation for the project, defining core requiremen
 
 ## Project Name
 
-GitHub Explorer VS Code Extension
+AI-Driven Dev Rules VS Code Extension
 
 ## Project Description
 
-A VS Code extension that allows users to browse and download files from public GitHub repositories directly within the VS Code explorer interface.
+A VS Code extension that allows users to browse and download files from public GitHub repositories directly within the VS Code explorer interface. (Note: The core functionality relates to GitHub interaction, despite the broader name "AI-Driven Dev Rules").
 
 ## Core Requirements
 

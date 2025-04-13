@@ -5,15 +5,7 @@ import { ILogger } from "../services/logger";
 import { IStorageService } from "../services/storage";
 import { ExplorerView } from "../views/explorer/explorerView";
 
-/**
- * Register all commands for the extension
- * @param context Extension context
- * @param explorerView Explorer view
- * @param githubService GitHub API service
- * @param logger Logger service
- * @param storageService Storage service
- * @param downloadService Download service
- */
+
 export function registerCommands(
   context: vscode.ExtensionContext,
   explorerView: ExplorerView,
@@ -22,12 +14,12 @@ export function registerCommands(
   storageService: IStorageService,
   downloadService: IDownloadService
 ): void {
-  // Command to show settings
+
   context.subscriptions.push(
     vscode.commands.registerCommand("aidd.showSettings", async () => {
       logger.debug("Show settings command executed");
 
-      // Show settings in quick pick
+
       const settings = storageService.getSettings();
 
       const items: vscode.QuickPickItem[] = [
@@ -72,7 +64,7 @@ export function registerCommands(
         return;
       }
 
-      // Handle selection
+
       if (selectedItem.label.includes("Maximum Recent Repositories")) {
         const value = await vscode.window.showInputBox({
           prompt: "Enter maximum number of recent repositories",
@@ -109,7 +101,7 @@ export function registerCommands(
             maxConcurrentDownloads: parseInt(value, 10),
           });
 
-          // Update download service settings
+
           downloadService.updateSettings(storageService.getSettings());
         }
       } else if (selectedItem.label.includes("Show Welcome On Startup")) {
@@ -118,12 +110,12 @@ export function registerCommands(
         });
       } else if (selectedItem.label.includes("Auto Refresh")) {
         if (settings.autoRefreshInterval) {
-          // Toggle off
+
           storageService.updateSettings({
             autoRefreshInterval: undefined,
           });
         } else {
-          // Toggle on
+
           const value = await vscode.window.showInputBox({
             prompt: "Enter refresh interval in seconds",
             value: "60",
@@ -146,7 +138,7 @@ export function registerCommands(
     })
   );
 
-  // Command to clear all storage
+
   context.subscriptions.push(
     vscode.commands.registerCommand("aidd.clearStorage", async () => {
       logger.debug("Clear storage command executed");
@@ -166,18 +158,18 @@ export function registerCommands(
     })
   );
 
-  // Command to show output channel
+
   context.subscriptions.push(
     vscode.commands.registerCommand("aidd.showOutput", () => {
       logger.show();
     })
   );
 
-  // Command to open extension settings
+
   context.subscriptions.push(
     vscode.commands.registerCommand("aidd.openSettings", () => {
       logger.debug("Open settings command executed");
-      // Open VS Code settings filtered for this extension
+
       vscode.commands.executeCommand(
         "workbench.action.openSettings",
         "@ext:ai-driven-dev-rules aidd." // Filter by extension ID and setting prefix

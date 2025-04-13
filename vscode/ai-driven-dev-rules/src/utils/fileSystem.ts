@@ -5,9 +5,7 @@ import { URL } from "url";
 import * as vscode from "vscode";
 import { ExplorerTreeItem } from "../views/explorer/treeItem";
 
-/**
- * Service for file system operations
- */
+
 export class FileSystemService {
   private static instance: FileSystemService;
   private outputChannel: vscode.OutputChannel;
@@ -18,9 +16,7 @@ export class FileSystemService {
     );
   }
 
-  /**
-   * Get singleton instance
-   */
+
   public static getInstance(): FileSystemService {
     if (!FileSystemService.instance) {
       FileSystemService.instance = new FileSystemService();
@@ -28,18 +24,14 @@ export class FileSystemService {
     return FileSystemService.instance;
   }
 
-  /**
-   * Download selected files
-   * @param items Selected items to download
-   * @returns Promise that resolves when all files are downloaded
-   */
+
   public async downloadFiles(items: ExplorerTreeItem[]): Promise<void> {
     if (items.length === 0) {
       vscode.window.showInformationMessage("No files selected for download");
       return;
     }
 
-    // Get workspace folder
+
     const workspaceFolder = this.getWorkspaceFolder();
     if (!workspaceFolder) {
       vscode.window.showErrorMessage(
@@ -48,7 +40,7 @@ export class FileSystemService {
       return;
     }
 
-    // Show progress
+
     return vscode.window.withProgress(
       {
         location: vscode.ProgressLocation.Notification,
@@ -56,17 +48,17 @@ export class FileSystemService {
         cancellable: true,
       },
       async (progress, token) => {
-        // Count total files to download
+
         const totalFiles = this.countFiles(items);
         let downloadedFiles = 0;
 
-        // Create a cancellation token
+
         token.onCancellationRequested(() => {
           this.log("Download cancelled by user");
         });
 
         try {
-          // Download each item
+
           for (const item of items) {
             if (token.isCancellationRequested) {
               break;
@@ -100,15 +92,7 @@ export class FileSystemService {
     );
   }
 
-  /**
-   * Download a single item
-   * @param item Item to download
-   * @param workspaceFolder Workspace folder
-   * @param progress Progress reporter
-   * @param token Cancellation token
-   * @param totalFiles Total number of files
-   * @param downloadedFiles Number of files downloaded so far
-   */
+
   private async downloadItem(
     item: ExplorerTreeItem,
     workspaceFolder: string,
@@ -125,10 +109,10 @@ export class FileSystemService {
     const targetPath = path.join(workspaceFolder, relativePath);
 
     if (item.content.type === "dir") {
-      // Create directory
+
       await this.createDirectory(targetPath);
 
-      // Download children
+
       for (const child of item.children) {
         if (token.isCancellationRequested) {
           break;
@@ -145,17 +129,17 @@ export class FileSystemService {
         downloadedFiles++;
       }
     } else if (item.content.type === "file") {
-      // Update progress
+
       progress.report({
         message: `Downloading ${relativePath}`,
         increment: 100 / totalFiles,
       });
 
-      // Create parent directory if it doesn't exist
+
       const parentDir = path.dirname(targetPath);
       await this.createDirectory(parentDir);
 
-      // Download file
+
       if (item.content.download_url) {
         await this.downloadFile(item.content.download_url, targetPath);
         this.log(`Downloaded ${relativePath}`);
@@ -165,10 +149,7 @@ export class FileSystemService {
     }
   }
 
-  /**
-   * Create directory if it doesn't exist
-   * @param dirPath Directory path
-   */
+
   private async createDirectory(dirPath: string): Promise<void> {
     try {
       await fs.promises.mkdir(dirPath, { recursive: true });
@@ -178,11 +159,7 @@ export class FileSystemService {
     }
   }
 
-  /**
-   * Download file from URL
-   * @param url File URL
-   * @param targetPath Target path
-   */
+
   private downloadFile(url: string, targetPath: string): Promise<void> {
     return new Promise((resolve, reject) => {
       const parsedUrl = new URL(url);
@@ -208,7 +185,7 @@ export class FileSystemService {
             response.statusCode === 302 ||
             response.statusCode === 301
           ) {
-            // Handle redirects
+
             const redirectUrl = response.headers.location;
             if (redirectUrl) {
               this.downloadFile(redirectUrl, targetPath)
@@ -233,10 +210,7 @@ export class FileSystemService {
     });
   }
 
-  /**
-   * Get workspace folder
-   * @returns Workspace folder path
-   */
+
   private getWorkspaceFolder(): string | undefined {
     const workspaceFolders = vscode.workspace.workspaceFolders;
     if (!workspaceFolders || workspaceFolders.length === 0) {
@@ -246,11 +220,7 @@ export class FileSystemService {
     return workspaceFolders[0].uri.fsPath;
   }
 
-  /**
-   * Count total number of files in items
-   * @param items Items to count
-   * @returns Total number of files
-   */
+
   private countFiles(items: ExplorerTreeItem[]): number {
     let count = 0;
 
@@ -265,21 +235,14 @@ export class FileSystemService {
     return count;
   }
 
-  /**
-   * Log message to output channel
-   * @param message Message to log
-   */
+
   private log(message: string): void {
     this.outputChannel.appendLine(
       `[${new Date().toLocaleTimeString()}] ${message}`
     );
   }
 
-  /**
-   * Log error to output channel
-   * @param message Error message
-   * @param error Error object
-   */
+
   private logError(message: string, error: any): void {
     this.outputChannel.appendLine(
       `[${new Date().toLocaleTimeString()}] ERROR: ${message}`

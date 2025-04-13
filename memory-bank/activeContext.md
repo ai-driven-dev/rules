@@ -10,7 +10,7 @@ Refining core functionality, improving code structure through refactoring, and e
 
 ## Recent Changes
 
-- [2025-04-12]: Renamed extension from "GitHub Explorer" to "AI-Driven Dev Rules" (aidd)
+- [2025-04-12]: Renamed extension to "AI-Driven Dev Rules" (aidd)
   - Updated package.json, README.md, and CHANGELOG.md
   - Modified command titles in package.json
   - Updated documentation references
@@ -29,14 +29,16 @@ Refining core functionality, improving code structure through refactoring, and e
 - [2025-04-11]: Configured unit test execution via `npm run test:unit` using `ts-node` and a mock for the `vscode` module.
 - [2025-04-11]: Corrected ESLint warnings (missing curly braces). Added `lint:fix` script to `package.json`.
 - [2025-04-11]: Removed integration test setup (`vscode-test` scripts and dependencies, `extension.test.ts` file, `.vscode-test` directory) as requested.
+- [2025-04-13]: Implemented initial recursive loading (depth 3) on repository load (`github.ts`, `treeProvider.ts`).
+- [2025-04-13]: Implemented recursive expansion (depth 5) and selection when checking a directory checkbox (`github.ts`, `treeProvider.ts`, `selection.ts`, `explorerView.ts`).
+- [2025-04-13]: Added progress indicator for recursive directory loading/selection.
 
 ## Next Steps
 
-1. Implement file download functionality (partially done, needs review regarding directory handling).
-2. Implement recursive directory content fetching for download if desired.
-3. Add further error handling (e.g., during download).
-4. Test with various GitHub repositories and edge cases.
-5. Consider improving TreeView refresh performance if needed (currently refreshes whole tree on selection change).
+1. **Test Recursive Features**: Thoroughly test the new recursive loading and selection features with various repository structures and sizes. Pay close attention to performance and API rate limit handling.
+2. **Implement Recursive Download**: Enhance the download functionality (`downloadSelectedFiles` in `explorerView.ts` and potentially `download.ts`) to handle the download of recursively selected directory contents.
+3. **Error Handling**: Add more specific error handling, especially around the recursive API calls and potential rate limit issues during expansion/selection.
+4. **Performance Optimization**: Monitor TreeView refresh performance, especially after recursive expansion, and optimize if necessary (e.g., partial refresh instead of full refresh).
 
 ## Active Decisions
 
@@ -67,15 +69,16 @@ Refining core functionality, improving code structure through refactoring, and e
 ## Current Challenges
 
 - **Checkbox Implementation**: **(Largely addressed)** State management is now handled by `SelectionService`. UI updates rely on `TreeItem.checkboxState` (when available) or icon changes. Fallback command (`aidd.toggleSelection`) added for older VS Code versions without the checkbox API.
-- **Recursive Directory Fetching/Download**: Current download logic only handles explicitly selected files. Downloading contents of selected directories requires further implementation (fetching directory contents recursively).
-- **Rate Limiting**: Remains a challenge for unauthenticated users with large repositories, especially if recursive fetching/download is implemented.
-- **TreeView Refresh Performance**: Refreshing the entire tree on every selection change might be inefficient for very large repositories. Could be optimized later.
+- **Recursive Directory Fetching/Selection**: Implemented fetching and selection up to depth 5 when a directory is checked. UI shows progress.
+- **Recursive Directory *Download***: Still pending. The download logic needs to be updated to handle the recursively selected items.
+- **Rate Limiting**: Now a more significant challenge due to potentially numerous API calls during initial load (depth 3) and recursive expansion (depth 5). Use of `aidd.githubToken` is highly recommended. Error handling for rate limits exists but needs testing under load.
+- **Performance**: Initial load (depth 3) and recursive expansion (depth 5) can be slow for large/deep repositories. Full tree refresh on selection change might exacerbate this. Needs monitoring and potential optimization.
 
 ## Open Questions
 
 - What's the best approach for implementing checkboxes in TreeView items? **(Partially answered: Use `TreeItem.checkboxState` API when available, fallback to command/icons. State managed by service.)**
-- How should we handle downloading the contents of selected *directories*? (Recursive fetch?)
-- How should we handle very large repositories (performance for fetching, display, selection refresh)?
+- How should we handle downloading the contents of selected *directories*? (**Partially addressed**: Selection is recursive now. Need to implement recursive *download* logic based on the selection.)
+- How should we handle very large repositories (performance for fetching, display, selection refresh)? (**More critical now**: Sequential recursive calls increase load. Caching in `itemMap` helps display, but API calls remain a bottleneck. Optimization might be needed.)
 - What's the optimal way to preserve directory structure during download? **(Current implementation seems correct, creating parent dirs)**
 
 ## Recent Discoveries

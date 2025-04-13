@@ -3,17 +3,13 @@ import { GitHubApiService } from "./api/github";
 import { registerCommands } from "./commands";
 import { DownloadService } from "./services/download";
 import { Logger } from "./services/logger";
-import { SelectionService } from "./services/selection"; // Import SelectionService
+import { ISelectionService, SelectionService } from "./services/selection";
 import { StorageService } from "./services/storage";
 import { ExplorerView } from "./views/explorer/explorerView";
+import { ExplorerTreeProvider } from "./views/explorer/treeProvider";
 import { WelcomeView } from "./views/welcome/welcomeView";
 
-/**
- * Activate the extension
- * @param context Extension context
- */
 export function activate(context: vscode.ExtensionContext): void {
-  // Initialize services
   const logger = new Logger("GitHub Explorer", true);
   logger.info("GitHub Explorer extension is now active");
 
@@ -22,19 +18,35 @@ export function activate(context: vscode.ExtensionContext): void {
 
   const githubService = new GitHubApiService();
   const downloadService = new DownloadService(logger, settings);
-  const selectionService = new SelectionService(); // Instantiate SelectionService
 
-  // Initialize explorer view
+  const dummySelectionService: ISelectionService = {
+    onDidChangeSelection: new vscode.EventEmitter<void>().event,
+    toggleSelection: () => {},
+    toggleRecursiveSelection: async () => Promise.resolve(),
+    isSelected: () => false,
+    getSelectedItems: () => [],
+    clearSelection: () => {},
+    selectItems: () => {} // Add missing property
+  };
+
+  const treeProvider = new ExplorerTreeProvider(
+    githubService,
+    logger,
+    context.extensionPath,
+    dummySelectionService
+  );
+
+  const selectionService = new SelectionService(treeProvider, logger);
+
   const explorerView = new ExplorerView(
     context,
     githubService,
     logger,
     storageService,
     downloadService,
-    selectionService // Pass SelectionService to ExplorerView
+    selectionService
   );
 
-  // Register welcome view provider
   context.subscriptions.push(
     vscode.window.registerWebviewViewProvider(WelcomeView.VIEW_ID, {
       resolveWebviewView(webviewView) {
@@ -43,7 +55,6 @@ export function activate(context: vscode.ExtensionContext): void {
     })
   );
 
-  // Register commands
   registerCommands(
     context,
     explorerView,
@@ -53,22 +64,13 @@ export function activate(context: vscode.ExtensionContext): void {
     downloadService
   );
 
-  // Show welcome view on first launch
   if (settings.showWelcomeOnStartup) {
     vscode.commands.executeCommand("aidd.welcomeView.focus");
   }
 
-  // Setup auto-refresh if enabled
   setupAutoRefresh(context, settings, explorerView, logger);
 }
 
-/**
- * Setup auto-refresh timer
- * @param context Extension context
- * @param settings Extension settings
- * @param explorerView Explorer view to refresh
- * @param logger Logger for logging
- */
 function setupAutoRefresh(
   context: vscode.ExtensionContext,
   settings: { autoRefreshInterval?: number },
@@ -87,15 +89,11 @@ function setupAutoRefresh(
     vscode.commands.executeCommand("aidd.refresh");
   }, intervalMs);
 
-  // Clean up interval on deactivation
   context.subscriptions.push({
     dispose: () => clearInterval(interval),
   });
 }
 
-/**
- * Deactivate the extension
- */
 export function deactivate(): void {
-  // All cleanup is handled by the disposables
+
 }

@@ -10,27 +10,25 @@ import {
   Result,
 } from "./types";
 
-/**
- * Interface for GitHub API service
- */
+
 export interface IGitHubApiService {
   parseRepositoryUrl(url: string): GithubRepository | null;
   fetchRepositoryContent(
     repository: GithubRepository,
     path?: string
   ): Promise<Result<GithubContent[]>>;
+  fetchRepositoryContentRecursive(
+    repository: GithubRepository,
+    path: string,
+    maxDepth: number
+  ): Promise<Result<GithubContent[]>>;
   fetchFileContent(downloadUrl: string): Promise<Result<string>>;
   getRateLimit(): GithubRateLimit | null;
 }
 
-/**
- * Service for interacting with GitHub API
- */
+
 export class GitHubApiService implements IGitHubApiService {
-  /**
-   * Create a new GitHub API service
-   * @param outputChannel Output channel for logging
-   */
+
   constructor(
     private readonly outputChannel: vscode.OutputChannel = vscode.window.createOutputChannel(
       "GitHub Explorer"
@@ -39,30 +37,22 @@ export class GitHubApiService implements IGitHubApiService {
 
   private rateLimit: GithubRateLimit | null = null;
 
-  /**
-   * Parse GitHub repository URL
-   * @param url GitHub repository URL
-   * @returns Repository information
-   */
+
   public parseRepositoryUrl(url: string): GithubRepository | null {
     try {
-      // Handle different URL formats
-      // https://github.com/owner/repo
-      // https://github.com/owner/repo/tree/branch
-      // github.com/owner/repo
 
-      // Remove protocol if present
+
       let cleanUrl = url.replace(/^(https?:\/\/)?(www\.)?/i, "");
 
-      // Check if it's a GitHub URL
+
       if (!cleanUrl.startsWith("github.com/")) {
         return null;
       }
 
-      // Remove github.com/
+
       cleanUrl = cleanUrl.substring("github.com/".length);
 
-      // Split by /
+
       const parts = cleanUrl.split("/");
 
       if (parts.length < 2) {
@@ -72,7 +62,7 @@ export class GitHubApiService implements IGitHubApiService {
       const owner = parts[0];
       const name = parts[1];
 
-      // Check if branch is specified
+
       let branch: string | undefined;
       if (parts.length > 3 && parts[2] === "tree") {
         branch = parts[3];
@@ -85,12 +75,7 @@ export class GitHubApiService implements IGitHubApiService {
     }
   }
 
-  /**
-   * Fetch repository content
-   * @param repository Repository information
-   * @param path Path within repository
-   * @returns Promise with content items
-   */
+
   public async fetchRepositoryContent(
     repository: GithubRepository,
     path: string = ""
@@ -98,7 +83,7 @@ export class GitHubApiService implements IGitHubApiService {
     const { owner, name, branch } = repository;
     let apiUrl = `https://api.github.com/repos/${owner}/${name}/contents/${path}`;
 
-    // Add branch parameter if specified
+
     if (branch) {
       apiUrl += `?ref=${branch}`;
     }
@@ -112,7 +97,7 @@ export class GitHubApiService implements IGitHubApiService {
         return response;
       }
 
-      // Handle both single item and array responses
+
       const data = Array.isArray(response.data)
         ? response.data
         : [response.data];
@@ -126,11 +111,77 @@ export class GitHubApiService implements IGitHubApiService {
     }
   }
 
-  /**
-   * Fetch file content
-   * @param downloadUrl File download URL
-   * @returns Promise with file content
-   */
+
+  public async fetchRepositoryContentRecursive(
+    repository: GithubRepository,
+    path: string = "",
+    maxDepth: number
+  ): Promise<Result<GithubContent[]>> {
+    const allContents: GithubContent[] = [];
+    const visitedPaths = new Set<string>(); // To avoid potential infinite loops with symlinks, though less common via API
+
+    const fetchLevel = async (
+      currentPath: string,
+      currentDepth: number
+    ): Promise<Result<void>> => {
+      if (currentDepth > maxDepth || visitedPaths.has(currentPath)) {
+        return { success: true, data: undefined }; // Stop recursion
+      }
+      visitedPaths.add(currentPath);
+
+      this.log(
+        `Fetching recursive: Path='${currentPath}', Depth=${currentDepth}/${maxDepth}`
+      );
+      const result = await this.fetchRepositoryContent(repository, currentPath);
+
+      if (!result.success) {
+
+        this.logError(
+          `Recursive fetch failed at path '${currentPath}', depth ${currentDepth}`,
+          result.error
+        );
+        return { success: false, error: result.error };
+      }
+
+      const contents = result.data;
+      allContents.push(...contents); // Add contents of the current level
+
+
+      const subDirPromises: Promise<Result<void>>[] = [];
+      for (const item of contents) {
+        if (item.type === "dir") {
+          subDirPromises.push(fetchLevel(item.path, currentDepth + 1));
+        }
+      }
+
+
+      const subDirResults = await Promise.all(subDirPromises);
+
+
+      const firstError = subDirResults.find((res) => !res.success);
+      if (firstError) {
+        return { success: false, error: firstError.error }; // Propagate the first error found
+      }
+
+      return { success: true, data: undefined };
+    };
+
+
+    const finalResult = await fetchLevel(path, 1); // Start at depth 1
+
+    if (!finalResult.success) {
+
+      return { success: false, error: finalResult.error };
+    }
+
+
+    this.log(
+      `Recursive fetch complete for path '${path}' up to depth ${maxDepth}. Found ${allContents.length} items.`
+    );
+    return { success: true, data: allContents };
+  }
+
+
   public async fetchFileContent(downloadUrl: string): Promise<Result<string>> {
     try {
       return await this.makeRequest<string>(downloadUrl, true);
@@ -143,12 +194,7 @@ export class GitHubApiService implements IGitHubApiService {
     }
   }
 
-  /**
-   * Make HTTP request to GitHub API
-   * @param url API URL
-   * @param isRawContent Whether to return raw content
-   * @returns Promise with response data
-   */
+
   private makeRequest<T>(
     url: string,
     isRawContent: boolean = false
@@ -156,7 +202,7 @@ export class GitHubApiService implements IGitHubApiService {
     return new Promise((resolve) => {
       const parsedUrl = new URL(url);
 
-      // Retrieve the token from VS Code configuration
+
       const configuration = vscode.workspace.getConfiguration("aidd");
       const token = configuration.get<string>("githubToken");
 
@@ -166,7 +212,7 @@ export class GitHubApiService implements IGitHubApiService {
           Accept: isRawContent
             ? "application/vnd.github.raw"
             : "application/vnd.github.v3+json",
-          // Add Authorization header if token exists
+
           ...(token ? { Authorization: `token ${token}` } : {}),
         },
       };
@@ -181,7 +227,7 @@ export class GitHubApiService implements IGitHubApiService {
         .get(parsedUrl, options, (res) => {
           let data = "";
 
-          // Check for rate limit headers
+
           this.updateRateLimitInfo(res);
 
           res.on("data", (chunk) => {
@@ -242,10 +288,7 @@ export class GitHubApiService implements IGitHubApiService {
     });
   }
 
-  /**
-   * Update rate limit information from response headers
-   * @param res HTTP response
-   */
+
   private updateRateLimitInfo(res: http.IncomingMessage): void {
     const limit = res.headers["x-ratelimit-limit"];
     const remaining = res.headers["x-ratelimit-remaining"];
@@ -271,38 +314,24 @@ export class GitHubApiService implements IGitHubApiService {
     }
   }
 
-  /**
-   * Check if rate limit is exceeded
-   * @param res HTTP response
-   * @returns Whether rate limit is exceeded
-   */
+
   private isRateLimitExceeded(res: http.IncomingMessage): boolean {
     return res.headers["x-ratelimit-remaining"] === "0";
   }
 
-  /**
-   * Get current rate limit information
-   * @returns Rate limit information
-   */
+
   public getRateLimit(): GithubRateLimit | null {
     return this.rateLimit;
   }
 
-  /**
-   * Log message to output channel
-   * @param message Message to log
-   */
+
   private log(message: string): void {
     this.outputChannel.appendLine(
       `[${new Date().toLocaleTimeString()}] ${message}`
     );
   }
 
-  /**
-   * Log error to output channel
-   * @param message Error message
-   * @param error Error object
-   */
+
   private logError(message: string, error: unknown): void {
     this.outputChannel.appendLine(
       `[${new Date().toLocaleTimeString()}] ERROR: ${message}`

@@ -6,7 +6,7 @@ This document outlines the system architecture, key technical decisions, design 
 
 ## System Architecture
 
-The GitHub Explorer VS Code extension follows a modular architecture with clear separation of concerns:
+The AI-Driven Dev Rules VS Code extension follows a modular architecture with clear separation of concerns:
 
 1. **Extension Core**: Central module that initializes the extension and registers commands
 2. **GitHub API Service**: Module for interacting with GitHub's REST API, handling optional authentication via a token provided through VS Code settings (`aidd.githubToken`).

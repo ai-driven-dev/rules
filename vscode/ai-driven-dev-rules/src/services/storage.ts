@@ -1,18 +1,14 @@
 import * as vscode from "vscode";
 import { GithubRepository } from "../api/types";
 
-/**
- * Keys for stored values
- */
+
 export enum StorageKey {
   RECENT_REPOSITORIES = "aidd.recentRepositories",
   LAST_REPOSITORY = "aidd.lastRepository",
   SETTINGS = "aidd.settings",
 }
 
-/**
- * Extension settings
- */
+
 export interface Settings {
   maxRecentRepositories: number;
   maxConcurrentDownloads: number;
@@ -20,9 +16,7 @@ export interface Settings {
   autoRefreshInterval?: number;
 }
 
-/**
- * Default settings
- */
+
 export const DEFAULT_SETTINGS: Settings = {
   maxRecentRepositories: 5,
   maxConcurrentDownloads: 3,
@@ -30,9 +24,7 @@ export const DEFAULT_SETTINGS: Settings = {
   autoRefreshInterval: undefined,
 };
 
-/**
- * Storage service interface
- */
+
 export interface IStorageService {
   getRecentRepositories(): GithubRepository[];
   addRecentRepository(repository: GithubRepository): void;
@@ -43,20 +35,12 @@ export interface IStorageService {
   clearStorage(): void;
 }
 
-/**
- * Storage service for VS Code extension
- */
+
 export class StorageService implements IStorageService {
-  /**
-   * Create a new storage service
-   * @param context Extension context
-   */
+
   constructor(private readonly context: vscode.ExtensionContext) {}
 
-  /**
-   * Get recent repositories
-   * @returns Array of recent repositories
-   */
+
   public getRecentRepositories(): GithubRepository[] {
     const repos = this.context.globalState.get<GithubRepository[]>(
       StorageKey.RECENT_REPOSITORIES,
@@ -65,15 +49,12 @@ export class StorageService implements IStorageService {
     return repos;
   }
 
-  /**
-   * Add a repository to recent repositories
-   * @param repository Repository to add
-   */
+
   public addRecentRepository(repository: GithubRepository): void {
     const repos = this.getRecentRepositories();
     const settings = this.getSettings();
 
-    // Remove if already exists
+
     const filteredRepos = repos.filter(
       (repo) =>
         !(
@@ -83,61 +64,49 @@ export class StorageService implements IStorageService {
         )
     );
 
-    // Add to beginning of array
+
     filteredRepos.unshift(repository);
 
-    // Limit to max number of repositories
+
     const limitedRepos = filteredRepos.slice(0, settings.maxRecentRepositories);
 
-    // Save to storage
+
     this.context.globalState.update(
       StorageKey.RECENT_REPOSITORIES,
       limitedRepos
     );
 
-    // Update last repository
+
     this.setLastRepository(repository);
   }
 
-  /**
-   * Get last used repository
-   * @returns Last repository or undefined
-   */
+
   public getLastRepository(): GithubRepository | undefined {
     return this.context.globalState.get<GithubRepository>(
       StorageKey.LAST_REPOSITORY
     );
   }
 
-  /**
-   * Set last used repository
-   * @param repository Repository to set
-   */
+
   public setLastRepository(repository: GithubRepository): void {
     this.context.globalState.update(StorageKey.LAST_REPOSITORY, repository);
   }
 
-  /**
-   * Get extension settings
-   * @returns Settings object
-   */
+
   public getSettings(): Settings {
     const savedSettings = this.context.globalState.get<Partial<Settings>>(
       StorageKey.SETTINGS,
       {}
     );
 
-    // Merge with default settings
+
     return {
       ...DEFAULT_SETTINGS,
       ...savedSettings,
     };
   }
 
-  /**
-   * Update extension settings
-   * @param settings Settings to update
-   */
+
   public updateSettings(settings: Partial<Settings>): void {
     const currentSettings = this.getSettings();
     const newSettings = {
@@ -148,9 +117,7 @@ export class StorageService implements IStorageService {
     this.context.globalState.update(StorageKey.SETTINGS, newSettings);
   }
 
-  /**
-   * Clear all storage
-   */
+
   public clearStorage(): void {
     this.context.globalState.update(StorageKey.RECENT_REPOSITORIES, undefined);
     this.context.globalState.update(StorageKey.LAST_REPOSITORY, undefined);

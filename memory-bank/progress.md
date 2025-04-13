@@ -39,7 +39,7 @@ Core functionality (repository browsing, file selection, basic download) is impl
 
 ## Recent Milestones
 
-- [2025-04-12]: Renamed extension from "GitHub Explorer" to "AI-Driven Dev Rules" (aidd)
+- [2025-04-12]: Renamed extension to "AI-Driven Dev Rules" (aidd)
   - Updated package.json, README.md, and CHANGELOG.md
   - Modified command titles in package.json
   - Updated documentation references

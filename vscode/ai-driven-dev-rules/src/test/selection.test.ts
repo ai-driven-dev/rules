@@ -1,21 +1,27 @@
-// Use dynamic import for chai due to ESM/CJS incompatibility
-// import { expect } from 'chai';
 import * as sinon from 'sinon';
+import { ILogger, Logger } from '../services/logger';
 import { SelectionService } from '../services/selection';
+import { ExplorerTreeProvider } from '../views/explorer/treeProvider';
 
 describe('SelectionService', () => {
   let selectionService: SelectionService;
   let onDidChangeSelectionSpy: sinon.SinonSpy;
-  let expect: Chai.ExpectStatic; // Declare expect variable
+  let expect: Chai.ExpectStatic;
+  let mockTreeProvider: sinon.SinonStubbedInstance<ExplorerTreeProvider>;
+  let mockLogger: sinon.SinonStubbedInstance<ILogger>;
 
-  // Use a before hook to dynamically import chai
+
   before(async () => {
     const chai = await import('chai');
     expect = chai.expect;
   });
 
   beforeEach(() => {
-    selectionService = new SelectionService();
+
+    mockTreeProvider = sinon.createStubInstance(ExplorerTreeProvider);
+    mockLogger = sinon.createStubInstance(Logger);
+
+    selectionService = new SelectionService(mockTreeProvider, mockLogger);
     onDidChangeSelectionSpy = sinon.spy();
     selectionService.onDidChangeSelection(onDidChangeSelectionSpy);
   });
@@ -32,18 +38,18 @@ describe('SelectionService', () => {
   });
 
   it('should deselect an item when toggled again', () => {
-    selectionService.toggleSelection('item1'); // Select
-    selectionService.toggleSelection('item1'); // Deselect
+    selectionService.toggleSelection('item1');
+    selectionService.toggleSelection('item1');
     expect(selectionService.isSelected('item1')).to.be.false;
     expect(selectionService.getSelectedItems()).to.be.empty;
-    expect(onDidChangeSelectionSpy.calledTwice).to.be.true; // Called for select and deselect
+    expect(onDidChangeSelectionSpy.calledTwice).to.be.true;
   });
 
   it('should handle multiple items correctly', () => {
     selectionService.toggleSelection('item1');
     selectionService.toggleSelection('item2');
     selectionService.toggleSelection('item3');
-    selectionService.toggleSelection('item2'); // Deselect item2
+    selectionService.toggleSelection('item2');
 
     expect(selectionService.isSelected('item1')).to.be.true;
     expect(selectionService.isSelected('item2')).to.be.false;
@@ -61,7 +67,7 @@ describe('SelectionService', () => {
     expect(selectionService.getSelectedItems()).to.be.empty;
     expect(selectionService.isSelected('item1')).to.be.false;
     expect(selectionService.isSelected('item2')).to.be.false;
-    // Called twice for toggle, once for clear
+
     expect(onDidChangeSelectionSpy.callCount).to.equal(3);
   });
 
