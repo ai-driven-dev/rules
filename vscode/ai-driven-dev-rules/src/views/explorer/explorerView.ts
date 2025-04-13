@@ -288,33 +288,60 @@ export class ExplorerView {
 				return;
 			}
 
-			const files: DownloadFile[] = selectedItems.map((item) => ({
-				url: item.content.download_url || "",
-				targetPath: item.content.path,
-				type: item.content.type === "file" ? "file" : "dir",
-				size: item.content.size,
-			}));
+			// Map selected items to DownloadFile objects, assuming item.content.type is already 'file' or 'dir'
+			const itemsToProcess: DownloadFile[] = selectedItems
+				.map((item): DownloadFile | null => {
+					// Check if item and item.content exist and have necessary properties
+					if (!item?.content?.path || !item.content.type) {
+						// Incorporate item details into the warning message string
+						this.logger.warn(
+							`Skipping invalid selected item in download mapping: ${JSON.stringify(item)}`,
+						);
+						return null;
+					}
 
-			const validFiles = files.filter(
-				(file) => file.type === "dir" || file.url,
-			);
+					const common = {
+						targetPath: item.content.path,
+						size: item.content.size, // size is optional in DownloadFile
+					};
 
-			const filesToDownload = validFiles.filter((f) => f.type === "file");
-			if (
-				filesToDownload.length === 0 &&
-				validFiles.some((f) => f.type === "dir")
-			) {
+					if (item.content.type === "file") {
+						// It's a file, ensure it has a download URL
+						if (item.content.download_url) {
+							return {
+								...common,
+								url: item.content.download_url,
+								type: "file", // Type is already 'file'
+							};
+						} else {
+							this.logger.warn(`Skipping file item without download_url: ${item.content.path}`);
+							return null; // Skip files without download URLs
+						}
+					} else if (item.content.type === "dir") {
+						// It's a directory
+						return {
+							...common,
+							url: "", // URL not applicable/needed for directory creation
+							type: "dir", // Type is already 'dir'
+						};
+					} else {
+						// Ignore any other unexpected types
+						this.logger.warn(`Skipping item with unexpected type '${item.content.type}': ${item.content.path}`);
+						return null;
+					}
+				})
+				.filter((item): item is DownloadFile => item !== null); // Filter out nulls
+
+			if (itemsToProcess.length === 0) {
 				vscode.window.showInformationMessage(
-					"Only directories selected. Downloading individual files within selected directories is not yet supported. Please select specific files.",
+					"No downloadable files or directories selected, or failed to retrieve item details.",
 				);
-				return;
-			} else if (filesToDownload.length === 0) {
-				vscode.window.showInformationMessage("No downloadable files selected.");
 				return;
 			}
 
+			// Pass the complete list (files and dirs) to the download service
 			const results = await this.downloadService.downloadFiles(
-				validFiles,
+				itemsToProcess,
 				workspaceFolder,
 			);
 

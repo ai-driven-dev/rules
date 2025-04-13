@@ -31,24 +31,23 @@ Refining core functionality, improving code structure through refactoring, and e
 - [2025-04-11]: Removed integration test setup (`vscode-test` scripts and dependencies, `extension.test.ts` file, `.vscode-test` directory) as requested.
 - [2025-04-13]: **Refactored repository content fetching**: Replaced previous recursive `contents` API calls with a single, efficient call to the GitHub Git Trees API (`GET /repos/{owner}/{repo}/git/trees/{tree_sha}?recursive=1`) in `github.ts`. This fetches the entire repository structure in one request.
 - [2025-04-13]: **Refactored recursive selection**: Implemented *local* recursive selection/deselection logic in `SelectionService` and `ExplorerTreeProvider`. When a directory checkbox is toggled, the selection state of all its descendants is updated based on the already fetched tree data, without requiring further API calls. Removed previous progress indicators related to API-based recursive selection.
+- [2025-04-13]: **Implemented Recursive Download**: Modified `explorerView.ts` (`downloadSelectedFiles`) to correctly map all selected items (files and directories, including recursively selected ones) and pass them to `DownloadService`. The service already handled creating directories and downloading files from the list. Fixed associated TypeScript errors during implementation.
 
 ## Next Steps
 
-1.  **Implement Recursive Download**:
-    *   Modify `downloadSelectedFiles` in `explorerView.ts` and the `downloadFile` function in `src/services/download.ts`.
-    *   Use `SelectionService.getSelection()` to get all selected items (including those selected recursively).
-    *   For each selected item, if it's a file (`type === 'blob'`), download it using its path.
-    *   Ensure the local directory structure is correctly created based on the item paths.
-    *   Add progress indication for bulk downloads.
-2.  **Test Git Trees & Local Selection**:
-    *   Manually test the loading of various repositories (different sizes, structures, branches) using the Git Trees API.
-    *   Verify the local recursive selection/deselection logic works correctly by toggling directory checkboxes and checking descendant states.
-    *   Add unit tests for the tree transformation logic (flat Git Tree data to hierarchical `TreeItem` structure) if feasible.
-3.  **Error Handling & Edge Cases**:
+1.  **Test Recursive Download & Core Features**:
+    *   Manually test the **recursive download** functionality thoroughly. Select directories, individual files, and combinations. Verify that all expected files are downloaded and the directory structure is preserved correctly in the workspace.
+    *   Manually test the **Git Trees API loading** with various repositories (different sizes, structures, branches).
+    *   Verify the **local recursive selection/deselection** logic works correctly by toggling directory checkboxes and checking descendant states in the UI.
+2.  **Error Handling & Edge Cases**:
     *   Implement specific error handling for the `git/trees` API call (e.g., invalid SHA, repository not found, rate limits).
+    *   Review and enhance error handling for the download process (e.g., file write errors, network issues during download).
     *   Consider and potentially implement handling for the `truncated` flag in the `git/trees` response (e.g., notify the user, offer partial load).
+3.  **Testing (Automated)**:
+    *   Add unit tests for the tree transformation logic (flat Git Tree data to hierarchical `TreeItem` structure) if feasible.
+    *   Consider adding unit tests for the download mapping logic in `explorerView.ts`.
 4.  **Performance Monitoring**:
-    *   Observe TreeView performance during initial load and rendering, especially with large repositories fetched via `git/trees`. Optimize if necessary (e.g., virtual scrolling, delayed rendering - though likely overkill initially).
+    *   Observe TreeView performance during initial load and rendering, especially with large repositories fetched via `git/trees`. Optimize if necessary.
 
 ## Active Decisions
 
@@ -80,18 +79,17 @@ Refining core functionality, improving code structure through refactoring, and e
 
 ## Current Challenges
 
-- **Recursive Directory Download**: The primary remaining implementation task. Requires updating download logic to iterate through the selection state provided by `SelectionService` and fetch individual files.
+- **Testing**: Thorough manual testing is now required to validate the implemented recursive download and related features. Adding automated tests for new logic is pending.
+- **Error Handling**: Specific error handling for Git Trees API and enhanced download error handling are still needed.
 - **Handling Large Repositories**:
-    - **Performance**: Processing and rendering the potentially large, flat dataset from the `git/trees` API into a TreeView.
-    - **Truncation**: Handling the `truncated` flag from the `git/trees` API if encountered (though potentially rare).
-- **Testing**: Ensuring the new Git Trees fetching and local recursive selection logic are robust across various scenarios.
-- **Error Handling**: Implementing specific error handling for the Git Trees API and the download process.
+    - **Performance**: Potential bottleneck in processing/rendering large datasets from `git/trees`. Needs monitoring.
+    - **Truncation**: Handling the `truncated` flag from the `git/trees` API is not yet implemented.
 
 ## Open Questions
 
-- How exactly should the recursive download logic iterate through the selection and fetch files? (**Answered in Next Steps**: Use `SelectionService.getSelection()`, filter for files, download using their paths).
-- What is the best user experience if a `git/trees` response is `truncated`? (Notify? Offer partial download? Ignore initially?)
-- Are further performance optimizations needed for TreeView rendering after the `git/trees` load? (Monitor first).
+- What is the best user experience if a `git/trees` response is `truncated`? (Notify? Offer partial download? Ignore initially?) - *Decision pending*
+- Are further performance optimizations needed for TreeView rendering after the `git/trees` load? - *Monitor first*
+- How robust is the current download error handling for bulk operations? - *Needs review*
 
 ## Recent Discoveries
 

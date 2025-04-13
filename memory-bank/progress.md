@@ -6,7 +6,7 @@ This document tracks what works, what's left to build, current status, known iss
 
 ## Current Status
 
-Core functionality is implemented, including repository browsing via the efficient Git Trees API and local recursive selection. The main remaining piece is implementing the recursive download functionality. Unit tests cover the selection service, but need expansion for new logic.
+Core functionality is implemented, including repository browsing via Git Trees API, local recursive selection, and **recursive download**. The download command now correctly processes files within selected directories. Testing and enhanced error handling are the next major steps.
 
 ## What Works
 
@@ -16,27 +16,26 @@ Core functionality is implemented, including repository browsing via the efficie
 - **GitHub API Authentication**: Implemented optional token authentication via VS Code setting (`aidd.githubToken`).
 - **Basic Error Handling**: Improved error feedback in `explorerView.ts` for repository loading and clarified message for directory-only selection.
 - **Repository Browsing**: TreeView displays repository structure.
-- **Repository Fetching**: Refactored to use the efficient `git/trees?recursive=1` API, fetching the entire structure in one call (`github.ts`).
-- **Selection Logic**: Refactored into `SelectionService`. Handles *local* recursive selection/deselection when directory checkboxes are toggled (`SelectionService`, `ExplorerTreeProvider`). Checkbox interaction via VS Code API (when available) or fallback command.
-- **Unit Testing Setup**: Mocha, Chai, Sinon, ts-node installed and configured. Initial tests for `SelectionService` added (`selection.test.ts`) and runnable via `npm run test:unit`. Mock for `vscode` API created (`vscode-mock.js`).
+- **Repository Fetching**: Uses efficient `git/trees?recursive=1` API (`github.ts`).
+- **Selection Logic**: Centralized in `SelectionService`, handles local recursive selection/deselection.
+- **Download Logic**: `explorerView.ts` correctly maps selected items (files & dirs) and passes them to `DownloadService`, enabling recursive download. `DownloadService` handles directory creation and file fetching.
+- **Unit Testing Setup**: Mocha, Chai, Sinon configured. Tests exist for `SelectionService`.
 
 ## What's Left to Build
 
-1. **Recursive Download**: Implement the logic to download all files marked as selected in `SelectionService`, including those selected implicitly via directory checks. This involves updating `explorerView.ts` and `download.ts`.
-2. **Testing**:
-    - Manually test the Git Trees loading and local recursive selection thoroughly.
-    - Add unit tests for tree transformation logic (Git Trees data -> TreeItems).
-    - Test the recursive download implementation once built.
-3. **Error Handling**:
-    - Implement specific error handling for the `git/trees` API call (rate limits, `truncated` flag, invalid SHA).
-    - Enhance error handling for the download process.
-4. **Performance Monitoring**: Observe TreeView performance with large repositories loaded via `git/trees`.
+1.  **Testing**:
+    *   **Manual Testing**: Thoroughly test recursive download, Git Trees loading, and local recursive selection. Verify file integrity and directory structure post-download.
+    *   **Automated Testing**: Add unit tests for tree transformation logic and download mapping logic.
+2.  **Error Handling**:
+    *   Implement specific error handling for the `git/trees` API call (rate limits, `truncated` flag, invalid SHA).
+    *   Enhance error handling for the download process (network issues, file system errors).
+3.  **Performance Monitoring**: Observe TreeView performance with large repositories loaded via `git/trees`.
 
 ## Known Issues
 
-- **Recursive Download Not Implemented**: Selecting a directory checkbox correctly updates the selection state recursively, but the download command currently only downloads explicitly selected *files*. It does not yet download the contents of selected directories based on the recursive selection.
-- **Potential Performance with Large Repos**: Displaying the TreeView after loading a very large repository structure via `git/trees` might be slow, although fetching itself is efficient. Needs monitoring.
-- **`truncated` Git Trees Response**: No specific handling is implemented for the case where the `git/trees` API returns a `truncated` response for extremely large repositories.
+- **Testing Coverage**: Manual testing is needed to confirm the recursive download works correctly in various scenarios. Automated tests for new logic (tree transformation, download mapping) are pending.
+- **Error Handling**: Specific error handling for `git/trees` API (including `truncated` flag) and enhanced download error handling are not yet implemented.
+- **Potential Performance with Large Repos**: Displaying the TreeView after loading a very large repository structure via `git/trees` might be slow. Needs monitoring.
 
 ## Recent Milestones
 
@@ -55,12 +54,13 @@ Core functionality is implemented, including repository browsing via the efficie
 - [2025-04-11]: Removed integration test setup (`vscode-test`).
 - [2025-04-13]: Refactored repository fetching to use Git Trees API (`git/trees?recursive=1`).
 - [2025-04-13]: Implemented local recursive selection/deselection logic.
+- [2025-04-13]: Implemented recursive download functionality by updating `explorerView.ts`.
 
 ## Upcoming Milestones
 
-- [Target: Next Session]: Implement recursive download functionality.
-- [Target: Next Session]: Add basic error handling for Git Trees API and download.
-- [Target: Following Sessions]: Thoroughly test new features, add more unit tests, monitor performance.
+- [Target: Next Session]: Thoroughly test recursive download and core features manually.
+- [Target: Next Session]: Implement basic error handling for Git Trees API and download process.
+- [Target: Following Sessions]: Add unit tests for new logic, monitor performance, address `truncated` flag if necessary.
 
 ## Evolution of Decisions
 
@@ -79,9 +79,9 @@ Core functionality is implemented, including repository browsing via the efficie
 
 ## Testing Status
 
-- **Unit Tests**: Exist for `SelectionService` (`selection.test.ts`). Need expansion for tree transformation logic and download service logic. Runnable via `npm run test:unit`.
+- **Unit Tests**: Exist for `SelectionService`. Need expansion for tree transformation and download mapping logic. Runnable via `npm run test:unit`.
 - **Integration Tests**: Removed.
-- **Manual Testing**: Required for verifying Git Trees loading, local recursive selection UI, and the upcoming recursive download feature.
+- **Manual Testing**: **Crucial next step** to verify recursive download, Git Trees loading, and local recursive selection UI.
 
 ## Deployment History
 
