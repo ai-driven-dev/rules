@@ -62,6 +62,13 @@ Module.prototype.require = function (id) {
 				Collapsed: 1,
 				Expanded: 2,
 			},
+			// Add FileType enum mock
+			FileType: {
+				Unknown: 0,
+				File: 1,
+				Directory: 2,
+				SymbolicLink: 64,
+			},
 			// Mock CheckboxState if it's used by your code
 			// CheckboxState: { Unchecked: 0, Checked: 1 },
 			// --- Mock other VS Code APIs below if needed ---

@@ -47,24 +47,54 @@ export class SelectionService implements ISelectionService {
 	}
 
 	toggleRecursiveSelection(itemPath: string): void {
-		const shouldBeSelected = !this.isSelected(itemPath);
-		this.logger.debug(
-			`Toggling recursive selection for '${itemPath}'. Target state: ${shouldBeSelected ? "Selected" : "Unselected"}`,
-		);
+		let shouldBeSelected: boolean;
+		const allItemsMap = this.stateService.getAllItems(); // Get all items once
 
-		const itemsToToggle: string[] = [itemPath];
+		if (itemPath === "") {
+			// Special handling for root toggle
+			const allActualPaths = Array.from(allItemsMap.keys());
+			const allSelected = allActualPaths.every(path => this.selectedPaths.has(path));
+			shouldBeSelected = !allSelected; // Select if not all are selected, deselect if all are selected
+			this.logger.debug(
+				`Toggling root (""). All items currently selected: ${allSelected}. Target state: ${shouldBeSelected ? "Selected" : "Unselected"}`,
+			);
+		} else {
+			// Original logic for non-root items
+			shouldBeSelected = !this.isSelected(itemPath);
+			this.logger.debug(
+				`Toggling recursive selection for '${itemPath}'. Target state: ${shouldBeSelected ? "Selected" : "Unselected"}`,
+			);
+		}
+
+		const itemsToToggle: string[] = [];
+		if (itemPath !== "") {
+			// Add the item itself if it's not the root
+			itemsToToggle.push(itemPath);
+		}
 
 		// Find all descendants using the stateService map
-		const allItems = this.stateService.getAllItems();
 		const prefix = itemPath === "" ? "" : itemPath + "/";
 
-		for (const item of allItems.values()) {
-			if (
-				item.content.path !== itemPath &&
-				item.content.path.startsWith(prefix)
-			) {
+		// Iterate over the map directly
+		for (const item of allItemsMap.values()) {
+			// Add descendants (or all items if root)
+			if (item.content.path !== itemPath && item.content.path.startsWith(prefix)) {
+				itemsToToggle.push(item.content.path);
+			} else if (itemPath === "" && item.content.path !== "") {
+				// If toggling root, add all non-root items
 				itemsToToggle.push(item.content.path);
 			}
+		}
+
+		// If toggling root, ensure all actual paths are considered, even if prefix logic missed some edge case
+		if (itemPath === "") {
+			const allActualPathsSet = new Set(Array.from(allItemsMap.keys()));
+			allActualPathsSet.delete(""); // Remove root if present
+			itemsToToggle.push(...Array.from(allActualPathsSet));
+			// Deduplicate
+			const uniqueItemsToToggle = [...new Set(itemsToToggle)];
+			itemsToToggle.length = 0; // Clear array
+			itemsToToggle.push(...uniqueItemsToToggle); // Push unique items
 		}
 
 		this.logger.debug(
@@ -73,6 +103,10 @@ export class SelectionService implements ISelectionService {
 
 		let changed = false;
 		for (const path of itemsToToggle) {
+			// Ensure we don't try to add the root path "" itself to the selection
+			if (path === "" && shouldBeSelected) {
+				continue;
+			}
 			const currentlySelected = this.selectedPaths.has(path);
 			if (shouldBeSelected && !currentlySelected) {
 				this.selectedPaths.add(path);

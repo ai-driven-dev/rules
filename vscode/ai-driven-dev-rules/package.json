@@ -117,7 +117,7 @@
     "watch": "tsc -watch -p ./",
     "lint": "eslint src",
     "lint:fix": "eslint src --fix",
-    "test:unit": "mocha -r ts-node/register -r src/test/vscode-mock.js src/test/selection.test.ts",
+    "test:unit": "mocha -r ts-node/register -r src/test/vscode-mock.js src/test/**/*.test.ts",
     "typecheck": "tsc --noEmit"
   },
   "devDependencies": {
