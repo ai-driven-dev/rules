@@ -9,7 +9,7 @@ This document outlines the technologies used, development setup, technical const
 - **TypeScript**: Latest stable, primary development language for VS Code extensions
 - **Node.js**: Latest LTS, runtime environment
 - **VS Code API**: Latest, for extension development and UI integration
-- **GitHub REST API**: v3, for accessing repository content
+- **GitHub REST API**: v3, specifically using the `repos/{owner}/{repo}/git/trees/{tree_sha}?recursive=1` endpoint for efficient structure fetching, and `repos/{owner}/{repo}/contents` for individual file downloads.
 
 ## Development Environment
 
@@ -59,19 +59,27 @@ This document outlines the technologies used, development setup, technical const
 ### Development
 
 - **TypeScript**: For type-safe development
-- **ESLint**: For code quality
-- **Mocha & Chai**: For testing (optional)
+- **ESLint**: For code quality (`eslint.config.mjs`, `npm run lint:fix`)
+- **Mocha**: Test runner (`npm run test:unit`)
+- **Chai**: Assertion library
+- **Sinon**: Mocking/stubbing library
+- **ts-node**: For running TypeScript tests directly
+- **@types/***: Type definitions for dev dependencies
 
 ## API Integrations
 
-- **GitHub REST API**: For accessing repository content, <https://docs.github.com/en/rest/reference/repos#contents>
+- **GitHub REST API**:
+  - Git Trees (`/repos/{owner}/{repo}/git/trees/{tree_sha}?recursive=1`): For fetching full repository structure efficiently. <https://docs.github.com/en/rest/git/trees#get-a-tree>
+  - Repository Contents (`/repos/{owner}/{repo}/contents/{path}`): For downloading individual file content. <https://docs.github.com/en/rest/repos/contents#get-repository-content>
+  - Branches (`/repos/{owner}/{repo}/branches/{branch}`): To get the SHA of the default branch head. <https://docs.github.com/en/rest/branches/branches#get-a-branch>
 - **VS Code Extension API**: For integrating with VS Code, <https://code.visualstudio.com/api/references/vscode-api>
 
 ## Technical Constraints
 
-- Rate limiting on GitHub API for unauthenticated requests (60 requests per hour). This can be mitigated by providing a GitHub Personal Access Token via the `aidd.githubToken` VS Code setting.
-- VS Code extension performance considerations
-- Cross-platform compatibility requirements
+- **GitHub API Rate Limiting**: Applies to all requests. Using the `git/trees` API reduces the *number* of requests for structure fetching but might return large responses. Authenticated requests (`aidd.githubToken`) have higher limits. Need to monitor usage.
+- **GitHub API `truncated` Flag**: The `git/trees` API may return truncated results for extremely large repositories. Need a strategy if this occurs.
+- **VS Code Extension Performance**: Handling potentially large datasets from the `git/trees` API in the TreeView requires efficient processing and rendering.
+- **Cross-platform Compatibility**: Ensure file system operations and paths work correctly on Windows, macOS, and Linux.
 
 ## Performance Requirements
 
@@ -87,9 +95,9 @@ This document outlines the technologies used, development setup, technical const
 
 ## Testing Strategy
 
-- **Unit Testing**: For GitHub API service and utility functions
-- **Integration Testing**: For VS Code integration points
-- **Manual Testing**: For UI and user experience validation
+- **Unit Testing**: Focus on testing services (`SelectionService`, `GitHubService` logic, `DownloadService` logic) and utility functions using Mocha, Chai, and Sinon. A mock for the `vscode` API (`src/test/vscode-mock.js`) is used. Run via `npm run test:unit`.
+- **Manual Testing**: Crucial for UI interactions, TreeView behavior, download process, and overall user experience across different scenarios and repositories.
+- **Integration Testing**: Currently removed (`vscode-test` setup is disabled). Can be reintroduced later if needed for testing direct VS Code API interactions.
 
 ## Monitoring and Logging
 
