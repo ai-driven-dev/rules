@@ -3,8 +3,7 @@
  * @returns HTML content
  */
 export function getWelcomeViewContent(): string {
-    
-    return `<!DOCTYPE html>
+	return `<!DOCTYPE html>
         <html lang="en">
         <head>
             <meta charset="UTF-8">
@@ -193,7 +192,7 @@ export function getWelcomeViewContent(): string {
                     });
                 }
                 
-                // Listen for messages from the extension
+                
                 window.addEventListener('message', event => {
                     const message = event.data;
                     
@@ -228,9 +227,9 @@ export function getWelcomeViewContent(): string {
                     });
                 }
                 
-                // Tell the extension we're ready to receive data
+                
                 vscode.postMessage({ command: 'ready' });
             </script>
         </body>
         </html>`;
-} 
+}

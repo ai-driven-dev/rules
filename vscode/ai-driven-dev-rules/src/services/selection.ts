@@ -1,179 +1,126 @@
-import * as vscode from 'vscode';
-import { ExplorerTreeProvider } from '../views/explorer/treeProvider';
-import { ExplorerTreeItem } from '../views/explorer/treeItem';
-import { ILogger } from './logger';
-
+import * as vscode from "vscode";
+// ExplorerTreeItem and ExplorerTreeProvider are no longer directly needed here
+import { IExplorerStateService } from "./explorerStateService"; // Import state service
+import { ILogger } from "./logger";
 
 export interface ISelectionService {
+	readonly onDidChangeSelection: vscode.Event<void>;
 
-  readonly onDidChangeSelection: vscode.Event<void>;
+	toggleSelection(itemPath: string): void;
 
+	// Removed depth parameter, now operates on full local data
+	toggleRecursiveSelection(itemPath: string): void; // Now synchronous
 
-  toggleSelection(itemPath: string): void;
+	isSelected(itemPath: string): boolean;
 
+	getSelectedItems(): string[];
 
-  toggleRecursiveSelection(itemPath: string, depth?: number): Promise<void>;
+	clearSelection(): void;
 
-
-  isSelected(itemPath: string): boolean;
-
-
-  getSelectedItems(): string[];
-
-
-  clearSelection(): void;
-
-
-  selectItems(itemPaths: string[]): void;
+	selectItems(itemPaths: string[]): void;
 }
 
-
 export class SelectionService implements ISelectionService {
-  private _onDidChangeSelection = new vscode.EventEmitter<void>();
-  readonly onDidChangeSelection = this._onDidChangeSelection.event;
+	private _onDidChangeSelection = new vscode.EventEmitter<void>();
+	readonly onDidChangeSelection = this._onDidChangeSelection.event;
 
-  private selectedPaths: Set<string> = new Set();
-  public treeProvider: ExplorerTreeProvider;
+	private selectedPaths: Set<string> = new Set();
+	// Removed treeProvider reference
+	private logger: ILogger;
+	private stateService: IExplorerStateService; // Add state service reference
 
-  private logger: ILogger;
+	constructor(logger: ILogger, stateService: IExplorerStateService) {
+		// Inject state service
+		this.logger = logger;
+		this.stateService = stateService; // Store state service
+	}
 
-  constructor(treeProvider: ExplorerTreeProvider, logger: ILogger) {
-    this.treeProvider = treeProvider;
-    this.logger = logger;
-  }
+	// Removed setTreeProvider method
 
+	toggleSelection(itemPath: string): void {
+		if (this.selectedPaths.has(itemPath)) {
+			this.selectedPaths.delete(itemPath);
+		} else {
+			this.selectedPaths.add(itemPath);
+		}
+		this._onDidChangeSelection.fire();
+	}
 
-  toggleSelection(itemPath: string): void {
-    if (this.selectedPaths.has(itemPath)) {
-      this.selectedPaths.delete(itemPath);
-    } else {
-      this.selectedPaths.add(itemPath);
-    }
-    this._onDidChangeSelection.fire();
-  }
+	toggleRecursiveSelection(itemPath: string): void {
+		const shouldBeSelected = !this.isSelected(itemPath);
+		this.logger.debug(
+			`Toggling recursive selection for '${itemPath}'. Target state: ${shouldBeSelected ? "Selected" : "Unselected"}`,
+		);
 
+		const itemsToToggle: string[] = [itemPath];
 
-  async toggleRecursiveSelection(itemPath: string, depth: number = 5): Promise<void> {
-    try {
+		// Find all descendants using the stateService map
+		const allItems = this.stateService.getAllItems();
+		const prefix = itemPath === "" ? "" : itemPath + "/";
 
-      const isCurrentlySelected = this.isSelected(itemPath);
+		for (const item of allItems.values()) {
+			if (
+				item.content.path !== itemPath &&
+				item.content.path.startsWith(prefix)
+			) {
+				itemsToToggle.push(item.content.path);
+			}
+		}
 
+		this.logger.debug(
+			`Found ${itemsToToggle.length} items (including self) to toggle for path '${itemPath}'`,
+		);
 
-      if (isCurrentlySelected) {
-        this.selectedPaths.delete(itemPath);
-      } else {
-        this.selectedPaths.add(itemPath);
-      }
+		let changed = false;
+		for (const path of itemsToToggle) {
+			const currentlySelected = this.selectedPaths.has(path);
+			if (shouldBeSelected && !currentlySelected) {
+				this.selectedPaths.add(path);
+				changed = true;
+			} else if (!shouldBeSelected && currentlySelected) {
+				this.selectedPaths.delete(path);
+				changed = true;
+			}
+		}
 
+		if (changed) {
+			this.logger.debug(
+				`Selection state changed for recursive toggle of '${itemPath}'. Firing event.`,
+			);
+			this._onDidChangeSelection.fire();
+		} else {
+			this.logger.debug(
+				`Selection state did not change for recursive toggle of '${itemPath}'. Not firing event.`,
+			);
+		}
+	}
 
-      if (depth <= 0) {
-        this.logger.debug(`Maximum recursion depth reached for ${itemPath}`);
-        this._onDidChangeSelection.fire();
-        return;
-      }
+	isSelected(itemPath: string): boolean {
+		return this.selectedPaths.has(itemPath);
+	}
 
+	getSelectedItems(): string[] {
+		return Array.from(this.selectedPaths);
+	}
 
-      const parentItem = new ExplorerTreeItem({
-        path: itemPath,
-        type: 'dir',
-        name: itemPath.split('/').pop() || itemPath,
-        sha: '',
-        size: 0,
-        url: '',
-        html_url: '',
-        download_url: null,
-        git_url: ''
-      });
+	clearSelection(): void {
+		if (this.selectedPaths.size > 0) {
+			this.selectedPaths.clear();
+			this._onDidChangeSelection.fire();
+		}
+	}
 
-
-      this.logger.debug(`Fetching children for directory: ${itemPath}`);
-      let children: ExplorerTreeItem[] = [];
-
-      try {
-        children = await this.treeProvider.getChildren(parentItem);
-      } catch (error) {
-        this.logger.error(`Error fetching children for ${itemPath}`, error);
-        this._onDidChangeSelection.fire();
-        return;
-      }
-
-      if (!children || children.length === 0) {
-        this.logger.debug(`No children found for directory: ${itemPath}`);
-        this._onDidChangeSelection.fire();
-        return;
-      }
-
-      this.logger.debug(`Found ${children.length} children for directory: ${itemPath}`);
-
-
-      const childPromises = children.map(async (child) => {
-        try {
-          if (child.content.type === 'dir') {
-
-            if (isCurrentlySelected) {
-              this.selectedPaths.delete(child.content.path);
-            } else {
-              this.selectedPaths.add(child.content.path);
-            }
-
-
-            if (depth > 1) { // Only recurse if we have depth remaining
-              await this.toggleRecursiveSelection(child.content.path, depth - 1);
-            }
-          } else {
-
-            if (isCurrentlySelected) {
-              this.selectedPaths.delete(child.content.path);
-            } else {
-              this.selectedPaths.add(child.content.path);
-            }
-          }
-        } catch (error) {
-          this.logger.error(`Error processing child ${child.content.path}`, error);
-        }
-      });
-
-
-      await Promise.all(childPromises);
-
-
-      this._onDidChangeSelection.fire();
-    } catch (error) {
-      this.logger.error(`Error in toggleRecursiveSelection for ${itemPath}`, error);
-      this._onDidChangeSelection.fire();
-    }
-  }
-
-
-  isSelected(itemPath: string): boolean {
-    return this.selectedPaths.has(itemPath);
-  }
-
-
-  getSelectedItems(): string[] {
-    return Array.from(this.selectedPaths);
-  }
-
-
-  clearSelection(): void {
-    if (this.selectedPaths.size > 0) {
-      this.selectedPaths.clear();
-      this._onDidChangeSelection.fire();
-    }
-  }
-
-
-  selectItems(itemPaths: string[]): void {
-    let selectionChanged = false;
-    for (const path of itemPaths) {
-      if (!this.selectedPaths.has(path)) {
-        this.selectedPaths.add(path);
-        selectionChanged = true;
-      }
-    }
-    if (selectionChanged) {
-      this.logger.debug(`Selected ${itemPaths.length} items programmatically.`);
-      this._onDidChangeSelection.fire();
-    }
-  }
+	selectItems(itemPaths: string[]): void {
+		let selectionChanged = false;
+		for (const path of itemPaths) {
+			if (!this.selectedPaths.has(path)) {
+				this.selectedPaths.add(path);
+				selectionChanged = true;
+			}
+		}
+		if (selectionChanged) {
+			this.logger.debug(`Selected ${itemPaths.length} items programmatically.`);
+			this._onDidChangeSelection.fire();
+		}
+	}
 }

@@ -30,15 +30,19 @@ Refining core functionality, improving code structure through refactoring, and e
 - [2025-04-11]: Corrected ESLint warnings (missing curly braces). Added `lint:fix` script to `package.json`.
 - [2025-04-11]: Removed integration test setup (`vscode-test` scripts and dependencies, `extension.test.ts` file, `.vscode-test` directory) as requested.
 - [2025-04-13]: Implemented initial recursive loading (depth 3) on repository load (`github.ts`, `treeProvider.ts`).
-- [2025-04-13]: Implemented recursive expansion (depth 5) and selection when checking a directory checkbox (`github.ts`, `treeProvider.ts`, `selection.ts`, `explorerView.ts`).
-- [2025-04-13]: Added progress indicator for recursive directory loading/selection.
+- [2025-04-13]: Implemented recursive expansion (depth 5) and selection when checking a directory checkbox (`github.ts`, `treeProvider.ts`, `selection.ts`, `explorerView.ts`). **(Superseded by local selection logic)**
+- [2025-04-13]: Added progress indicator for recursive directory loading/selection. **(Removed as selection is now local/instant)**
+- [2025-04-13]: **Refactored recursive content fetching (`fetchRepositoryContentRecursive` in `github.ts`) to use the efficient GitHub Git Trees API (`GET /repos/{owner}/{repo}/git/trees/{tree_sha}?recursive=1`) instead of multiple `contents` API calls. This fetches the entire tree in one request.**
+- [2025-04-13]: **Modified recursive selection logic: When a directory checkbox is toggled, selection/deselection of all descendants now happens *locally* using the already fetched data (`SelectionService`, `ExplorerTreeProvider`). No additional API calls are made.**
 
 ## Next Steps
 
-1. **Test Recursive Features**: Thoroughly test the new recursive loading and selection features with various repository structures and sizes. Pay close attention to performance and API rate limit handling.
-2. **Implement Recursive Download**: Enhance the download functionality (`downloadSelectedFiles` in `explorerView.ts` and potentially `download.ts`) to handle the download of recursively selected directory contents.
-3. **Error Handling**: Add more specific error handling, especially around the recursive API calls and potential rate limit issues during expansion/selection.
-4. **Performance Optimization**: Monitor TreeView refresh performance, especially after recursive expansion, and optimize if necessary (e.g., partial refresh instead of full refresh).
+1.  **Test Recursive Features**:
+    *   Thoroughly test the **Git Trees API implementation** for initial recursive loading. Verify correctness with various repository structures, branches, and sizes. Pay close attention to **handling of the `truncated` flag** and API rate limit implications.
+    *   Thoroughly test the **local recursive selection/deselection** when toggling directory checkboxes. Ensure it correctly identifies and updates the state of all descendants based on the data loaded via Git Trees.
+2.  **Implement Recursive Download**: Enhance the download functionality (`downloadSelectedFiles` in `explorerView.ts` and potentially `download.ts`) to handle the download of recursively selected directory contents (based on the selection state, which is separate from the fetching mechanism).
+3.  **Error Handling**: Review and enhance error handling specifically for the `git/trees` API call (e.g., branch not found, tree SHA not found, truncated results).
+4.  **Performance Optimization**: Monitor TreeView refresh performance after loading the potentially large dataset from the `git/trees` API. Optimize rendering if necessary.
 
 ## Active Decisions
 
@@ -65,26 +69,29 @@ Refining core functionality, improving code structure through refactoring, and e
 - Using VS Code's `onDidChangeCheckboxState` event (when available) provides a more native way to handle checkbox interactions compared to relying solely on custom commands or icon clicks.
 - Unit testing services like `SelectionService` is straightforward with Mocha/Chai/Sinon, once the execution environment (Node.js vs VS Code host) and module incompatibilities (CJS vs ESM) are handled (using mocks and potentially dynamic imports or `ts-node`).
 - Integration tests (`vscode-test`) are valuable for testing interactions with the VS Code API but have been removed for now.
+- **Using the `git/trees?recursive=1` API is significantly more efficient for fetching full repository structures compared to recursive calls to the `contents` API.**
+- **Performing recursive selection *locally* after the initial load avoids unnecessary API calls and improves responsiveness when toggling directory checkboxes.**
 
 ## Current Challenges
 
 - **Checkbox Implementation**: **(Largely addressed)** State management is now handled by `SelectionService`. UI updates rely on `TreeItem.checkboxState` (when available) or icon changes. Fallback command (`aidd.toggleSelection`) added for older VS Code versions without the checkbox API.
-- **Recursive Directory Fetching/Selection**: Implemented fetching and selection up to depth 5 when a directory is checked. UI shows progress.
-- **Recursive Directory *Download***: Still pending. The download logic needs to be updated to handle the recursively selected items.
-- **Rate Limiting**: Now a more significant challenge due to potentially numerous API calls during initial load (depth 3) and recursive expansion (depth 5). Use of `aidd.githubToken` is highly recommended. Error handling for rate limits exists but needs testing under load.
-- **Performance**: Initial load (depth 3) and recursive expansion (depth 5) can be slow for large/deep repositories. Full tree refresh on selection change might exacerbate this. Needs monitoring and potential optimization.
+- **Recursive Directory Fetching**: **(Addressed)** Fetching is handled efficiently by the `git/trees?recursive=1` API call.
+- **Recursive Directory Selection**: **(Addressed)** Selection logic is now local within `SelectionService`, using data from `ExplorerStateService`.
+- **Recursive Directory *Download***: Still pending. The download logic needs to be updated to handle the recursively selected items based on the `SelectionService` state.
+- **Rate Limiting**: The nature of the challenge changes. Instead of many small requests during selection, there's one potentially large request (`git/trees`) and one small request (`branches`) during initial load. This is generally better for rate limits but needs monitoring.
+- **Performance**: Fetching performance is likely improved. Processing/displaying large datasets from `git/trees` remains a potential bottleneck. Local recursive selection should be fast. Handling of `truncated` responses needs consideration.
 
 ## Open Questions
 
 - What's the best approach for implementing checkboxes in TreeView items? **(Partially answered: Use `TreeItem.checkboxState` API when available, fallback to command/icons. State managed by service.)**
 - How should we handle downloading the contents of selected *directories*? (**Partially addressed**: Selection is recursive now. Need to implement recursive *download* logic based on the selection.)
-- How should we handle very large repositories (performance for fetching, display, selection refresh)? (**More critical now**: Sequential recursive calls increase load. Caching in `itemMap` helps display, but API calls remain a bottleneck. Optimization might be needed.)
+- How should we handle very large repositories (performance for fetching, display, selection refresh)? (**Refined**: Fetching uses `git/trees`. Need to handle `truncated` flag gracefully. Display performance for large datasets needs monitoring.)
 - What's the optimal way to preserve directory structure during download? **(Current implementation seems correct, creating parent dirs)**
 
 ## Recent Discoveries
 
 - VS Code's TreeDataProvider interface can be extended to support custom item states
-- GitHub API provides a recursive parameter for the contents endpoint, but it has limitations
+- **GitHub's `git/trees` API with `recursive=1` is the standard and most efficient way to fetch a complete repository file listing.** (Supersedes previous discovery about `contents` endpoint limitations).
 - VS Code's workspace API provides utilities for working with the file system
 
 ## Current Experiments
