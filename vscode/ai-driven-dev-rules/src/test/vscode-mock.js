@@ -71,10 +71,45 @@ Module.prototype.require = function (id) {
 			},
 			// Mock CheckboxState if it's used by your code
 			// CheckboxState: { Unchecked: 0, Checked: 1 },
-			// --- Mock other VS Code APIs below if needed ---
-			// e.g., window: { showInformationMessage: () => {} },
-			//       commands: { executeCommand: () => {} },
-			//       Uri: { parse: (str) => ({ fsPath: str }) } // Basic Uri mock if needed
+			// Mock workspace with getConfiguration
+			workspace: {
+				getConfiguration: (section) => {
+					// Return a mock configuration object
+					return {
+						get: (key) => {
+							// By default, don't return a token
+							return undefined;
+						},
+						has: (key) => key === "githubToken", // Simulate having the githubToken setting
+						inspect: (key) => undefined,
+						update: (key, value) => Promise.resolve()
+					};
+				}
+			},
+			// Mock window for progress API
+			window: {
+				withProgress: (options, task) => {
+					// Simple mock that just calls the task with mock progress and token
+					const progress = { report: () => {} };
+					const token = { isCancellationRequested: false, onCancellationRequested: () => ({ dispose: () => {} }) };
+					return task(progress, token);
+				},
+				showInformationMessage: () => Promise.resolve()
+			},
+			// Mock CancellationTokenSource
+			CancellationTokenSource: class {
+				constructor() {
+					this.token = { isCancellationRequested: false, onCancellationRequested: () => ({ dispose: () => {} }) };
+				}
+				cancel() {
+					this.token.isCancellationRequested = true;
+				}
+				dispose() {}
+			},
+			// Mock Uri
+			Uri: { parse: (str) => ({ fsPath: str }) },
+			// Mock commands
+			commands: { executeCommand: () => Promise.resolve() }
 		};
 	}
 	// For any other module, use the original require

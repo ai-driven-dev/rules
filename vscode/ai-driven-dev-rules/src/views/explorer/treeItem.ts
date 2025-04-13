@@ -1,5 +1,4 @@
 import * as vscode from "vscode";
-import * as path from "path";
 import { GithubContent } from "../../api/types";
 
 export class ExplorerTreeItem extends vscode.TreeItem {
