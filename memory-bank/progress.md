@@ -29,11 +29,7 @@ Core functionality is implemented, including repository browsing via Git Trees A
 
 ## Recent Milestones
 
-- [2025-04-12]: Renamed extension to "AI-Driven Dev Rules" (aidd)
-  - Updated package.json, README.md, and CHANGELOG.md
-  - Modified command titles in package.json
-  - Updated documentation references
-
+- [2025-04-15]: Reviewed Memory Bank files. No new development updates provided since [2025-04-13].
 - [2025-04-03]: Project requirements and architecture defined
 - [2025-04-03]: Memory bank initialized with comprehensive documentation
 - [2025-04-11]: Implemented optional GitHub token authentication via VS Code setting.
@@ -42,6 +38,10 @@ Core functionality is implemented, including repository browsing via Git Trees A
 - [2025-04-11]: Added unit tests for `SelectionService`.
 - [2025-04-11]: Configured and fixed unit test execution environment.
 - [2025-04-11]: Removed integration test setup (`vscode-test`).
+- [2025-04-12]: Renamed extension to "AI-Driven Dev Rules" (aidd)
+  - Updated package.json, README.md, and CHANGELOG.md
+  - Modified command titles in package.json
+  - Updated documentation references
 - [2025-04-13]: Refactored repository fetching to use Git Trees API (`git/trees?recursive=1`).
 - [2025-04-13]: Implemented local recursive selection/deselection logic.
 - [2025-04-13]: Implemented recursive download functionality by updating `explorerView.ts`.
