@@ -81,24 +81,6 @@ This document outlines the technologies used, development setup, technical const
 - **VS Code Extension Performance**: Handling potentially large datasets from the `git/trees` API in the TreeView requires efficient processing and rendering.
 - **Cross-platform Compatibility**: Ensure file system operations and paths work correctly on Windows, macOS, and Linux.
 
-## Performance Requirements
-
-- Responsive UI even with large repositories
-- Efficient handling of GitHub API responses
-- Minimal memory footprint
-
-## Tool Usage Patterns
-
-- **VS Code Extension API**: Following contribution point patterns for views, commands, and configuration (`aidd.githubToken` setting).
-- **GitHub API**: RESTful requests with proper error handling and optional authentication using a token provided via VS Code configuration.
-- **TypeScript**: Strong typing and interfaces for maintainability
-
-## Testing Strategy
-
-- **Unit Testing**: Focus on testing services (`SelectionService`, `GitHubService` logic, `DownloadService` logic) and utility functions using Mocha, Chai, and Sinon. A mock for the `vscode` API (`src/test/vscode-mock.js`) is used. Run via `npm run test:unit`.
-- **Manual Testing**: Crucial for UI interactions, TreeView behavior, download process, and overall user experience across different scenarios and repositories.
-- **Integration Testing**: Currently removed (`vscode-test` setup is disabled). Can be reintroduced later if needed for testing direct VS Code API interactions.
-
 ## Monitoring and Logging
 
 Extension will use VS Code's output channel for logging during development and debugging. Error reporting will be handled through VS Code's notification system for end users.
