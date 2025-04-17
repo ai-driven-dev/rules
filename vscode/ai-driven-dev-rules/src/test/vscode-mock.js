@@ -54,63 +54,88 @@ Module.prototype.require = function (id) {
 		// Return our mock vscode API object
 		// Add other vscode APIs here if needed by other tests in the future
 		return {
-			EventEmitter: MockEventEmitter,
-			TreeItem: MockTreeItem, // Add the mocked TreeItem
-			// Define constants used by TreeItem (like TreeItemCollapsibleState)
-			TreeItemCollapsibleState: {
-				None: 0,
-				Collapsed: 1,
-				Expanded: 2,
-			},
-			// Add FileType enum mock
-			FileType: {
-				Unknown: 0,
-				File: 1,
-				Directory: 2,
-				SymbolicLink: 64,
-			},
-			// Mock CheckboxState if it's used by your code
-			// CheckboxState: { Unchecked: 0, Checked: 1 },
-			// Mock workspace with getConfiguration
-			workspace: {
-				getConfiguration: (section) => {
-					// Return a mock configuration object
-					return {
-						get: (key) => {
-							// By default, don't return a token
-							return undefined;
-						},
-						has: (key) => key === "githubToken", // Simulate having the githubToken setting
-						inspect: (key) => undefined,
-						update: (key, value) => Promise.resolve()
-					};
-				}
-			},
-			// Mock window for progress API
-			window: {
-				withProgress: (options, task) => {
-					// Simple mock that just calls the task with mock progress and token
-					const progress = { report: () => {} };
-					const token = { isCancellationRequested: false, onCancellationRequested: () => ({ dispose: () => {} }) };
-					return task(progress, token);
-				},
-				showInformationMessage: () => Promise.resolve()
-			},
-			// Mock CancellationTokenSource
-			CancellationTokenSource: class {
-				constructor() {
-					this.token = { isCancellationRequested: false, onCancellationRequested: () => ({ dispose: () => {} }) };
-				}
-				cancel() {
-					this.token.isCancellationRequested = true;
-				}
-				dispose() {}
-			},
-			// Mock Uri
-			Uri: { parse: (str) => ({ fsPath: str }) },
-			// Mock commands
-			commands: { executeCommand: () => Promise.resolve() }
-		};
+      EventEmitter: MockEventEmitter,
+      TreeItem: MockTreeItem, // Add the mocked TreeItem
+      // Define constants used by TreeItem (like TreeItemCollapsibleState)
+      TreeItemCollapsibleState: {
+        None: 0,
+        Collapsed: 1,
+        Expanded: 2,
+      },
+      // Add FileType enum mock
+      FileType: {
+        Unknown: 0,
+        File: 1,
+        Directory: 2,
+        SymbolicLink: 64,
+      },
+      // Mock CheckboxState if it's used by your code
+      // CheckboxState: { Unchecked: 0, Checked: 1 },
+      // Mock workspace with getConfiguration
+      workspace: {
+        getConfiguration: (section) => {
+          // Return a mock configuration object
+          return {
+            get: (key) => {
+              // By default, don't return a token
+              return undefined;
+            },
+            has: (key) => key === "githubToken", // Simulate having the githubToken setting
+            inspect: (key) => undefined,
+            update: (key, value) => Promise.resolve(),
+          };
+        },
+      },
+      // Mock window for progress API
+      window: {
+        withProgress: (options, task) => {
+          // Simple mock that just calls the task with mock progress and token
+          const progress = { report: () => {} };
+          const token = {
+            isCancellationRequested: false,
+            onCancellationRequested: () => ({ dispose: () => {} }),
+          };
+          return task(progress, token);
+        },
+        showInformationMessage: () => Promise.resolve(),
+        createOutputChannel: () => ({
+          appendLine: () => {},
+          append: () => {},
+          show: () => {},
+          clear: () => {},
+          dispose: () => {},
+        }),
+      },
+      // Mock ProgressLocation
+      ProgressLocation: {
+        Notification: 0,
+        Window: 1,
+        SourceControl: 2,
+      },
+      // Mock CancellationTokenSource
+      CancellationTokenSource: class {
+        constructor() {
+          this.token = {
+            isCancellationRequested: false,
+            onCancellationRequested: () => ({ dispose: () => {} }),
+          };
+        }
+        cancel() {
+          this.token.isCancellationRequested = true;
+        }
+        dispose() {}
+      },
+      // Mock Uri
+      Uri: { parse: (str) => ({ fsPath: str }) },
+      // Mock commands
+      commands: { executeCommand: () => Promise.resolve() },
+      // Mock ThemeIcon
+      ThemeIcon: class {
+        constructor(id) {
+          this.id = id;
+        }
+      },
+    };
 	}
 	// For any other module, use the original require
 	return originalRequire.apply(this, arguments);

@@ -288,45 +288,31 @@ export class ExplorerView {
 				return;
 			}
 
-			// Map selected items to DownloadFile objects, assuming item.content.type is already 'file' or 'dir'
+			// Map selected items to DownloadFile objects.
+			// We no longer rely on download_url here; DownloadService will fetch content using the path.
 			const itemsToProcess: DownloadFile[] = selectedItems
 				.map((item): DownloadFile | null => {
 					// Check if item and item.content exist and have necessary properties
 					if (!item?.content?.path || !item.content.type) {
-						// Incorporate item details into the warning message string
 						this.logger.warn(
 							`Skipping invalid selected item in download mapping: ${JSON.stringify(item)}`,
 						);
 						return null;
 					}
 
-					const common = {
-						targetPath: item.content.path,
-						size: item.content.size, // size is optional in DownloadFile
-					};
-
-					if (item.content.type === "file") {
-						// It's a file, ensure it has a download URL
-						if (item.content.download_url) {
-							return {
-								...common,
-								url: item.content.download_url,
-								type: "file", // Type is already 'file'
-							};
-						} else {
-							this.logger.warn(`Skipping file item without download_url: ${item.content.path}`);
-							return null; // Skip files without download URLs
-						}
-					} else if (item.content.type === "dir") {
-						// It's a directory
+					// Process only files and directories
+					if (item.content.type === "file" || item.content.type === "dir") {
 						return {
-							...common,
-							url: "", // URL not applicable/needed for directory creation
-							type: "dir", // Type is already 'dir'
+							// url: "", // URL is no longer provided here. DownloadService will fetch it.
+							targetPath: item.content.path, // Path relative to repo root
+							type: item.content.type,
+							size: item.content.size, // Optional size info
 						};
 					} else {
 						// Ignore any other unexpected types
-						this.logger.warn(`Skipping item with unexpected type '${item.content.type}': ${item.content.path}`);
+						this.logger.warn(
+							`Skipping item with unexpected type '${item.content.type}': ${item.content.path}`,
+						);
 						return null;
 					}
 				})
@@ -339,10 +325,23 @@ export class ExplorerView {
 				return;
 			}
 
-			// Pass the complete list (files and dirs) to the download service
+			// Get the current repository information from the tree provider
+			const currentRepo = this.treeProvider.getCurrentRepository();
+			if (!currentRepo) {
+				vscode.window.showErrorMessage(
+					"No repository is currently loaded. Cannot download files.",
+				);
+				this.logger.error(
+					"downloadSelectedFiles called but no repository is set in TreeProvider.",
+				);
+				return;
+			}
+
+			// Pass the complete list (files and dirs) and repository info to the download service
 			const results = await this.downloadService.downloadFiles(
 				itemsToProcess,
 				workspaceFolder,
+				currentRepo, // Pass the repository object
 			);
 
 			const successCount = results.filter((r) => r.success).length;

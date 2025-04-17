@@ -8,6 +8,7 @@ import { ExplorerTreeItem } from "../views/explorer/treeItem";
 export class FileSystemService {
 	private static instance: FileSystemService;
 	private outputChannel: vscode.OutputChannel;
+	private downloadCount: number = 0;
 
 	private constructor() {
 		this.outputChannel = vscode.window.createOutputChannel(
@@ -36,6 +37,8 @@ export class FileSystemService {
 			return;
 		}
 
+		this.downloadCount = 0;
+
 		return vscode.window.withProgress(
 			{
 				location: vscode.ProgressLocation.Notification,
@@ -44,7 +47,6 @@ export class FileSystemService {
 			},
 			async (progress, token) => {
 				const totalFiles = this.countFiles(items);
-				let downloadedFiles = 0;
 
 				token.onCancellationRequested(() => {
 					this.log("Download cancelled by user");
@@ -52,24 +54,18 @@ export class FileSystemService {
 
 				try {
 					for (const item of items) {
-						if (token.isCancellationRequested) {
-							break;
-						}
-
 						await this.downloadItem(
 							item,
 							workspaceFolder,
 							progress,
 							token,
-							totalFiles,
-							downloadedFiles,
+							totalFiles
 						);
-						downloadedFiles++;
 					}
 
 					if (!token.isCancellationRequested) {
 						vscode.window.showInformationMessage(
-							`Successfully downloaded ${downloadedFiles} files`,
+							`Successfully downloaded ${this.downloadCount} files`,
 						);
 					}
 				} catch (error) {
@@ -90,48 +86,81 @@ export class FileSystemService {
 		progress: vscode.Progress<{ message?: string; increment?: number }>,
 		token: vscode.CancellationToken,
 		totalFiles: number,
-		downloadedFiles: number,
 	): Promise<void> {
 		if (token.isCancellationRequested) {
 			return;
 		}
 
+		if (item.content.type === "dir") {
+			await this.processDirectory(item, workspaceFolder, progress, token, totalFiles);
+		} else if (item.content.type === "file") {
+			await this.processFile(item, workspaceFolder, progress, token, totalFiles);
+		}
+	}
+
+	private async processDirectory(
+		item: ExplorerTreeItem,
+		workspaceFolder: string,
+		progress: vscode.Progress<{ message?: string; increment?: number }>,
+		token: vscode.CancellationToken,
+		totalFiles: number,
+	): Promise<void> {
 		const relativePath = item.content.path;
 		const targetPath = path.join(workspaceFolder, relativePath);
+		await this.createDirectory(targetPath);
 
-		if (item.content.type === "dir") {
-			await this.createDirectory(targetPath);
-
-			for (const child of item.children) {
-				if (token.isCancellationRequested) {
-					break;
-				}
-
-				await this.downloadItem(
-					child,
-					workspaceFolder,
-					progress,
-					token,
-					totalFiles,
-					downloadedFiles,
-				);
-				downloadedFiles++;
+		for (const child of item.children) {
+			if (token.isCancellationRequested) {
+				break;
 			}
-		} else if (item.content.type === "file") {
-			progress.report({
-				message: `Downloading ${relativePath}`,
-				increment: 100 / totalFiles,
-			});
+			await this.downloadItem(
+				child,
+				workspaceFolder,
+				progress,
+				token,
+				totalFiles
+			);
+		}
+	}
 
-			const parentDir = path.dirname(targetPath);
-			await this.createDirectory(parentDir);
+	private async processFile(
+		item: ExplorerTreeItem,
+		workspaceFolder: string,
+		progress: vscode.Progress<{ message?: string; increment?: number }>,
+		token: vscode.CancellationToken,
+		totalFiles: number,
+	): Promise<void> {
+		const relativePath = item.content.path;
+		const targetPath = path.join(workspaceFolder, relativePath);
+		progress.report({
+			message: `Downloading ${relativePath} (${this.downloadCount + 1}/${totalFiles})`,
+			increment: 100 / totalFiles,
+		});
 
-			if (item.content.download_url) {
-				await this.downloadFile(item.content.download_url, targetPath);
-				this.log(`Downloaded ${relativePath}`);
-			} else {
-				this.log(`No download URL for ${relativePath}`);
-			}
+		const parentDir = path.dirname(targetPath);
+		await this.createDirectory(parentDir);
+
+		if (item.content.download_url) {
+			await this.downloadAndVerifyFile(item.content.download_url, targetPath, relativePath);
+		} else {
+			this.log(`No download URL for ${relativePath}`);
+		}
+		this.downloadCount++;
+	}
+
+	private async downloadAndVerifyFile(url: string, targetPath: string, relativePath: string): Promise<void> {
+		try {
+			await this.downloadFile(url, targetPath);
+			await fs.promises.access(targetPath, fs.constants.F_OK);
+			const stats = await fs.promises.stat(targetPath);
+			this.log(`Downloaded ${relativePath} | Size: ${stats.size} bytes | URL: ${url}`);
+		} catch (error) {
+			const errorMsg = `Download failed or file missing for ${relativePath} | URL: ${url}`;
+			this.logError(errorMsg, error);
+			vscode.window.showErrorMessage(
+				`Erreur lors du téléchargement de ${relativePath}. Consultez la console pour plus de détails.`
+			);
+			throw error;
 		}
 	}
 

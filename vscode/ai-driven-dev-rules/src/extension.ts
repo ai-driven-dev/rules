@@ -36,7 +36,8 @@ export function activate(context: vscode.ExtensionContext): void {
 		rateLimitManager,
 		logger,
 	);
-	const downloadService = new DownloadService(logger, settings);
+	// Inject githubService into DownloadService constructor
+	const downloadService = new DownloadService(logger, settings, githubService);
 
 	// Inject explorerStateService into SelectionService constructor
 	const selectionService = new SelectionService(logger, explorerStateService);

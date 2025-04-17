@@ -40,6 +40,11 @@ export class ExplorerTreeProvider
 		this._onDidChangeTreeData.fire();
 	}
 
+	/** Returns the currently loaded repository information */
+	public getCurrentRepository(): GithubRepository | null {
+		return this.stateService.getRepository();
+	}
+
 	public refresh(item?: ExplorerTreeItem): void {
 		if (item) {
 			if (item.content.type === "dir") {
