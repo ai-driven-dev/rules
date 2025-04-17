@@ -60,10 +60,6 @@ This document outlines the technologies used, development setup, technical const
 
 - **TypeScript**: For type-safe development
 - **ESLint**: For code quality (`eslint.config.mjs`, `npm run lint:fix`)
-- **Mocha**: Test runner (`npm run test:unit`)
-- **Chai**: Assertion library
-- **Sinon**: Mocking/stubbing library
-- **ts-node**: For running TypeScript tests directly
 - **@types/***: Type definitions for dev dependencies
 
 ## API Integrations

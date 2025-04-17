@@ -53,7 +53,7 @@ A VS Code extension enabling developers to discover, download, and manage commun
 - Core Setup & API Integration: 3 days
 - UI Implementation (TreeView, Selection): 2 days
 - Download & Configuration Functionality: 2 days
-- Testing and Refinement: 2 days
+- Refinement: 2 days
 
 ## Stakeholders
 

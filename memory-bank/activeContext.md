@@ -6,7 +6,7 @@ This document tracks the current work focus, recent changes, next steps, active 
 
 ## Current Focus
 
-Refining core functionality, improving code structure through refactoring, and ensuring robustness with tests, particularly focusing on the download and selection mechanisms.
+Refining core functionality, improving code structure through refactoring, particularly focusing on the download and selection mechanisms.
 
 ## Recent Changes
 
@@ -18,11 +18,7 @@ Refining core functionality, improving code structure through refactoring, and e
   - Updated package.json, README.md, and CHANGELOG.md
   - Modified command titles in package.json
   - Updated documentation references
-- [2025-04-11]: Removed integration test setup (`vscode-test` scripts and dependencies, `extension.test.ts` file, `.vscode-test` directory) as requested.
 - [2025-04-11]: Corrected ESLint warnings (missing curly braces). Added `lint:fix` script to `package.json`.
-- [2025-04-11]: Configured unit test execution via `npm run test:unit` using `ts-node` and a mock for the `vscode` module.
-- [2025-04-11]: Installed `chai`, `sinon`, `mocha`, `ts-node`, `@types/chai`, `@types/sinon` as dev dependencies.
-- [2025-04-11]: Added unit tests for `SelectionService` (`src/test/selection.test.ts`) using Mocha, Chai, and Sinon.
 - [2025-04-11]: Updated `ExplorerView`, `ExplorerTreeProvider`, and `ExplorerTreeItem` to use `SelectionService`.
 - [2025-04-11]: Refactored selection logic into a dedicated `SelectionService` (`src/services/selection.ts`).
 - [2025-04-11]: Clarified "No files selected" message in `explorerView.ts` when only directories are selected for download.
@@ -35,9 +31,7 @@ Refining core functionality, improving code structure through refactoring, and e
 
 ## Next Steps
 
-1. **Unit Testing for Download**: Write comprehensive unit tests for the `DownloadService` (`src/services/download.ts`) and related logic in `explorerView.ts`.
-2. **Integration Testing**: Design and implement integration tests covering the end-to-end download flow, including repository fetching, selection, and file system writing.
-3. **Manual Testing**: Thoroughly test the download functionality with various scenarios (different repositories, selections, network conditions).
+1. **Testing**: Thoroughly test the download functionality with various scenarios (different repositories, selections, network conditions).
 
 ## Active Decisions
 
@@ -52,19 +46,16 @@ Refining core functionality, improving code structure through refactoring, and e
 - Async/await for asynchronous operations
 - Descriptive naming
 - Comprehensive error handling
-- Unit testing for core logic
 
 ## Learnings and Insights
 
 - Centralizing selection state in `SelectionService` simplifies management.
 - Using `git/trees?recursive=1` is highly efficient for fetching repository structure.
 - Local recursive selection improves UI responsiveness.
-- Unit testing services requires mocking dependencies (like `vscode` API).
-- Manual testing remains crucial for validating end-to-end flows and UI interactions.
+- Testing remains crucial for validating end-to-end flows and UI interactions.
 
 ## Current Challenges
 
-- **Testing**: Ensuring adequate test coverage (unit and integration) for the download functionality.
 - **Handling Large Repositories**:
   - **Performance**: Potential bottleneck in processing/rendering large datasets from `git/trees`. Needs monitoring.
   - **User Experience**: For repositories resulting in >50 files selected for download, implement a confirmation dialog asking the user to proceed.
@@ -86,4 +77,4 @@ Refining core functionality, improving code structure through refactoring, and e
 
 ## Notes
 
-Focus is now shifting towards ensuring the reliability and robustness of the core download feature through comprehensive testing.
+Focus is now shifting towards ensuring the reliability and robustness of the core download feature.

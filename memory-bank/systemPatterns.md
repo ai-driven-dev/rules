@@ -107,4 +107,3 @@ The extension's scalability for large repositories is improved by:
 - **Truncated Tree Handling**: No specific handling for the `truncated` flag in the `git/trees` API response is implemented yet. Needs investigation if encountered with large rule repositories.
 - **Advanced Filtering/Search**: Deferred to future versions. Could enhance rule discoverability.
 - **Private Repositories**: While authentication is supported via `aidd.githubToken`, explicit testing and potential UI adjustments for private repositories haven't been prioritized.
-- **Testing Coverage**: Unit and integration test coverage for download logic needs expansion.

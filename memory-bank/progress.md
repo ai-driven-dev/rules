@@ -19,11 +19,9 @@ Core functionality is implemented, including repository browsing via Git Trees A
 - **Repository Fetching**: Uses efficient `git/trees?recursive=1` API (`github.ts`).
 - **Selection Logic**: Centralized in `SelectionService`, handles local recursive selection/deselection.
 - **Download Logic**: `explorerView.ts` correctly maps selected items (files & dirs) and passes them to `DownloadService`, enabling recursive download. `DownloadService` handles directory creation and file fetching.
-- **Unit Testing Setup**: Mocha, Chai, Sinon configured. Tests exist for `SelectionService`.
 
 ## Known Issues
 
-- **Testing Coverage**: Manual testing is needed to confirm the recursive download works correctly in various scenarios. Automated tests for new logic (tree transformation, download mapping) are pending.
 - **Error Handling**: Specific error handling for `git/trees` API (including `truncated` flag) and enhanced download error handling are not yet implemented.
 - **Potential Performance with Large Repos**: Displaying the TreeView after loading a very large repository structure via `git/trees` might be slow. Needs monitoring.
 
@@ -35,9 +33,6 @@ Core functionality is implemented, including repository browsing via Git Trees A
 - [2025-04-11]: Implemented optional GitHub token authentication via VS Code setting.
 - [2025-04-11]: Improved error handling for repository loading and fixed related bug in `explorerView.ts`.
 - [2025-04-11]: Refactored selection logic into `SelectionService`.
-- [2025-04-11]: Added unit tests for `SelectionService`.
-- [2025-04-11]: Configured and fixed unit test execution environment.
-- [2025-04-11]: Removed integration test setup (`vscode-test`).
 - [2025-04-12]: Renamed extension to "AI-Driven Dev Rules" (aidd)
   - Updated package.json, README.md, and CHANGELOG.md
   - Modified command titles in package.json
@@ -53,7 +48,6 @@ Core functionality is implemented, including repository browsing via Git Trees A
 - **UI Approach**: Considered custom WebView → Decided on native TreeView, for better integration with VS Code
 - **Token Handling**: Considered environment variables (`.env`, system) → Decided on standard VS Code configuration setting (`aidd.githubToken`) for security and user experience.
 - **Selection State**: Initial approach with state in `TreeItem` → Refactored to central `SelectionService`.
-- **Testing Framework**: Confirmed Mocha + Chai + Sinon for unit tests. Removed `vscode-test`.
 - **Repository Fetching**: Recursive `contents` API calls → Single `git/trees?recursive=1` API call for efficiency.
 - **Recursive Selection**: API calls on directory check → Local state update based on pre-fetched data for responsiveness.
 
@@ -63,9 +57,7 @@ Core functionality is implemented, including repository browsing via Git Trees A
 
 ## Testing Status
 
-- **Unit Tests**: Exist for `SelectionService`. Coverage needs expansion for tree transformation and download mapping logic. Runnable via `npm run test:unit`.
-- **Integration Tests**: Removed.
-- **Manual Testing**: Required to validate end-to-end functionality, especially recursive download and UI interactions.
+- **Testing**: Required to validate end-to-end functionality, especially recursive download and UI interactions.
 
 ## Deployment History
 
