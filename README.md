@@ -1,4 +1,4 @@
-# AI-Driven Dev Rules 🥖
+# AI-Driven Dev Rules
 
 ![Status](https://img.shields.io/badge/status-active-brightgreen)
 ![Version](https://img.shields.io/badge/version-0.0.2-blue)
@@ -10,26 +10,27 @@ Partagez vos règles IA personnalisées avec la communauté.
 ## Table des matières
 
 - [Table des matières](#table-des-matières)
-- [Avantages](#avantages)
-- [Fonctionnalités principales](#fonctionnalités-principales)
-- [Comment installer les règles AIDD ?](#comment-installer-les-règles-aidd-)
+- [🧠 Avantages](#-avantages)
+  - [Des règles optimisées en 3 minutes](#des-règles-optimisées-en-3-minutes)
+- [👨‍💻 Comment installer les règles AIDD ?](#-comment-installer-les-règles-aidd-)
   - [Télécharger l'extension "AI-Driven Dev Rules"](#télécharger-lextension-ai-driven-dev-rules)
   - [Utiliser l'extension](#utiliser-lextension)
-- [Bien démarrer](#bien-démarrer)
+- [🚀 Bien démarrer](#-bien-démarrer)
 - [Comment coder avec des règles ?](#comment-coder-avec-des-règles-)
-- [Ajouter vos règles](#ajouter-vos-règles)
+- [✅ Ajouter vos règles](#-ajouter-vos-règles)
   - [Structure de nommage (à plat)](#structure-de-nommage-à-plat)
+  - [Organisation des dossiers](#organisation-des-dossiers)
   - [Générations et Mises à jour](#générations-et-mises-à-jour)
-- [Contributions disponibles](#contributions-disponibles)
+- [🇫🇷 Contributions disponibles](#-contributions-disponibles)
 
-## Avantages
+## 🧠 Avantages
 
 - 🎯 Créer des règles optimisées pour Cursor
 - 🤝 Partagées et validées par la communauté
 - 📋 Structure uniforme pour tous les contributeurs
 - 🚀 Simple et rapide pour contribuer
 
-## Fonctionnalités principales
+### Des règles optimisées en 3 minutes
 
 L'essence est très simple.
 
@@ -53,7 +54,7 @@ flowchart LR
     linkStyle 0,1,2,3 stroke-width:2px,stroke:#888888,color:black
 ```
 
-## Comment installer les règles AIDD ?
+## 👨‍💻 Comment installer les règles AIDD ?
 
 ### Télécharger l'extension "AI-Driven Dev Rules"
 
@@ -66,7 +67,7 @@ flowchart LR
 
 Vidéo YouTube en préparation...
 
-## Bien démarrer
+## 🚀 Bien démarrer
 
 Contribuer aux règles AI-Driven Dev est TRÈS simple et direct.
 
@@ -84,23 +85,13 @@ Bonus:
 Vérifie l'application des règles.
 ```
 
-## Ajouter vos règles
+## ✅ Ajouter vos règles
 
 ### Structure de nommage (à plat)
 
 Toutes les règles sont stockées dans un dossier dédié appelé `.cursor/rules`.
 
 La structure suivante est utilisée, selon le format :
-
-| Partie | Description | Obligatoire |
-| ------ | ----------- | ----------- |
-| `3` | Numéro catégorie | ✅ |
-| `react` | Nom | ✅ |
-| `@19.1` | Version | Optionnel |
-| `-hooks` | Sous-partie spécifique | Optionnel |
-| `.mdc` | Extension pour Cursor | ✅ |
-
-Pattern:
 
 ```text
 #-rule-name[@version][-specificity].mdc
@@ -115,6 +106,18 @@ Exemples:
 3-react@19-hook.mdc
 3-react@19.1-hook.mdc
 ```
+
+Tableau de correspondance:
+
+| Partie | Description | Obligatoire |
+| ------ | ----------- | ----------- |
+| `3` | Numéro catégorie | ✅ |
+| `react` | Nom | ✅ |
+| `@19.1` | Version | Optionnel |
+| `-hooks` | Sous-partie spécifique | Optionnel |
+| `.mdc` | Extension pour Cursor | ✅ |
+
+### Organisation des dossiers
 
 Les règles sont organisées par dossiers, chaque dossier représentant une catégorie.
 
@@ -156,9 +159,7 @@ With new specs:
 - 
 ```
 
-Et... voilà 🇫🇷
-
-## Contributions disponibles
+## 🇫🇷 Contributions disponibles
 
 - Partager ses règles
 - Améliorer les règles existantes
