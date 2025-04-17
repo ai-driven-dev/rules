@@ -16,7 +16,8 @@ Partagez vos règles IA personnalisées avec la communauté.
   - [Télécharger l'extension "AI-Driven Dev Rules"](#télécharger-lextension-ai-driven-dev-rules)
   - [Utiliser l'extension](#utiliser-lextension)
 - [🚀 Bien démarrer](#-bien-démarrer)
-- [Comment coder avec des règles ?](#comment-coder-avec-des-règles-)
+  - [Comment coder avec des règles ?](#comment-coder-avec-des-règles-)
+  - [Démo Vidéo](#démo-vidéo)
 - [✅ Ajouter vos règles](#-ajouter-vos-règles)
   - [Structure de nommage (à plat)](#structure-de-nommage-à-plat)
   - [Organisation des dossiers](#organisation-des-dossiers)
@@ -65,13 +66,11 @@ flowchart LR
 
 ### Utiliser l'extension
 
-Vidéo YouTube en préparation...
+Demain...Vendredi 18 avril 2025.
 
 ## 🚀 Bien démarrer
 
-Contribuer aux règles AI-Driven Dev est TRÈS simple et direct.
-
-## Comment coder avec des règles ?
+### Comment coder avec des règles ?
 
 1. Ouvrir le mode Agent de votre IDE (comme Cursor).
 2. Donner du contexte avec votre prompt: `use real users in @admin.tsx from @users.controller.ts`
@@ -85,7 +84,13 @@ Bonus:
 Vérifie l'application des règles.
 ```
 
+### Démo Vidéo
+
+Demain...Vendredi 18 avril 2025.
+
 ## ✅ Ajouter vos règles
+
+Contribuer aux règles AI-Driven Dev est TRÈS simple et direct.
 
 ### Structure de nommage (à plat)
 
