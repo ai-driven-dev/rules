@@ -2,76 +2,74 @@
 
 ## Purpose
 
-This document explains why this project exists, the problems it solves, how it should work, and the user experience goals.
+This document explains why the "AI-Driven Dev Rules" project exists, the problems it solves, how it should work, and the user experience goals, focusing on its role as a community-driven rule-sharing platform.
 
 ## Problem Statement
 
-Developers often need to explore GitHub repositories to understand code structure or download specific files or directories. Currently, this requires navigating to GitHub in a browser, browsing the repository structure, and manually downloading files one by one or cloning the entire repository. This process is time-consuming and interrupts the development workflow, especially when only specific files are needed.
+AI development tools require clear, structured rules to operate effectively. Maintaining and distributing these rules across different projects and teams is challenging. Developers need a standardized way to access, share, and update high-quality rule sets curated by experts within specific domains (e.g., React, Python).
 
 ## Target Users
 
-- **VS Code Developers**: Programmers who use VS Code as their primary IDE and need to reference or use code from GitHub repositories
-- **Project Managers**: Team members who need to review code structure without deep technical knowledge
-- **Educators/Students**: People learning programming who need to access example code from GitHub
+- **AI Tool Users**: Developers using AI-assisted coding tools who need reliable rule sets for specific languages/frameworks.
+- **Rule Contributors/Experts**: Experienced developers (e.g., strong React developers) who want to define and share best-practice rules for their domain.
+- **Development Teams**: Teams looking to standardize AI tool usage and rules across their projects.
 
 ## User Needs
 
-- Seamless exploration of GitHub repositories without leaving VS Code
-- Ability to selectively choose files rather than downloading entire repositories
-- Visual representation of repository structure similar to local file explorer
-- Efficient way to download multiple selected files at once
-- Minimal setup and configuration requirements
+- **Access to Curated Rules**: Ability to easily find and download validated rule sets for various technologies.
+- **Community Contribution**: A platform for experts to propose, review, and maintain rule sets.
+- **Seamless Integration**: Effortless application of downloaded rules within their development environment (VS Code).
+- **Update Mechanism**: Notification and easy updating when rule sets are improved by the community.
+- **Flexibility**: Support for rules stored in different GitHub repositories (public main repo, other public/private repos).
+- **Security**: Ability to use Personal Access Tokens (PAT) for accessing rules in private repositories.
 
 ## User Experience Goals
 
-- **Intuitive Interface**: The extension should feel like a natural part of VS Code
-- **Minimal Friction**: Users should be able to start exploring repositories with minimal steps
-- **Visual Clarity**: Repository structure should be clearly displayed with appropriate icons
-- **Responsive Feedback**: Users should receive clear feedback during operations
-- **Seamless Integration**: Downloaded files should integrate naturally with the current project
+- **Discoverability**: Easy browsing and searching for relevant rule sets.
+- **Trust**: Confidence in the quality and validation process of the rules provided.
+- **Simplicity**: Straightforward process for selecting and downloading rules.
+- **Transparency**: Clear information about rule sources, contributors, and update history.
+- **Efficiency**: Quick application and updating of rules within the VS Code workflow.
 
-## Key Features
+## Key Features (Current & Planned)
 
-- **Repository Browser**: Tree view displaying GitHub repository structure
-- **File Selection**: Checkbox interface for selecting multiple files
-- **Bulk Download**: Ability to download all selected files at once
-- **Directory Preservation**: Maintain directory structure when downloading files
-- **Visual Indicators**: Clear icons for different file types and selection states
+- **Rule Repository Browser**: Interface within VS Code to browse rule sets available in configured GitHub repositories.
+- **Repository Configuration**: Ability to specify the main rule repository and add other public/private repositories (using PAT for private).
+- **Rule Selection**: Interface to select specific rule files or directories to download.
+- **Rule Download**: Mechanism to download selected rules into the user's current workspace, preserving structure.
+- **(V2) Update Notification**: System to inform users when downloaded rules have updates available in the source repository.
+- **(V2) Rule Update Mechanism**: Functionality to apply updates to previously downloaded rules.
 
 ## User Flows
 
-1. **Exploring a Repository**
-   - User clicks on GitHub Explorer view in VS Code sidebar
-   - User enters a GitHub repository URL
-   - Extension displays the repository structure in a tree view
-   - User can expand/collapse directories to explore the structure
+1.  **Discovering and Downloading Rules**:
+    *   User opens the AI-Driven Dev Rules view in VS Code.
+    *   User configures the source repository (or uses default). Adds PAT if needed for private repos.
+    *   Extension displays available rule sets/files from the repository.
+    *   User selects desired rules.
+    *   User initiates download.
+    *   Rules are downloaded into the user's workspace.
 
-2. **Downloading Files**
-   - User navigates repository structure in the tree view
-   - User selects files by checking checkboxes next to file names
-   - User clicks "Download Selected" button
-   - Extension downloads files and saves them to the current project
-   - User receives confirmation of successful download
+2.  **Contributing Rules (Conceptual)**:
+    *   Expert developer creates/updates rules in a designated GitHub repository.
+    *   (Future) Potential review/validation process within the community/platform.
+
+3.  **Updating Rules (V2)**:
+    *   Extension periodically checks configured repositories for updates to downloaded rules.
+    *   User is notified of available updates.
+    *   User chooses to apply updates.
 
 ## Success Metrics
 
-- **Usability**: Users can successfully explore and download files within 1 minute of first use
-- **Efficiency**: Reduce time to access specific GitHub files by 70% compared to manual browsing
-- **Adoption**: Active users continue to use the extension after first week
-- **Performance**: Repository structure loads within 3 seconds for average-sized repositories
-- **Error Rate**: Less than 5% of download operations result in errors
-
-## Competitive Analysis
-
-- **GitHub Web Interface**: More comprehensive but requires context switching from VS Code
-- **GitHub Pull Extension**: Allows pulling entire repositories but lacks selective file download
-- **GitHub Repositories Extension**: Focuses on repository management rather than file exploration
-- **GitLens**: Excellent for Git operations but not optimized for exploring external repositories
+- **Rule Set Availability**: Growing number of high-quality rule sets for popular technologies.
+- **Community Engagement**: Active contributions and reviews of rule sets (future metric).
+- **Adoption**: Number of developers actively using the extension to manage rules.
+- **Update Rate**: Frequency with which users update their downloaded rules (V2 metric).
+- **User Satisfaction**: Positive feedback regarding the ease of finding and applying rules.
 
 ## Future Considerations
 
-- Authentication support for accessing private repositories
-- Search and filtering capabilities within repositories
-- Preview functionality for code files
-- Integration with GitHub issues and pull requests
-- Support for other Git providers like GitLab or Bitbucket
+- Formalized rule validation and review process.
+- Advanced search and filtering for rules.
+- Versioning support for rule sets.
+- Integration with specific AI development tools beyond generic rule provisioning.

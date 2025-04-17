@@ -3,7 +3,7 @@
  * @returns HTML content
  */
 export function getWelcomeViewContent(): string {
-    return `<!DOCTYPE html>
+  return `<!DOCTYPE html>
         <html lang="en">
         <head>
             <meta charset="UTF-8">
@@ -130,15 +130,15 @@ export function getWelcomeViewContent(): string {
             
             <div class="section">
                 <div class="description">
-                    Browse and download files from GitHub repositories directly within VS Code.
+                    Browse + Download + Sync project rules from GitHub repositories.
                 </div>
                 
                 <div class="action-container">
                     <button class="action-button" onclick="setRepository()">
-                        Connect to Repository
+                        Add new repository
                     </button>
                     <button class="action-button secondary-button" onclick="showDocumentation()">
-                        View Documentation
+                        Documentation
                     </button>
                 </div>
             </div>
@@ -147,19 +147,19 @@ export function getWelcomeViewContent(): string {
                 <h2>Getting Started</h2>
                 <div class="info-item">
                     <div class="number">1</div>
-                    <div class="content">Click on <strong>Connect to Repository</strong> to connect to a GitHub repository</div>
+                    <div class="content"><strong>Connect to one or multiple repositories</strong</div>
                 </div>
                 <div class="info-item">
                     <div class="number">2</div>
-                    <div class="content">Browse through the repository file structure</div>
+                    <div class="content">Select elements</div>
                 </div>
                 <div class="info-item">
                     <div class="number">3</div>
-                    <div class="content">Select files you want to download by using the checkbox</div>
+                    <div class="content">Sync theme locally</div>
                 </div>
                 <div class="info-item">
                     <div class="number">4</div>
-                    <div class="content">Click the download button in the view title to save files to your local workspace</div>
+                    <div class="content">Use and commit to Git!</div>
                 </div>
             </div>
             
@@ -192,7 +192,7 @@ export function getWelcomeViewContent(): string {
                     });
                 }
                 
-                // Listen for messages from the extension
+                
                 window.addEventListener('message', event => {
                     const message = event.data;
                     
@@ -227,9 +227,9 @@ export function getWelcomeViewContent(): string {
                     });
                 }
                 
-                // Tell the extension we're ready to receive data
+                
                 vscode.postMessage({ command: 'ready' });
             </script>
         </body>
         </html>`;
-} 
+}

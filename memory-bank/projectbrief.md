@@ -2,64 +2,69 @@
 
 ## Overview
 
-This document serves as the foundation for the project, defining core requirements and goals. It is the source of truth for project scope.
+This document serves as the foundation for the project, defining core requirements and goals. It is the source of truth for the high-level project scope. For detailed product context, user needs, and features, refer to `productContext.md`.
 
 ## Project Name
 
-GitHub Explorer VS Code Extension
+AI-Driven Dev Rules VS Code Extension (aidd)
 
 ## Project Description
 
-A VS Code extension that allows users to browse and download files from public GitHub repositories directly within the VS Code explorer interface.
+A VS Code extension enabling developers to discover, download, and manage community-curated rule sets for AI-assisted development tools directly within their IDE. It facilitates the sharing and consumption of best-practice rules stored in GitHub repositories.
 
 ## Core Requirements
 
-- Connect to public GitHub repositories via GitHub API
-- Display repository file structure in a tree view within VS Code explorer
-- Allow selection of files via checkboxes
-- Enable bulk downloading of selected files to the current project
+- Connect to specified GitHub repositories (public or private via PAT) containing rule sets.
+- Display the structure (files/directories) of rule sets within a VS Code view.
+- Allow users to select specific rules or rule directories for download.
+- Download selected rules into the user's current workspace, preserving structure.
+- Provide a mechanism for configuring source repositories and authentication (PAT).
 
 ## Goals
 
-- Simplify the process of exploring GitHub repositories
-- Provide an intuitive interface for browsing repository contents
-- Enable easy file selection and download
-- Maintain a clean, maintainable codebase
+- **Simplify Rule Access**: Make it easy for developers to find and use high-quality rules for AI tools.
+- **Facilitate Rule Sharing**: Provide a platform for the community to distribute and maintain rule sets.
+- **Seamless Integration**: Integrate rule management smoothly into the VS Code workflow.
+- **Maintainable Extension**: Build a robust and well-structured VS Code extension.
 
 ## Scope
 
 ### In Scope
 
-- Public GitHub repositories access
-- File and directory structure display
-- Checkbox selection for files
-- Bulk download functionality
-- Tree view integration with VS Code explorer
+- Browsing rule sets in configured GitHub repositories (public/private with PAT).
+- Displaying rule file/directory structure in a VS Code TreeView.
+- Selection mechanism for rules/directories.
+- Downloading selected rules to the local workspace.
+- Configuration of source repositories and GitHub PAT via VS Code settings.
+- Basic error handling for API access and downloads.
+- Local recursive selection logic in the UI.
 
 ### Out of Scope
 
-- Private repository access (no authentication)
-- File editing or direct manipulation of GitHub content
-- GitHub repository management features
-- Integration with other Git providers
+- Direct editing or creation of rules within the extension.
+- Advanced rule validation or linting features.
+- Real-time collaboration features for rule editing.
+- Integration with specific AI tools beyond providing the rules.
+- Complex community management features (voting, detailed contributor profiles, etc.).
+- (Initially) Automated rule update mechanism (Planned for V2).
 
-## Timeline
+## Timeline (Initial Estimate - Subject to Revision)
 
-- Initial Setup: 1 day
-- Core API Integration: 2 days
-- UI Implementation: 2 days
-- Download Functionality: 1 day
-- Testing and Refinement: 1 day
+- Core Setup & API Integration: 3 days
+- UI Implementation (TreeView, Selection): 2 days
+- Download & Configuration Functionality: 2 days
+- Testing and Refinement: 2 days
 
 ## Stakeholders
 
-- Developers: Primary users who need to explore GitHub repositories
-- Project Maintainer: Responsible for extension development and maintenance
+- **Rule Consumers**: Developers using AI tools needing rules.
+- **Rule Contributors**: Experts defining and sharing rules via GitHub.
+- **Project Maintainer**: Responsible for extension development and maintenance.
 
 ## Success Criteria
 
-- Extension successfully displays GitHub repository structure
-- Users can select files with checkboxes
-- Selected files can be downloaded to the current project
-- Extension follows VS Code UX guidelines
-- Code is clean, well-documented, and maintainable
+- Extension successfully connects to configured repositories and displays rule structures.
+- Users can select and download rules as expected.
+- Configuration of repositories and PAT functions correctly.
+- The extension is stable and performs reasonably well.
+- Codebase is maintainable and follows good practices.

@@ -1,33 +1,55 @@
 import * as vscode from "vscode";
-import { IGitHubApiService } from "../api/github";
-import { IDownloadService } from "../services/download";
-import { ILogger } from "../services/logger";
-import { IStorageService } from "../services/storage";
-import { ExplorerView } from "../views/explorer/explorerView";
+import type { IGitHubApiService } from "../api/github";
+import type { IDownloadService } from "../services/download";
+import type { ILogger } from "../services/logger";
+import type { IStorageService } from "../services/storage";
+import type { ExplorerView } from "../views/explorer/explorerView";
+import type { ExplorerTreeItem } from "../views/explorer/treeItem";
 
-/**
- * Register all commands for the extension
- * @param context Extension context
- * @param explorerView Explorer view
- * @param githubService GitHub API service
- * @param logger Logger service
- * @param storageService Storage service
- * @param downloadService Download service
- */
-export function registerCommands(
-  context: vscode.ExtensionContext,
-  explorerView: ExplorerView,
-  githubService: IGitHubApiService,
-  logger: ILogger,
-  storageService: IStorageService,
-  downloadService: IDownloadService
-): void {
-  // Command to show settings
+interface CommandDependencies {
+  context: vscode.ExtensionContext;
+  explorerView: ExplorerView;
+  githubService: IGitHubApiService;
+  logger: ILogger;
+  storageService: IStorageService;
+  downloadService: IDownloadService;
+}
+
+export function registerCommands(dependencies: CommandDependencies): void {
+  const { context, explorerView, logger, storageService, downloadService } =
+    dependencies;
+
+  context.subscriptions.push(
+    vscode.commands.registerCommand("aidd.setRepository", () => {
+      explorerView.promptForRepository();
+    }),
+  );
+
+  context.subscriptions.push(
+    vscode.commands.registerCommand("aidd.refresh", () => {
+      explorerView.refreshView();
+    }),
+  );
+
+  context.subscriptions.push(
+    vscode.commands.registerCommand(
+      "aidd.toggleSelection",
+      (item: ExplorerTreeItem) => {
+        explorerView.handleToggleSelectionCommand(item);
+      },
+    ),
+  );
+
+  context.subscriptions.push(
+    vscode.commands.registerCommand("aidd.downloadSelected", () => {
+      explorerView.downloadSelectedFiles();
+    }),
+  );
+
   context.subscriptions.push(
     vscode.commands.registerCommand("aidd.showSettings", async () => {
       logger.debug("Show settings command executed");
 
-      // Show settings in quick pick
       const settings = storageService.getSettings();
 
       const items: vscode.QuickPickItem[] = [
@@ -72,23 +94,21 @@ export function registerCommands(
         return;
       }
 
-      // Handle selection
       if (selectedItem.label.includes("Maximum Recent Repositories")) {
         const value = await vscode.window.showInputBox({
           prompt: "Enter maximum number of recent repositories",
           value: String(settings.maxRecentRepositories),
           validateInput: (value) => {
-            const number = parseInt(value, 10);
-            if (isNaN(number) || number < 1) {
+            const number = Number.parseInt(value, 10);
+            if (Number.isNaN(number) || number < 1) {
               return "Must be a positive number";
             }
             return null;
           },
         });
-
         if (value) {
           storageService.updateSettings({
-            maxRecentRepositories: parseInt(value, 10),
+            maxRecentRepositories: Number.parseInt(value, 10),
           });
         }
       } else if (selectedItem.label.includes("Maximum Concurrent Downloads")) {
@@ -96,21 +116,21 @@ export function registerCommands(
           prompt: "Enter maximum number of concurrent downloads",
           value: String(settings.maxConcurrentDownloads),
           validateInput: (value) => {
-            const number = parseInt(value, 10);
-            if (isNaN(number) || number < 1) {
+            const number = Number.parseInt(value, 10);
+            if (Number.isNaN(number) || number < 1) {
               return "Must be a positive number";
             }
             return null;
           },
         });
-
         if (value) {
-          storageService.updateSettings({
-            maxConcurrentDownloads: parseInt(value, 10),
-          });
+          const newMax = Number.parseInt(value, 10);
+          storageService.updateSettings({ maxConcurrentDownloads: newMax });
 
-          // Update download service settings
-          downloadService.updateSettings(storageService.getSettings());
+          downloadService.updateSettings({
+            ...settings,
+            maxConcurrentDownloads: newMax,
+          });
         }
       } else if (selectedItem.label.includes("Show Welcome On Startup")) {
         storageService.updateSettings({
@@ -118,58 +138,65 @@ export function registerCommands(
         });
       } else if (selectedItem.label.includes("Auto Refresh")) {
         if (settings.autoRefreshInterval) {
-          // Toggle off
-          storageService.updateSettings({
-            autoRefreshInterval: undefined,
-          });
+          storageService.updateSettings({ autoRefreshInterval: undefined });
         } else {
-          // Toggle on
           const value = await vscode.window.showInputBox({
             prompt: "Enter refresh interval in seconds",
             value: "60",
             validateInput: (value) => {
-              const number = parseInt(value, 10);
-              if (isNaN(number) || number < 10) {
+              const number = Number.parseInt(value, 10);
+              if (Number.isNaN(number) || number < 10) {
                 return "Must be at least 10 seconds";
               }
               return null;
             },
           });
-
           if (value) {
             storageService.updateSettings({
-              autoRefreshInterval: parseInt(value, 10),
+              autoRefreshInterval: Number.parseInt(value, 10),
             });
           }
         }
+
+        vscode.window.showInformationMessage(
+          "Auto-refresh setting updated. Restart VS Code for changes to take full effect if needed.",
+        );
       }
-    })
+    }),
   );
 
-  // Command to clear all storage
   context.subscriptions.push(
     vscode.commands.registerCommand("aidd.clearStorage", async () => {
       logger.debug("Clear storage command executed");
-
       const confirm = await vscode.window.showWarningMessage(
         "This will clear all GitHub Explorer storage, including recent repositories and settings. Are you sure?",
         { modal: true },
-        "Yes"
+        "Yes",
       );
-
       if (confirm === "Yes") {
         storageService.clearStorage();
         vscode.window.showInformationMessage(
-          "GitHub Explorer storage has been cleared."
+          "GitHub Explorer storage has been cleared.",
         );
+
+        vscode.commands.executeCommand("aidd.refresh");
       }
-    })
+    }),
   );
 
-  // Command to show output channel
   context.subscriptions.push(
     vscode.commands.registerCommand("aidd.showOutput", () => {
       logger.show();
-    })
+    }),
+  );
+
+  context.subscriptions.push(
+    vscode.commands.registerCommand("aidd.openSettings", () => {
+      logger.debug("Open settings command executed");
+      vscode.commands.executeCommand(
+        "workbench.action.openSettings",
+        "@ext:ai-driven-dev-rules aidd.",
+      );
+    }),
   );
 }

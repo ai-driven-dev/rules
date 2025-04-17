@@ -1,0 +1,6 @@
+# pre-commit:
+#   commands:
+#     check:
+#       glob: "*.{ts,json}"
+#       run: npx biome check --write --unsafe --colors=off --no-errors-on-unmatched --files-ignore-unknown=true .
+#       stage_fixed: true

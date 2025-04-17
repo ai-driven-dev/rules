@@ -1,0 +1,33 @@
+{
+  "formatter": {
+    "indentStyle": "space"
+  },
+  "files": {
+    "ignore": ["out/*.js", "**/*.test.ts"]
+  },
+  "linter": {
+    "rules": {
+      "correctness": {
+        "noUnusedVariables": {
+          "level": "info",
+          "fix": "none"
+        }
+      },
+      "suspicious": {
+        "noExplicitAny": {
+          "level": "off"
+        }
+      },
+      "style": {
+        "useConst": {
+          "level": "info",
+          "fix": "unsafe"
+        },
+        "useTemplate": {
+          "level": "info",
+          "fix": "safe"
+        }
+      }
+    }
+  }
+}

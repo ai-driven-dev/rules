@@ -1,0 +1,6 @@
+# Code Sizes Rules
+
+- Split with SRP principles
+- Best efforts:
+  - Max file length: 300 lines
+  - Max function length: 50 lines

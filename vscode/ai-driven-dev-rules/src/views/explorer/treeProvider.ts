@@ -1,289 +1,346 @@
 import * as vscode from "vscode";
-import { IGitHubApiService } from "../../api/github";
-import { GithubRepository } from "../../api/types";
-import { ILogger } from "../../services/logger";
-import { ExplorerTreeItem, getSelectedItems } from "./treeItem";
+import type { IGitHubApiService } from "../../api/github";
+import type { GithubContent, GithubRepository } from "../../api/types";
+import type { IExplorerStateService } from "../../services/explorerStateService";
+import type { ILogger } from "../../services/logger";
+import type { ISelectionService } from "../../services/selection";
+import type { ExplorerTreeItem } from "./treeItem";
+import { TreeItemFactory } from "./treeItemFactory";
 
-/**
- * Tree data provider for GitHub Explorer
- */
 export class ExplorerTreeProvider
   implements vscode.TreeDataProvider<ExplorerTreeItem>
 {
   private _onDidChangeTreeData = new vscode.EventEmitter<
-    ExplorerTreeItem | undefined | null | void
+    ExplorerTreeItem | undefined | null | undefined
   >();
   readonly onDidChangeTreeData = this._onDidChangeTreeData.event;
 
-  private _onDidChangeCheckboxState = new vscode.EventEmitter<
-    vscode.TreeCheckboxChangeEvent<ExplorerTreeItem>
-  >();
-  readonly onDidChangeCheckboxState = this._onDidChangeCheckboxState.event;
+  private readonly initialLoadDepth = 3;
+  private readonly recursiveLoadDepth = 5;
+  private treeItemFactory: TreeItemFactory;
 
-  private repository: GithubRepository | null = null;
-  private rootItems: ExplorerTreeItem[] = [];
-
-  // Cache to avoid refetching the same data
-  private loadingPaths = new Map<string, Promise<ExplorerTreeItem[]>>();
-
-  /**
-   * Create a tree data provider
-   * @param githubService GitHub API service
-   * @param logger Logger service
-   */
   constructor(
     private readonly githubService: IGitHubApiService,
-    private readonly logger: ILogger
-  ) {}
+    private readonly logger: ILogger,
+    private readonly selectionService: ISelectionService,
+    private readonly stateService: IExplorerStateService,
+    extensionPath: string,
+  ) {
+    this.treeItemFactory = new TreeItemFactory(extensionPath, logger);
 
-  /**
-   * Get selected items
-   * @returns Selected items
-   */
-  public getSelectedItems(): ExplorerTreeItem[] {
-    return getSelectedItems(this.rootItems);
+    this.selectionService.onDidChangeSelection(() => {
+      this.logger.debug("Selection changed, firing onDidChangeTreeData");
+      this._onDidChangeTreeData.fire(undefined);
+    });
   }
 
-  /**
-   * Set repository to display
-   * @param repository Repository information
-   */
   public async setRepository(repository: GithubRepository): Promise<void> {
-    this.repository = repository;
-    this.rootItems = [];
-    this.loadingPaths.clear();
-    this._onDidChangeTreeData.fire();
-
-    try {
-      await this.getRootItems();
-    } catch (error) {
-      this.logger.error(
-        `Failed to load repository: ${repository.owner}/${repository.name}`,
-        error
-      );
-      throw error;
-    }
+    this.stateService.setRepository(repository);
+    this.selectionService.clearSelection();
+    this._onDidChangeTreeData.fire(undefined);
   }
 
-  /**
-   * Refresh the tree view
-   * @param item Optional item to refresh, or undefined to refresh entire tree
-   */
+  /** Returns the currently loaded repository information */
+  public getCurrentRepository(): GithubRepository | null {
+    return this.stateService.getRepository();
+  }
+
   public refresh(item?: ExplorerTreeItem): void {
     if (item) {
-      // Remove cached items for this path
-      this.loadingPaths.delete(item.content.path);
+      if (item.content.type === "dir") {
+        this.stateService.deleteLoadingPromise(item.content.path);
+      }
+      this._onDidChangeTreeData.fire(item);
     } else {
-      // Clear all cached items
-      this.loadingPaths.clear();
-      this.rootItems = [];
+      const currentRepo = this.stateService.getRepository();
+      this.stateService.resetState();
+      this.stateService.setRepository(currentRepo);
+      this._onDidChangeTreeData.fire(undefined);
     }
-
-    this._onDidChangeTreeData.fire(item);
   }
 
-  /**
-   * Handle checkbox changes
-   * @param item Item that was checked/unchecked
-   * @param checked Whether the item was checked
-   */
-  public handleCheckboxChange(item: ExplorerTreeItem, checked: boolean): void {
-    // Update selection state
-    item.selected = checked;
+  public async handleCheckboxChange(
+    item: ExplorerTreeItem,
+    checked: boolean, // Ce paramètre semble toujours inutilisé, mais on le garde pour la signature
+  ): Promise<void> {
+    const itemPath = item.content.path;
+    this.logger.debug(
+      `handleCheckboxChange called for ${itemPath}, checked: ${checked}`,
+    );
 
-    // Update children if it's a directory
     if (item.content.type === "dir") {
-      item.updateChildrenSelection(checked);
+      this.logger.info(
+        `Directory checkbox toggled: ${itemPath}. Triggering local recursive selection.`,
+      );
+      // Gère le dossier ET ses descendants
+      this.selectionService.toggleRecursiveSelection(itemPath);
+    } else {
+      this.logger.debug(
+        `File checkbox toggled: ${itemPath}. Triggering simple selection.`,
+      );
+      // Gère uniquement le fichier
+      this.selectionService.toggleSelection(itemPath);
     }
-
-    // Update parent selection state
-    item.updateParentSelection();
-
-    // Fire event
-    this._onDidChangeCheckboxState.fire({
-      items: [
-        [
-          item,
-          item.selected
-            ? vscode.TreeItemCheckboxState.Checked
-            : vscode.TreeItemCheckboxState.Unchecked,
-        ],
-      ],
-    });
-
-    // Update tree view
-    this.refresh(item);
+    // L'événement onDidChangeSelection déclenché par le service
+    // provoquera la mise à jour de l'UI via _onDidChangeTreeData.fire()
   }
 
-  /**
-   * Get tree item for element
-   * @param element Tree item
-   * @returns Tree item
-   */
   public getTreeItem(element: ExplorerTreeItem): vscode.TreeItem {
+    const isSelected = this.selectionService.isSelected(element.content.path);
+
+    if (typeof element.updateSelectionState === "function") {
+      element.updateSelectionState(isSelected);
+    } else {
+      this.logger.warn(
+        `updateSelectionState method missing on item: ${element.label}`,
+      );
+      element.checkboxState = isSelected
+        ? vscode.TreeItemCheckboxState.Checked
+        : vscode.TreeItemCheckboxState.Unchecked;
+    }
     return element;
   }
 
-  /**
-   * Get children of element
-   * @param element Parent element, or undefined for root
-   * @returns Array of child elements
-   */
   public async getChildren(
-    element?: ExplorerTreeItem
+    element?: ExplorerTreeItem,
   ): Promise<ExplorerTreeItem[]> {
-    try {
-      if (!this.repository) {
-        return [];
-      }
-
-      if (!element) {
-        // Root level
-        return this.getRootItems();
-      } else if (element.content.type === "dir") {
-        // Directory
-        return this.getDirectoryItems(element);
-      } else {
-        // File - no children
-        return [];
-      }
-    } catch (error) {
-      this.logger.error("Error fetching tree items", error);
-      throw error;
-    }
-  }
-
-  /**
-   * Get root items
-   * @returns Array of root items
-   */
-  private async getRootItems(): Promise<ExplorerTreeItem[]> {
-    if (this.rootItems.length > 0) {
-      return this.rootItems;
-    }
-
-    if (!this.repository) {
+    const repository = this.stateService.getRepository();
+    if (!repository) {
+      this.logger.debug("getChildren called with no repository set in state.");
       return [];
     }
 
+    if (!element) {
+      const rootItems = this.stateService.getRootItems();
+      if (rootItems) {
+        this.logger.debug("Returning cached root items from state.");
+        return rootItems;
+      }
+      if (this.stateService.isRootLoading()) {
+        this.logger.debug("Root is loading (state), returning placeholder.");
+        return [this.treeItemFactory.createLoadingPlaceholder()];
+      }
+
+      this.logger.debug(
+        "Root not loaded, starting background load and returning placeholder.",
+      );
+      this.loadRootInBackground(repository);
+      return [this.treeItemFactory.createLoadingPlaceholder()];
+    }
+
+    if (element.content.type === "dir") {
+      const elementPath = element.content.path;
+      this.logger.debug(`Getting children for directory: ${elementPath}`);
+
+      const childrenFromMap = this.findChildrenInMap(elementPath);
+      if (childrenFromMap.length > 0) {
+        this.logger.debug(
+          `Found ${childrenFromMap.length} pre-loaded children in map for ${elementPath}.`,
+        );
+
+        element.children = childrenFromMap;
+        return childrenFromMap;
+      }
+
+      const loadingPromise = this.stateService.getLoadingPromise(elementPath);
+      if (loadingPromise) {
+        this.logger.debug(
+          `Already loading children for ${elementPath}, returning existing promise.`,
+        );
+
+        return loadingPromise;
+      }
+
+      this.logger.debug(
+        `No pre-loaded children found for ${elementPath}. Fetching directory items.`,
+      );
+      return this.fetchAndCacheDirectoryItems(repository, element);
+    }
+
+    this.logger.debug(
+      `Item is a file, returning no children: ${element.content.path}`,
+    );
+    return [];
+  }
+
+  public getParent(
+    element: ExplorerTreeItem,
+  ): vscode.ProviderResult<ExplorerTreeItem> {
+    return element.parent;
+  }
+
+  private async loadRootInBackground(
+    repository: GithubRepository,
+  ): Promise<void> {
+    if (
+      this.stateService.isRootLoading() ||
+      this.stateService.getRootItems() !== null
+    ) {
+      this.logger.debug(
+        "Skipping background load: already loading or already loaded (state).",
+      );
+      return;
+    }
+
+    this.stateService.setRootLoading(true);
+    this.logger.info(
+      `Starting background load for root items (depth ${this.initialLoadDepth})...`,
+    );
+
     try {
-      const result = await this.githubService.fetchRepositoryContent(
-        this.repository
+      const result = await this.githubService.fetchRepositoryContentRecursive(
+        repository,
+        "",
+        this.initialLoadDepth,
       );
 
       if (!result.success) {
-        vscode.window.showErrorMessage(
-          `Error fetching repository contents: ${result.error.message}`
+        this.logger.error(
+          `Error fetching initial recursive items: ${result.error.message}`,
         );
-        return [];
-      }
 
-      this.rootItems = result.data.map(
-        (content) => new ExplorerTreeItem(content)
-      );
-      return this.rootItems;
+        this.stateService.setRootItems([
+          this.treeItemFactory.createErrorPlaceholder(result.error),
+        ]);
+        this.stateService.clearItemMap();
+      } else {
+        this.logger.info(
+          `Successfully fetched ${result.data.length} items recursively (depth ${this.initialLoadDepth}). Processing...`,
+        );
+
+        this.processAndCacheItems(result.data);
+
+        const rootItems = Array.from(
+          this.stateService.getAllItems().values(),
+        ).filter((item) => !item.content.path.includes("/"));
+        this.stateService.setRootItems(rootItems);
+        this.logger.info(
+          `Processed ${this.stateService.getAllItems().size} total items into map. ${rootItems.length} root items identified.`,
+        );
+      }
     } catch (error) {
       this.logger.error(
-        `Error fetching root items for ${this.repository.owner}/${this.repository.name}`,
-        error
+        `Exception fetching root items for ${repository.owner}/${repository.name}`,
+        error,
       );
-      vscode.window.showErrorMessage(
-        `Error fetching repository contents: ${
-          error instanceof Error ? error.message : String(error)
-        }`
-      );
-      return [];
+      this.stateService.setRootItems([
+        this.treeItemFactory.createErrorPlaceholder(error),
+      ]);
+      this.stateService.clearItemMap();
+    } finally {
+      this.stateService.setRootLoading(false);
+      this._onDidChangeTreeData.fire(undefined);
+      this.logger.info("Background load for root items finished.");
     }
   }
 
-  /**
-   * Get directory items
-   * @param parent Parent directory item
-   * @returns Array of child items
-   */
-  private async getDirectoryItems(
-    parent: ExplorerTreeItem
+  private async fetchAndCacheDirectoryItems(
+    repository: GithubRepository,
+    parent: ExplorerTreeItem,
   ): Promise<ExplorerTreeItem[]> {
     const path = parent.content.path;
-
-    // Check if we're already loading this directory
-    const loadingPromise = this.loadingPaths.get(path);
-    if (loadingPromise) {
-      return loadingPromise;
-    }
-
-    // If children are already loaded, return them
-    if (parent.children.length > 0) {
-      return parent.children;
-    }
-
-    if (!this.repository) {
-      return [];
-    }
-
-    // Start loading children
-    const promise = (async () => {
+    const loadingPromise = (async () => {
+      this.logger.debug(`Fetching children for directory: ${path}`);
       try {
         const result = await this.githubService.fetchRepositoryContent(
-          this.repository!,
-          path
+          repository,
+          path,
         );
 
         if (!result.success) {
-          vscode.window.showErrorMessage(
-            `Error fetching directory contents: ${result.error.message}`
+          this.logger.error(
+            `Error fetching directory contents for ${path}: ${result.error.message}`,
           );
-          return [];
+          return [this.treeItemFactory.createErrorPlaceholder(result.error)];
         }
 
-        // Create tree items for each content item
-        const items = result.data.map((content) => {
-          const item = new ExplorerTreeItem(content, parent);
-
-          // Inherit selection state from parent
-          if (parent.selected) {
-            item.selected = true;
-            item.updateIcon();
-          }
-
-          return item;
-        });
-
-        // Store children in parent
+        const items = this.processAndCacheItems(result.data, parent);
         parent.children = items;
-
+        this.logger.debug(
+          `Successfully fetched and cached ${items.length} children for ${path}`,
+        );
         return items;
       } catch (error) {
         this.logger.error(
-          `Error fetching directory contents for ${path}`,
-          error
+          `Exception fetching directory contents for ${path}`,
+          error,
         );
-        vscode.window.showErrorMessage(
-          `Error fetching directory contents: ${
-            error instanceof Error ? error.message : String(error)
-          }`
-        );
-        return [];
+        return [this.treeItemFactory.createErrorPlaceholder(error)];
       } finally {
-        // Remove from loading paths
-        this.loadingPaths.delete(path);
+        this.stateService.deleteLoadingPromise(path);
+        this.logger.debug(`Finished loading children for ${path}`);
       }
     })();
 
-    // Store promise in loading paths
-    this.loadingPaths.set(path, promise);
-
-    return promise;
+    this.stateService.setLoadingPromise(path, loadingPromise);
+    return loadingPromise;
   }
 
-  /**
-   * Get parent of element
-   * @param element Element to get parent of
-   * @returns Parent element
-   */
-  public getParent(
-    element: ExplorerTreeItem
-  ): vscode.ProviderResult<ExplorerTreeItem> {
-    return element.parent;
+  /** Helper to process fetched content, create items, and update state map */
+  private processAndCacheItems(
+    contents: GithubContent[],
+    explicitParent?: ExplorerTreeItem,
+  ): ExplorerTreeItem[] {
+    const createdItems: ExplorerTreeItem[] = [];
+    for (const content of contents) {
+      let parentToUse = explicitParent;
+      if (!parentToUse) {
+        const parentPath = content.path.includes("/")
+          ? content.path.substring(0, content.path.lastIndexOf("/"))
+          : undefined;
+        if (parentPath !== undefined) {
+          parentToUse = this.stateService.getItem(parentPath);
+        }
+      }
+
+      const newItem = this.treeItemFactory.createItem(content, parentToUse);
+
+      this.stateService.mapItem(newItem);
+      createdItems.push(newItem);
+    }
+    return createdItems;
+  }
+
+  private findChildrenInMap(parentPath: string): ExplorerTreeItem[] {
+    const children: ExplorerTreeItem[] = [];
+    const parentDepth = parentPath === "" ? 0 : parentPath.split("/").length;
+    const allItems = this.stateService.getAllItems();
+
+    for (const item of allItems.values()) {
+      const itemPath = item.content.path;
+
+      if (
+        itemPath !== parentPath &&
+        itemPath.startsWith(parentPath === "" ? "" : `${parentPath}/`)
+      ) {
+        const itemDepth = itemPath.split("/").length;
+        if (itemDepth === parentDepth + 1) {
+          children.push(item);
+        }
+      }
+    }
+
+    children.sort((a, b) => {
+      if (a.content.type === "dir" && b.content.type !== "dir") {
+        return -1;
+      }
+      if (a.content.type !== "dir" && b.content.type === "dir") {
+        return 1;
+      }
+      return a.content.name.localeCompare(b.content.name);
+    });
+    return children;
+  }
+
+  public async getTreeItemsByPaths(
+    paths: string[],
+  ): Promise<ExplorerTreeItem[]> {
+    const items = paths
+      .map((path) => this.stateService.getItem(path))
+      .filter((item): item is ExplorerTreeItem => !!item);
+    this.logger.debug(
+      `Retrieved ${items.length} items from state map for paths: ${paths.join(", ")}`,
+    );
+    return items;
   }
 }

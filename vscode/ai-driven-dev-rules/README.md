@@ -1,6 +1,14 @@
-# ai-driven-dev-rules README
+# AI-Driven Dev Rules (aidd)
 
-This is the README for your extension "ai-driven-dev-rules". After writing up a brief description, we recommend including the following sections.
+AI-Driven Dev Rules (aidd) est une extension VS Code qui permet d'explorer et de télécharger des fichiers depuis des dépôts GitHub publics directement dans l'explorateur de VS Code.
+
+## Fonctionnalités principales
+
+- Exploration de la structure des dépôts GitHub publics
+- Sélection de fichiers via des cases à cocher
+- Téléchargement en masse des fichiers sélectionnés
+- Intégration native dans l'explorateur de VS Code
+- Support optionnel d'un token GitHub pour augmenter les limites de taux de l'API
 
 ## Features
 
@@ -18,14 +26,9 @@ If you have any requirements or dependencies, add a section describing those and
 
 ## Extension Settings
 
-Include if your extension adds any VS Code settings through the `contributes.configuration` extension point.
-
-For example:
-
 This extension contributes the following settings:
 
-* `myExtension.enable`: Enable/disable this extension.
-* `myExtension.thing`: Set to `blah` to do something.
+*   `aidd.githubToken`: Votre token d'accès personnel (PAT) GitHub. Optionnel, mais recommandé pour augmenter les limites de taux de l'API GitHub et accéder aux dépôts privés si le token a les permissions nécessaires. Vous pouvez générer un token [ici](https://github.com/settings/personal-access-tokens). Ajoutez ce token via les paramètres VS Code (UI ou `settings.json`).
 
 ## Known Issues
 
