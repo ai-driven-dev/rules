@@ -30,14 +30,14 @@ export class ExplorerTreeProvider
 
     this.selectionService.onDidChangeSelection(() => {
       this.logger.debug("Selection changed, firing onDidChangeTreeData");
-      this._onDidChangeTreeData.fire();
+      this._onDidChangeTreeData.fire(undefined);
     });
   }
 
   public async setRepository(repository: GithubRepository): Promise<void> {
     this.stateService.setRepository(repository);
     this.selectionService.clearSelection();
-    this._onDidChangeTreeData.fire();
+    this._onDidChangeTreeData.fire(undefined);
   }
 
   /** Returns the currently loaded repository information */
@@ -55,7 +55,7 @@ export class ExplorerTreeProvider
       const currentRepo = this.stateService.getRepository();
       this.stateService.resetState();
       this.stateService.setRepository(currentRepo);
-      this._onDidChangeTreeData.fire();
+      this._onDidChangeTreeData.fire(undefined);
     }
   }
 
@@ -229,7 +229,7 @@ export class ExplorerTreeProvider
       this.stateService.clearItemMap();
     } finally {
       this.stateService.setRootLoading(false);
-      this._onDidChangeTreeData.fire();
+      this._onDidChangeTreeData.fire(undefined);
       this.logger.info("Background load for root items finished.");
     }
   }
@@ -282,7 +282,7 @@ export class ExplorerTreeProvider
     explicitParent?: ExplorerTreeItem,
   ): ExplorerTreeItem[] {
     const createdItems: ExplorerTreeItem[] = [];
-    contents.forEach((content) => {
+    for (const content of contents) {
       let parentToUse = explicitParent;
       if (!parentToUse) {
         const parentPath = content.path.includes("/")
@@ -297,7 +297,7 @@ export class ExplorerTreeProvider
 
       this.stateService.mapItem(newItem);
       createdItems.push(newItem);
-    });
+    }
     return createdItems;
   }
 

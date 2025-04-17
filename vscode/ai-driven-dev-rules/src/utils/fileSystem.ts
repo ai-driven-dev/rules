@@ -1,18 +1,34 @@
 import * as fs from "node:fs";
-import * as https from "node:https";
 import * as path from "node:path";
-import { URL } from "node:url";
 import * as vscode from "vscode";
 import type { ExplorerTreeItem } from "../views/explorer/treeItem";
+import { DownloadService } from "../services/download";
+import type { ILogger } from "../services/logger";
+import type { Settings } from "../services/storage";
 
 export class FileSystemService {
   private static instance: FileSystemService;
   private outputChannel: vscode.OutputChannel;
   private downloadCount = 0;
+  private downloadService: DownloadService;
 
   private constructor() {
     this.outputChannel = vscode.window.createOutputChannel(
       "GitHub Explorer File System",
+    );
+    // For demo, create with dummy logger/settings. In real use, inject these!
+    this.downloadService = new DownloadService(
+      {
+        debug: (msg: string) => this.log(msg),
+        info: (msg: string) => this.log(msg),
+        warn: (msg: string) => this.log(msg),
+        error: (msg: string, err?: any) => this.logError(msg, err),
+        log: (msg: string) => this.log(msg),
+        show: () => this.outputChannel.show(),
+        dispose: () => this.outputChannel.dispose(),
+      } as ILogger,
+      {} as Settings,
+      {} as any // IGitHubApiService stub
     );
   }
 
@@ -39,209 +55,48 @@ export class FileSystemService {
 
     this.downloadCount = 0;
 
-    return vscode.window.withProgress(
-      {
-        location: vscode.ProgressLocation.Notification,
-        title: "Downloading files from GitHub",
-        cancellable: true,
-      },
-      async (progress, token) => {
-        const totalFiles = this.countFiles(items);
-
-        token.onCancellationRequested(() => {
-          this.log("Download cancelled by user");
-        });
-
-        try {
-          for (const item of items) {
-            await this.downloadItem(
-              item,
-              workspaceFolder,
-              progress,
-              token,
-              totalFiles,
-            );
-          }
-
-          if (!token.isCancellationRequested) {
-            vscode.window.showInformationMessage(
-              `Successfully downloaded ${this.downloadCount} files`,
-            );
-          }
-        } catch (error) {
-          this.logError("Error downloading files", error);
-          vscode.window.showErrorMessage(
-            `Error downloading files: ${
-              error instanceof Error ? error.message : String(error)
-            }`,
-          );
-        }
-      },
-    );
-  }
-
-  private async downloadItem(
-    item: ExplorerTreeItem,
-    workspaceFolder: string,
-    progress: vscode.Progress<{ message?: string; increment?: number }>,
-    token: vscode.CancellationToken,
-    totalFiles: number,
-  ): Promise<void> {
-    if (token.isCancellationRequested) {
-      return;
-    }
-
-    if (item.content.type === "dir") {
-      await this.processDirectory(
-        item,
-        workspaceFolder,
-        progress,
-        token,
-        totalFiles,
-      );
-    } else if (item.content.type === "file") {
-      await this.processFile(
-        item,
-        workspaceFolder,
-        progress,
-        token,
-        totalFiles,
-      );
-    }
-  }
-
-  private async processDirectory(
-    item: ExplorerTreeItem,
-    workspaceFolder: string,
-    progress: vscode.Progress<{ message?: string; increment?: number }>,
-    token: vscode.CancellationToken,
-    totalFiles: number,
-  ): Promise<void> {
-    const relativePath = item.content.path;
-    const targetPath = path.join(workspaceFolder, relativePath);
-    await this.createDirectory(targetPath);
-
-    for (const child of item.children) {
-      if (token.isCancellationRequested) {
-        break;
-      }
-      await this.downloadItem(
-        child,
-        workspaceFolder,
-        progress,
-        token,
-        totalFiles,
-      );
-    }
-  }
-
-  private async processFile(
-    item: ExplorerTreeItem,
-    workspaceFolder: string,
-    progress: vscode.Progress<{ message?: string; increment?: number }>,
-    token: vscode.CancellationToken,
-    totalFiles: number,
-  ): Promise<void> {
-    const relativePath = item.content.path;
-    const targetPath = path.join(workspaceFolder, relativePath);
-    progress.report({
-      message: `Downloading ${relativePath} (${this.downloadCount + 1}/${totalFiles})`,
-      increment: 100 / totalFiles,
-    });
-
-    const parentDir = path.dirname(targetPath);
-    await this.createDirectory(parentDir);
-
-    if (item.content.download_url) {
-      await this.downloadAndVerifyFile(
-        item.content.download_url,
-        targetPath,
-        relativePath,
-      );
-    } else {
-      this.log(`No download URL for ${relativePath}`);
-    }
-    this.downloadCount++;
-  }
-
-  private async downloadAndVerifyFile(
-    url: string,
-    targetPath: string,
-    relativePath: string,
-  ): Promise<void> {
+    // --- REFACTOR: Prepare file list for DownloadService ---
+    const filesToDownload = this.flattenItems(items);
     try {
-      await this.downloadFile(url, targetPath);
-      await fs.promises.access(targetPath, fs.constants.F_OK);
-      const stats = await fs.promises.stat(targetPath);
-      this.log(
-        `Downloaded ${relativePath} | Size: ${stats.size} bytes | URL: ${url}`,
+      await this.downloadService.downloadFiles(
+        filesToDownload,
+        workspaceFolder,
+        {} as any // GithubRepository stub, adapt as needed
+      );
+      vscode.window.showInformationMessage(
+        `Successfully downloaded ${filesToDownload.length} files`,
       );
     } catch (error) {
-      const errorMsg = `Download failed or file missing for ${relativePath} | URL: ${url}`;
-      this.logError(errorMsg, error);
+      this.logError("Error downloading files", error);
       vscode.window.showErrorMessage(
-        `Erreur lors du téléchargement de ${relativePath}. Consultez la console pour plus de détails.`,
+        `Error downloading files: ${error instanceof Error ? error.message : String(error)}`,
       );
-      throw error;
     }
   }
 
-  private async createDirectory(dirPath: string): Promise<void> {
-    try {
-      await fs.promises.mkdir(dirPath, { recursive: true });
-    } catch (error) {
-      this.logError(`Error creating directory ${dirPath}`, error);
-      throw error;
-    }
-  }
-
-  private downloadFile(url: string, targetPath: string): Promise<void> {
-    return new Promise((resolve, reject) => {
-      const parsedUrl = new URL(url);
-
-      https
-        .get(parsedUrl, (response) => {
-          if (response.statusCode === 200) {
-            const file = fs.createWriteStream(targetPath);
-
-            response.pipe(file);
-
-            file.on("finish", () => {
-              file.close();
-              resolve();
-            });
-
-            file.on("error", (error) => {
-              fs.unlink(targetPath, () => {
-                reject(error);
-              });
-            });
-          } else if (
-            response.statusCode === 302 ||
-            response.statusCode === 301
-          ) {
-            const redirectUrl = response.headers.location;
-            if (redirectUrl) {
-              this.downloadFile(redirectUrl, targetPath)
-                .then(resolve)
-                .catch(reject);
-            } else {
-              reject(
-                new Error(
-                  `Redirect without location header: ${response.statusCode}`,
-                ),
-              );
-            }
-          } else {
-            reject(
-              new Error(`Failed to download file: ${response.statusCode}`),
-            );
-          }
-        })
-        .on("error", (error) => {
-          reject(error);
+  // --- Utility to flatten ExplorerTreeItem tree to DownloadFile[] ---
+  private flattenItems(items: ExplorerTreeItem[]): any[] {
+    const result: any[] = [];
+    const walk = (item: ExplorerTreeItem) => {
+      if (item.content.type === "file") {
+        result.push({
+          url: item.content.download_url,
+          targetPath: item.content.path,
+          type: "file",
+          size: item.content.size,
         });
-    });
+      } else if (item.content.type === "dir") {
+        result.push({
+          targetPath: item.content.path,
+          type: "dir",
+        });
+        for (const child of item.children) {
+          walk(child);
+        }
+      }
+    };
+    for (const item of items) walk(item);
+    return result;
   }
 
   private getWorkspaceFolder(): string | undefined {
@@ -249,13 +104,12 @@ export class FileSystemService {
     if (!workspaceFolders || workspaceFolders.length === 0) {
       return undefined;
     }
-
     return workspaceFolders[0].uri.fsPath;
   }
 
-  private countFiles(items: ExplorerTreeItem[]): number {
+  // --- Make countFiles public for testing and orchestration ---
+  public countFiles(items: ExplorerTreeItem[]): number {
     let count = 0;
-
     for (const item of items) {
       if (item.content.type === "file") {
         count++;
@@ -263,7 +117,6 @@ export class FileSystemService {
         count += this.countFiles(item.children);
       }
     }
-
     return count;
   }
 

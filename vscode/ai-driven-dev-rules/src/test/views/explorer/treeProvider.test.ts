@@ -289,7 +289,7 @@ describe("ExplorerTreeProvider", () => {
       );
       mockStateService.setRootItems(expectedRootItems); // Simulate setting root items
       mockStateService.setRootLoading(false); // Simulate finishing loading
-      mockEventEmitter.fire(); // Simulate firing the event
+      mockEventEmitter.fire(undefined); // Simulate firing the event with undefined
 
       // Assert
       sinon.assert.calledOnce(

@@ -15,7 +15,6 @@ import {
 import { SelectionService } from "./services/selection";
 import { type IStorageService, StorageService } from "./services/storage";
 import { ExplorerView } from "./views/explorer/explorerView";
-import { ExplorerTreeProvider } from "./views/explorer/treeProvider";
 import { WelcomeView } from "./views/welcome/welcomeView";
 
 export function activate(context: vscode.ExtensionContext): void {
@@ -41,16 +40,6 @@ export function activate(context: vscode.ExtensionContext): void {
 
   // Inject explorerStateService into SelectionService constructor
   const selectionService = new SelectionService(logger, explorerStateService);
-
-  const treeProvider = new ExplorerTreeProvider(
-    githubService,
-    logger,
-    selectionService,
-    explorerStateService,
-    context.extensionPath,
-  );
-
-  // Removed selectionService.setTreeProvider(treeProvider);
 
   const explorerView = new ExplorerView(
     context,
@@ -83,13 +72,12 @@ export function activate(context: vscode.ExtensionContext): void {
     vscode.commands.executeCommand("aidd.welcomeView.focus");
   }
 
-  setupAutoRefresh(context, settings, explorerView, logger);
+  setupAutoRefresh(context, settings, logger);
 }
 
 function setupAutoRefresh(
   context: vscode.ExtensionContext,
   settings: { autoRefreshInterval?: number },
-  explorerView: ExplorerView,
   logger: ILogger,
 ): void {
   if (!settings.autoRefreshInterval) {

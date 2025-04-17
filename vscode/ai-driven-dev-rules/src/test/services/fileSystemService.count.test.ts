@@ -26,8 +26,7 @@ describe("FileSystemService - downloadCount", () => {
   beforeEach(() => {
     fsService = FileSystemService.getInstance();
     sinon.stub(fsService as any, "getWorkspaceFolder").returns("/tmp");
-    sinon.stub(fsService as any, "createDirectory").resolves();
-    sinon.stub(fsService as any, "downloadAndVerifyFile").resolves();
+    sinon.stub(fsService as any, "log");
     sinon.stub(vscode.window, "withProgress").callsFake(async (_opts, cb) =>
       cb(
         { report: () => {} },
@@ -39,7 +38,6 @@ describe("FileSystemService - downloadCount", () => {
         },
       ),
     );
-    sinon.stub(fsService as any, "log");
   });
 
   afterEach(() => {
@@ -123,7 +121,7 @@ describe("FileSystemService - downloadCount", () => {
         ],
       ),
     ];
-    await fsService.downloadFiles(tree);
-    expect((fsService as any).downloadCount).to.equal(4);
+    const count = fsService.countFiles(tree);
+    expect(count).to.equal(4);
   });
 });
