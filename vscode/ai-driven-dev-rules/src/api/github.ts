@@ -2,7 +2,7 @@ import * as pathUtils from "node:path";
 import * as vscode from "vscode";
 import type { HttpResponse, IHttpClient } from "../services/httpClient";
 import type { ILogger } from "../services/logger";
-// Reordered imports alphabetically
+
 import type { IRateLimitManager } from "../services/rateLimitManager";
 import { GitHubApiResponseHandler } from "../utils/githubApiResponseHandler";
 import type { GithubContent, GithubRepository, Result } from "./types";

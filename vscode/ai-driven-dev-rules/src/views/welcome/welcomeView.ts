@@ -77,9 +77,13 @@ export class WelcomeView {
     branch?: string;
   }): void {
     try {
-      vscode.commands.executeCommand("aidd.setRepository").then(() => {});
+      
+      vscode.commands.executeCommand("aidd.setRepository", repository);
+      
     } catch (error) {
-      this.logger.error("Error opening repository", error);
+      
+      
+      this.logger.error("Error executing setRepository command", error);
     }
   }
 }

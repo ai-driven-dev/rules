@@ -22,7 +22,10 @@ export function activate(context: vscode.ExtensionContext): void {
   logger.info("GitHub Explorer extension is now active");
 
   const storageService: IStorageService = new StorageService(context);
-  const settings = storageService.getSettings();
+  
+  const config = vscode.workspace.getConfiguration("aidd");
+  const showWelcomeOnStartup = config.get<boolean>("showWelcomeOnStartup") ?? true;
+  const autoRefreshInterval = config.get<number | null>("autoRefreshInterval", null);
 
   const httpClient: IHttpClient = new HttpClient(logger);
   const rateLimitManager: IRateLimitManager = new RateLimitManager(logger);
@@ -35,10 +38,10 @@ export function activate(context: vscode.ExtensionContext): void {
     rateLimitManager,
     logger,
   );
-  // Inject githubService into DownloadService constructor
-  const downloadService = new DownloadService(logger, settings, githubService);
+  
+  const downloadService = new DownloadService(logger, httpClient);
 
-  // Inject explorerStateService into SelectionService constructor
+  
   const selectionService = new SelectionService(logger, explorerStateService);
 
   const explorerView = new ExplorerView(
@@ -59,35 +62,36 @@ export function activate(context: vscode.ExtensionContext): void {
     }),
   );
 
+  
   registerCommands({
     context,
     explorerView,
     githubService,
     logger,
     storageService,
-    downloadService,
   });
 
-  if (settings.showWelcomeOnStartup) {
+  if (showWelcomeOnStartup) {
     vscode.commands.executeCommand("aidd.welcomeView.focus");
   }
 
-  setupAutoRefresh(context, settings, logger);
+  
+  setupAutoRefresh(context, autoRefreshInterval, logger);
 }
 
 function setupAutoRefresh(
   context: vscode.ExtensionContext,
-  settings: { autoRefreshInterval?: number },
+  autoRefreshInterval: number | null,
   logger: ILogger,
 ): void {
-  if (!settings.autoRefreshInterval) {
+  if (typeof autoRefreshInterval !== "number" || autoRefreshInterval < 10) {
     return;
   }
 
-  const intervalMs = settings.autoRefreshInterval * 1000;
+  const intervalMs = autoRefreshInterval * 1000;
   const interval = setInterval(() => {
     logger.debug(
-      `Auto-refreshing repository (interval: ${settings.autoRefreshInterval}s)`,
+      `Auto-refreshing repository (interval: ${autoRefreshInterval}s)`,
     );
 
     vscode.commands.executeCommand("aidd.refresh");

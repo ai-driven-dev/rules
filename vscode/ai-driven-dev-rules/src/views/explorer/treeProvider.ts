@@ -61,7 +61,7 @@ export class ExplorerTreeProvider
 
   public async handleCheckboxChange(
     item: ExplorerTreeItem,
-    checked: boolean, // Ce paramètre semble toujours inutilisé, mais on le garde pour la signature
+    checked: boolean,
   ): Promise<void> {
     const itemPath = item.content.path;
     this.logger.debug(
@@ -72,17 +72,15 @@ export class ExplorerTreeProvider
       this.logger.info(
         `Directory checkbox toggled: ${itemPath}. Triggering local recursive selection.`,
       );
-      // Gère le dossier ET ses descendants
+
       this.selectionService.toggleRecursiveSelection(itemPath);
     } else {
       this.logger.debug(
         `File checkbox toggled: ${itemPath}. Triggering simple selection.`,
       );
-      // Gère uniquement le fichier
+
       this.selectionService.toggleSelection(itemPath);
     }
-    // L'événement onDidChangeSelection déclenché par le service
-    // provoquera la mise à jour de l'UI via _onDidChangeTreeData.fire()
   }
 
   public getTreeItem(element: ExplorerTreeItem): vscode.TreeItem {

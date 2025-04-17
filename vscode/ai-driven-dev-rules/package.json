@@ -109,6 +109,33 @@
           "default": "",
           "description": "Votre token d'accès personnel (PAT) GitHub. Optionnel, mais recommandé pour augmenter les limites de taux de l'API. Générez-en un [ici](https://github.com/settings/personal-access-tokens).",
           "scope": "machine-overridable"
+        },
+        "aidd.maxRecentRepositories": {
+          "type": "number",
+          "default": 5,
+          "description": "Nombre maximum de dépôts récents à mémoriser dans la liste.",
+          "minimum": 1,
+          "scope": "window"
+        },
+        "aidd.maxConcurrentDownloads": {
+          "type": "number",
+          "default": 3,
+          "description": "Nombre maximum de fichiers à télécharger simultanément.",
+          "minimum": 1,
+          "scope": "window"
+        },
+        "aidd.showWelcomeOnStartup": {
+          "type": "boolean",
+          "default": true,
+          "description": "Afficher la vue 'Get Started' au démarrage de VS Code.",
+          "scope": "window"
+        },
+        "aidd.autoRefreshInterval": {
+          "type": ["number", "null"],
+          "default": null,
+          "description": "Intervalle (en secondes) pour rafraîchir automatiquement l'explorateur de dépôt. Mettre à 'null' pour désactiver.",
+          "minimum": 10,
+          "scope": "window"
         }
       }
     }

@@ -1,6 +1,6 @@
 import * as vscode from "vscode";
-// ExplorerTreeItem and ExplorerTreeProvider are no longer directly needed here
-import type { IExplorerStateService } from "./explorerStateService"; // Import state service
+
+import type { IExplorerStateService } from "./explorerStateService";
 import type { ILogger } from "./logger";
 
 export interface ISelectionService {
@@ -8,8 +8,7 @@ export interface ISelectionService {
 
   toggleSelection(itemPath: string): void;
 
-  // Removed depth parameter, now operates on full local data
-  toggleRecursiveSelection(itemPath: string): void; // Now synchronous
+  toggleRecursiveSelection(itemPath: string): void;
 
   isSelected(itemPath: string): boolean;
 
@@ -25,17 +24,14 @@ export class SelectionService implements ISelectionService {
   readonly onDidChangeSelection = this._onDidChangeSelection.event;
 
   private selectedPaths: Set<string> = new Set();
-  // Removed treeProvider reference
+
   private logger: ILogger;
-  private stateService: IExplorerStateService; // Add state service reference
+  private stateService: IExplorerStateService;
 
   constructor(logger: ILogger, stateService: IExplorerStateService) {
-    // Inject state service
     this.logger = logger;
-    this.stateService = stateService; // Store state service
+    this.stateService = stateService;
   }
-
-  // Removed setTreeProvider method
 
   toggleSelection(itemPath: string): void {
     if (this.selectedPaths.has(itemPath)) {
@@ -48,20 +44,18 @@ export class SelectionService implements ISelectionService {
 
   toggleRecursiveSelection(itemPath: string): void {
     let shouldBeSelected: boolean;
-    const allItemsMap = this.stateService.getAllItems(); // Get all items once
+    const allItemsMap = this.stateService.getAllItems();
 
     if (itemPath === "") {
-      // Special handling for root toggle
       const allActualPaths = Array.from(allItemsMap.keys());
       const allSelected = allActualPaths.every((path) =>
         this.selectedPaths.has(path),
       );
-      shouldBeSelected = !allSelected; // Select if not all are selected, deselect if all are selected
+      shouldBeSelected = !allSelected;
       this.logger.debug(
         `Toggling root (""). All items currently selected: ${allSelected}. Target state: ${shouldBeSelected ? "Selected" : "Unselected"}`,
       );
     } else {
-      // Original logic for non-root items
       shouldBeSelected = !this.isSelected(itemPath);
       this.logger.debug(
         `Toggling recursive selection for '${itemPath}'. Target state: ${shouldBeSelected ? "Selected" : "Unselected"}`,
@@ -70,36 +64,30 @@ export class SelectionService implements ISelectionService {
 
     const itemsToToggle: string[] = [];
     if (itemPath !== "") {
-      // Add the item itself if it's not the root
       itemsToToggle.push(itemPath);
     }
 
-    // Find all descendants using the stateService map
     const prefix = itemPath === "" ? "" : `${itemPath}/`;
 
-    // Iterate over the map directly
     for (const item of allItemsMap.values()) {
-      // Add descendants (or all items if root)
       if (
         item.content.path !== itemPath &&
         item.content.path.startsWith(prefix)
       ) {
         itemsToToggle.push(item.content.path);
       } else if (itemPath === "" && item.content.path !== "") {
-        // If toggling root, add all non-root items
         itemsToToggle.push(item.content.path);
       }
     }
 
-    // If toggling root, ensure all actual paths are considered, even if prefix logic missed some edge case
     if (itemPath === "") {
       const allActualPathsSet = new Set(Array.from(allItemsMap.keys()));
-      allActualPathsSet.delete(""); // Remove root if present
+      allActualPathsSet.delete("");
       itemsToToggle.push(...Array.from(allActualPathsSet));
-      // Deduplicate
+
       const uniqueItemsToToggle = [...new Set(itemsToToggle)];
-      itemsToToggle.length = 0; // Clear array
-      itemsToToggle.push(...uniqueItemsToToggle); // Push unique items
+      itemsToToggle.length = 0;
+      itemsToToggle.push(...uniqueItemsToToggle);
     }
 
     this.logger.debug(
@@ -108,7 +96,6 @@ export class SelectionService implements ISelectionService {
 
     let changed = false;
     for (const path of itemsToToggle) {
-      // Ensure we don't try to add the root path "" itself to the selection
       if (path === "" && shouldBeSelected) {
         continue;
       }
