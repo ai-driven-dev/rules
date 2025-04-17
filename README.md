@@ -19,9 +19,10 @@ Partagez vos règles IA personnalisées avec la communauté.
   - [Comment coder avec des règles ?](#comment-coder-avec-des-règles-)
   - [Démo Vidéo](#démo-vidéo)
 - [✅ Ajouter vos règles](#-ajouter-vos-règles)
-  - [Structure de nommage (à plat)](#structure-de-nommage-à-plat)
-  - [Organisation des dossiers](#organisation-des-dossiers)
-  - [Générations et Mises à jour](#générations-et-mises-à-jour)
+  - [1. Structure de nommage (à plat)](#1-structure-de-nommage-à-plat)
+  - [2. Organisation des dossiers](#2-organisation-des-dossiers)
+  - [3. Générations et Mises à jour](#3-générations-et-mises-à-jour)
+  - [Bonus : Démo](#bonus--démo)
 - [🇫🇷 Contributions disponibles](#-contributions-disponibles)
 
 ## 🧠 Avantages
@@ -92,7 +93,7 @@ Demain...Vendredi 18 avril 2025.
 
 Contribuer aux règles AI-Driven Dev est TRÈS simple et direct.
 
-### Structure de nommage (à plat)
+### 1. Structure de nommage (à plat)
 
 Toutes les règles sont stockées dans un dossier dédié appelé `.cursor/rules`.
 
@@ -122,7 +123,7 @@ Tableau de correspondance:
 | `-hooks` | Sous-partie spécifique | Optionnel |
 | `.mdc` | Extension pour Cursor | ✅ |
 
-### Organisation des dossiers
+### 2. Organisation des dossiers
 
 Les règles sont organisées par dossiers, chaque dossier représentant une catégorie.
 
@@ -139,7 +140,7 @@ Les règles sont organisées par dossiers, chaque dossier représentant une cat�
 | `08` | 🎯 `domain-specific-rules` | À partager avec votre équipe |
 | `09` | 🔍 `other` | Ne rentre dans aucune autre catégorie |
 
-### Générations et Mises à jour
+### 3. Générations et Mises à jour
 
 1. Ouvrir un nouveau Terminal de chat.
 2. Pointer vers `@rules/generator.md`.
@@ -164,10 +165,18 @@ With new specs:
 - 
 ```
 
+### Bonus : Démo
+
+Demain...Vendredi 18 avril 2025.
+
 ## 🇫🇷 Contributions disponibles
+
+Vous pouvez contribuer à ce projet en :
 
 - Partager ses règles
 - Améliorer les règles existantes
 - Maintenir l'extension VSCode
+
+[![Discord](https://img.shields.io/badge/Join%20Discord-7289DA?style=for-the-badge&logo=discord&logoColor=white)](https://discord.gg/invite/ai-driven-dev)
 
 [>>> Voir plus <<<](./CONTRIBUTING.md)
