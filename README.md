@@ -83,7 +83,3 @@ You can contribute:
 [>>> See more <<<](./CONTRIBUTING.md)
 
 En cours de rédaction...
-
-## Todo
-
-- [ ]
