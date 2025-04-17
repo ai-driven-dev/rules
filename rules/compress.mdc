@@ -1,0 +1,15 @@
+# Principes de Compression Sémantique
+
+La compression sémantique est un système de notation qui permet de maximiser la densité d'information tout en maintenant la clarté et la précision. Elle utilise des symboles spécifiques pour représenter des concepts complexes de manière concise.
+
+| Symbole | Signification             | Utilisation                                  |
+| ------- | ------------------------- | -------------------------------------------- |
+| `↹`     | Section/Catégorie         | Indique le début d'une section logique       |
+| `⊕`     | Élément/Définition        | Définit un élément dans une section          |
+| `→`     | Flux/Séquence             | Indique une étape séquentielle ou un flux    |
+| `Σ`     | Résumé/Conclusion         | Résume ou conclut une section                |
+| `⨁`     | Combinaison               | Indique la combinaison de plusieurs éléments |
+| `⇌`     | Relation bidirectionnelle | Indique une relation dans les deux sens      |
+| `•`     | Connecteur                | Relie des concepts ou termes associés        |
+| `+`     | Addition                  | Indique l'ajout d'un concept ou propriété    |
+| `[p=n]` | Niveau de priorité        | Indique l'importance (1=la plus élevée)      |

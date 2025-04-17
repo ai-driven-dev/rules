@@ -1,155 +1,149 @@
-# 📐 AI-Driven Dev {Rules}
+# AI-Driven Dev Rules 🥖
 
 ![Status](https://img.shields.io/badge/status-active-brightgreen)
 ![Version](https://img.shields.io/badge/version-0.0.2-blue)
 ![Contributors](https://img.shields.io/badge/contributors-welcome-orange)
 [![Discord](https://img.shields.io/discord/1173363373115723796?color=7289da&label=discord&logo=discord&logoColor=white)](https://discord.gg/invite/ai-driven-dev)
 
-Share your Custom AI Rules with the community.
+Partagez vos règles IA personnalisées avec la communauté.
 
-## Table of Contents
+## Table des matières
 
-- [Table of Contents](#table-of-contents)
-- [Benefits](#benefits)
-- [Core features](#core-features)
-- [How-to install Rules](#how-to-install-rules)
-  - [Download the AI-Driven Dev Rules extension](#download-the-ai-driven-dev-rules-extension)
-  - [Use the extension](#use-the-extension)
-- [Getting Started](#getting-started)
-  - [Flat Structure](#flat-structure)
-  - [Base template](#base-template)
-  - [Generate or Update a rule](#generate-or-update-a-rule)
-- [Contribution](#contribution)
+- [Table des matières](#table-des-matières)
+- [Avantages](#avantages)
+- [Fonctionnalités principales](#fonctionnalités-principales)
+- [Comment installer les règles](#comment-installer-les-règles)
+  - [Télécharger l'extension AI-Driven Dev Rules](#télécharger-lextension-ai-driven-dev-rules)
+  - [Utiliser l'extension](#utiliser-lextension)
+- [Bien démarrer](#bien-démarrer)
+  - [Structure de nommage (à plat)](#structure-de-nommage-à-plat)
+  - [Générer ou mettre à jour une règle](#générer-ou-mettre-à-jour-une-règle)
+- [Contributions disponibles](#contributions-disponibles)
 
-## Benefits
+## Avantages
 
-- Shared and validated rules
-- Same structure for everyone
-- Easy to contribute
-- Easy to use and integrate with existing workflows
-- Easy to update and maintain (coming soon)
+- 🎯 Créer des règles optimisées pour Cursor
+- 🤝 Partagées et validées par la communauté
+- 📋 Structure uniforme pour tous les contributeurs
+- 🚀 Simple et rapide pour contribuer
 
-## Core features
+## Fonctionnalités principales
 
-The essence is quite simple.
+L'essence est très simple.
 
 ```mermaid
 flowchart LR
-    %% Title of the diagram
     classDef titleClass fill:none,stroke:none,color:#333333,font-size:16px,font-weight:bold
-    title[VS Code Extension for GitHub Rules Retrieval]
+    title[Extension VS Code pour récupération des règles depuis GitHub]
     class title titleClass
     
-    A[VS Code Extension] -->|1| B[GitHub Connection\n+ Optional Token]
-    B -->|2| C[Retrieve Repository\nStructure]
-    C -->|3| D[Select and Download\nFiles/Rules]
-    D -->|4| E[Use Rules\nin IDE]
+    A[Extension VS Code] -->|1| B[Connexion GitHub\n+ Token optionnel]
+    B -->|2| C[Récupération de la\nstructure du dépôt]
+    C -->|3| D[Sélection et téléchargement\ndes fichiers/règles]
+    D -->|4| E[Utilisation des règles\ndans l’IDE]
     
-    %% Styles améliorés avec dégradés et arrondis
     style A fill:#4b89dc,stroke:#2e5daa,color:white,stroke-width:2px,border-radius:10px,font-weight:bold
     style B fill:#2ecc71,stroke:#27ae60,color:white,stroke-width:2px,border-radius:10px,font-weight:bold
     style C fill:#9b59b6,stroke:#8e44ad,color:white,stroke-width:2px,border-radius:10px,font-weight:bold
     style D fill:#f39c12,stroke:#e67e22,color:white,stroke-width:2px,border-radius:10px,font-weight:bold
     style E fill:#e74c3c,stroke:#c0392b,color:white,stroke-width:2px,border-radius:10px,font-weight:bold
     
-    %% Style des liens
     linkStyle 0,1,2,3 stroke-width:2px,stroke:#888888,color:black
 ```
 
-## How-to install Rules
+## Comment installer les règles
 
-### Download the AI-Driven Dev Rules extension
+### Télécharger l'extension AI-Driven Dev Rules
 
-- Download the latest version of the extension from [ai-driven-dev-rules-0.0.1.vsix]("./vscode/ai-driven-dev-rules/ai-driven-dev-rules-0.0.1.vsix")
-- Open Cursor
-- Open the Command Palette (Ctrl + Shift + P)
-- Type `Extension: Install from VSIX`
+- Téléchargez la dernière version de l’extension depuis [ai-driven-dev-rules-0.0.1.vsix]("./vscode/ai-driven-dev-rules/ai-driven-dev-rules-0.0.1.vsix")
+- Ouvrez Cursor
+- Ouvrez la palette de commandes (Ctrl + Shift + P)
+- Tapez `Extension: Install from VSIX`
 
-### Use the extension
+### Utiliser l'extension
 
-YouTube Video incoming...
+Vidéo YouTube en préparation...
 
-## Getting Started
+## Bien démarrer
 
-Contributing to the AI-Driven Dev Rules is VERY easy and straightforward.
+Contribuer aux règles AI-Driven Dev est TRÈS simple et direct.
 
-### Flat Structure
+### Structure de nommage (à plat)
 
-Every rules are stored in a dedicated folder called `.cursor/rules`.
+Toutes les règles sont stockées dans un dossier dédié appelé `.cursor/rules`.
 
-The following folder structure is used, in compliance with
+La structure suivante est utilisée, selon le format :
 
-```text
-3-react-router.server-data-loading@7.5.mdc
+| Partie | Description | Obligatoire |
+| ------ | ----------- | ----------- |
+| `3` | Numéro catégorie | ✅ |
+| `react` | Nom | ✅ |
+| `@19.1` | Version | Optionnel |
+| `-hooks` | Sous-partie spécifique | Optionnel |
+| `.mdc` | Extension pour Cursor | ✅ |
 
-^       ^          ^                ^   ^  
-|       |          |                |   | 
-
-#-xxxxxxxxxxxx.yyyyyyyyyyyyyyyyyyy@yyy.mdc
-```
-
-Rules are organized in folders, each folder representing a category.
-
-| Number     | Category                 | Examples                         |
-| --------- | ------------------------ | -------------------------------- |
-| `00` | architecture | Clean, Onion, 3-tiers... |
-| `01` | standards | Coding, Naming, formatting, structure    |
-| `02` | programming-languages | JavaScript, TypeScript, Python   |
-| `03` | frameworks-and-libraries | React, Vue, Angular, Next.js     |
-| `04` | tools-and-configurations | Git, ESLint, Webpack, Docker     |
-| `05` | workflows-and-processes | PR reviews, deployment, CI/CD    |
-| `06` | templates-and-models | Project templates, PRDs, READMEs |
-| `07` | quality-assurance | Testing, security, performance   |
-| `08` | domain-specific-rules | To share with your team  |
-| `09` | other | Cannot fit in other categories                |
-
-### Base template
-
-Rules are compatible with:
-
-- Cursor
-
-Coming Soon:
-
-- Cline
-- GitHub Copilot
-- Windsurf
-
-> Want more covered? Join our French Discord.
-
-### Generate or Update a rule
-
-1. Open a new chat Terminal.
-2. Point to `@rules/generator.md`.
-3. Ask AI.
-
-**Create a new rule:**
+Pattern:
 
 ```text
-Help me generate a new rule for: ...
-
-Following this: @rules/generator.md
+#-rule-name[@version][-specificity].mdc
 ```
 
-**Update an existing rule:**
+Exemples:
 
 ```text
-Update the rule @rules/my-rule.md for: ...
-
-Following this: @rules/generator.md
+3-react.mdc
+3-react@18.mdc
+3-react@19.mdc
+3-react@19-hook.mdc
+3-react@19.1-hook.mdc
 ```
 
-And... voilà 🇫🇷
+Les règles sont organisées par dossiers, chaque dossier représentant une catégorie.
 
-## Contribution
+| Numéro | Catégorie | Exemples |
+| ------ | --------- | -------- |
+| `00` | 🏛️ `architecture` | Clean, Onion, 3-tiers... |
+| `01` | 📏 `standards` | Coding, Naming, formatting, structure |
+| `02` | 💻 `programming-languages` | JavaScript, TypeScript, Python |
+| `03` | 🛠️ `frameworks-and-libraries` | React, Vue, Angular, Next.js |
+| `04` | ⚙️ `tools-and-configurations` | Git, ESLint, Webpack, Docker |
+| `05` | 🔄 `workflows-and-processes` | PR reviews, deployment, CI/CD |
+| `06` | 📋 `templates-and-models` | Project templates, PRDs, READMEs |
+| `07` | ✅ `quality-assurance` | Testing, security, performance |
+| `08` | 🎯 `domain-specific-rules` | À partager avec votre équipe |
+| `09` | 🔍 `other` | Ne rentre dans aucune autre catégorie |
 
-You can contribute:
+### Générer ou mettre à jour une règle
 
-- By adding new rules
-- By improving existing rules
-- Becoming a core maintainer
-- Code the AI-Driven Dev Rule VSCode's extension
+1. Ouvrir un nouveau Terminal de chat.
+2. Pointer vers `@rules/generator.md`.
+3. Demander à l'IA.
 
-[>>> See more <<<](./CONTRIBUTING.md)
+**Créer une nouvelle règle :**
 
-En cours de rédaction...
+```markdown
+@rules/generator.md
+
+Generate a new rule for:
+```
+
+**Mettre à jour une règle existante :**
+
+```markdown
+@rules/generator.md
+
+Update rule: @rules/my-rule.md
+
+With new specs:
+- 
+```
+
+Et... voilà 🇫🇷
+
+## Contributions disponibles
+
+- Partager ses règles
+- Améliorer les règles existantes
+- Maintenir l'extension VSCode
+
+[>>> Voir plus <<<](./CONTRIBUTING.md)

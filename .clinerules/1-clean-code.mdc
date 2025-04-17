@@ -1,0 +1,32 @@
+---
+description: APPLY Clean Code principles WHENEVER writing code
+alwaysApply: true
+---
+
+Code:
+- Never comments
+- Strict type
+- Never us untyped values
+- Explicit Constants over magic numbers
+- No double negatives
+- Readable variable names (even if longer)
+- Generate simplest code possible
+- DRY
+
+Max Length:
+- Functions: Lines = 30, Params = 5
+- File: 300 lines
+- Folders: 10 sub-files
+
+Responsibilities:
+- 1 file = 1 responsibility
+
+Functions:
+- No flag params
+
+Errors:
+- Fail fast
+- Early throws errors
+- Custom domain errors
+- Meaningful errors translated to the user's language
+- Log errors in EN with error codes
