@@ -80,8 +80,15 @@ Every rules are stored in a dedicated folder called `.cursor/rules`.
 The following folder structure is used, in compliance with
 
 ```text
-tree...
+3-react-router.server-data-loading@7.5.mdc
+
+^       ^          ^                ^   ^  
+|       |          |                |   | 
+
+#-xxxxxxxxxxxx.yyyyyyyyyyyyyyyyyyy@yyy.mdc
 ```
+
+Rules are organized in folders, each folder representing a category.
 
 | Number     | Category                 | Examples                         |
 | --------- | ------------------------ | -------------------------------- |
