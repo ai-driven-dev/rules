@@ -1,7 +1,6 @@
-
 import * as sinon from "sinon";
 import * as vscode from "vscode";
-import { GithubContent } from "../../api/types";
+import type { GithubContent } from "../../api/types";
 import "../../test/vscode-mock";
 import { FileSystemService } from "../../utils/fileSystem";
 import { ExplorerTreeItem } from "../../views/explorer/treeItem";
@@ -12,7 +11,7 @@ describe("FileSystemService - downloadCount", () => {
 
   function createMockExplorerTreeItem(
     content: GithubContent,
-    children: ExplorerTreeItem[] = []
+    children: ExplorerTreeItem[] = [],
   ): ExplorerTreeItem {
     const item = new ExplorerTreeItem(content);
     item.children = children;
@@ -34,11 +33,11 @@ describe("FileSystemService - downloadCount", () => {
         { report: () => {} },
         {
           isCancellationRequested: false,
-          onCancellationRequested: (listener: (e: any) => any) => ({
+          onCancellationRequested: () => ({
             dispose: () => {},
           }),
-        }
-      )
+        },
+      ),
     );
     sinon.stub(fsService as any, "log");
   });
@@ -119,9 +118,9 @@ describe("FileSystemService - downloadCount", () => {
                 git_url: "",
                 download_url: "fake",
               }),
-            ]
+            ],
           ),
-        ]
+        ],
       ),
     ];
     await fsService.downloadFiles(tree);

@@ -1,9 +1,9 @@
-import * as http from "http";
+import type * as http from "node:http";
 import * as sinon from "sinon";
-import { GithubRateLimit } from "../../api/types";
-import { ILogger, Logger } from "../../services/logger";
+import type { GithubRateLimit } from "../../api/types";
+import { type ILogger, Logger } from "../../services/logger";
 import {
-  IRateLimitManager,
+  type IRateLimitManager,
   RateLimitManager,
 } from "../../services/rateLimitManager";
 
@@ -75,7 +75,7 @@ describe("RateLimitManager", () => {
       });
       sinon.assert.calledWith(
         mockLogger.debug,
-        sinon.match(/Rate limit updated/)
+        sinon.match(/Rate limit updated/),
       );
     });
 
