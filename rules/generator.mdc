@@ -53,6 +53,7 @@ Common glob patterns for different rule types:
 
 ## Critical Rules
 
+- Translate example into generic rule format
 - Only create in proper folders in .cursor/rules/**
 - You will always check to see if there is an existing rule to update under all .cursor/rules sub-folders
 - FrontMatter Rules Types:

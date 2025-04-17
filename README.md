@@ -12,12 +12,14 @@ Partagez vos règles IA personnalisées avec la communauté.
 - [Table des matières](#table-des-matières)
 - [Avantages](#avantages)
 - [Fonctionnalités principales](#fonctionnalités-principales)
-- [Comment installer les règles](#comment-installer-les-règles)
-  - [Télécharger l'extension AI-Driven Dev Rules](#télécharger-lextension-ai-driven-dev-rules)
+- [Comment installer les règles AIDD ?](#comment-installer-les-règles-aidd-)
+  - [Télécharger l'extension "AI-Driven Dev Rules"](#télécharger-lextension-ai-driven-dev-rules)
   - [Utiliser l'extension](#utiliser-lextension)
 - [Bien démarrer](#bien-démarrer)
+- [Comment coder avec des règles ?](#comment-coder-avec-des-règles-)
+- [Ajouter vos règles](#ajouter-vos-règles)
   - [Structure de nommage (à plat)](#structure-de-nommage-à-plat)
-  - [Générer ou mettre à jour une règle](#générer-ou-mettre-à-jour-une-règle)
+  - [Générations et Mises à jour](#générations-et-mises-à-jour)
 - [Contributions disponibles](#contributions-disponibles)
 
 ## Avantages
@@ -51,9 +53,9 @@ flowchart LR
     linkStyle 0,1,2,3 stroke-width:2px,stroke:#888888,color:black
 ```
 
-## Comment installer les règles
+## Comment installer les règles AIDD ?
 
-### Télécharger l'extension AI-Driven Dev Rules
+### Télécharger l'extension "AI-Driven Dev Rules"
 
 - Téléchargez la dernière version de l’extension depuis [ai-driven-dev-rules-0.0.1.vsix]("./vscode/ai-driven-dev-rules/ai-driven-dev-rules-0.0.1.vsix")
 - Ouvrez Cursor
@@ -67,6 +69,22 @@ Vidéo YouTube en préparation...
 ## Bien démarrer
 
 Contribuer aux règles AI-Driven Dev est TRÈS simple et direct.
+
+## Comment coder avec des règles ?
+
+1. Ouvrir le mode Agent de votre IDE (comme Cursor).
+2. Donner du contexte avec votre prompt: `use real users in @admin.tsx from @users.controller.ts`
+3. Le chat devrait charger les règles correspondantes.
+
+Bonus:
+
+> Demander à l'agent s'il a bien respecté les règles.
+
+```markdown
+Vérifie l'application des règles.
+```
+
+## Ajouter vos règles
 
 ### Structure de nommage (à plat)
 
@@ -113,7 +131,7 @@ Les règles sont organisées par dossiers, chaque dossier représentant une cat�
 | `08` | 🎯 `domain-specific-rules` | À partager avec votre équipe |
 | `09` | 🔍 `other` | Ne rentre dans aucune autre catégorie |
 
-### Générer ou mettre à jour une règle
+### Générations et Mises à jour
 
 1. Ouvrir un nouveau Terminal de chat.
 2. Pointer vers `@rules/generator.md`.
