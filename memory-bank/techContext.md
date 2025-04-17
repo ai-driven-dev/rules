@@ -9,7 +9,10 @@ This document outlines the technologies used, development setup, technical const
 - **TypeScript**: Latest stable, primary development language for VS Code extensions
 - **Node.js**: Latest LTS, runtime environment
 - **VS Code API**: Latest, for extension development and UI integration
-- **GitHub REST API**: v3, specifically using the `repos/{owner}/{repo}/git/trees/{tree_sha}?recursive=1` endpoint for efficient structure fetching, and `repos/{owner}/{repo}/contents` for individual file downloads.
+- **GitHub REST API**: v3. Key endpoints used:
+  - `GET /repos/{owner}/{repo}/git/trees/{tree_sha}?recursive=1`: Fetches the entire repository file tree structure efficiently.
+  - `GET /repos/{owner}/{repo}/contents/{path}`: Downloads individual file content.
+  - `GET /repos/{owner}/{repo}/branches/{branch}`: Retrieves the SHA of the default branch head for initial tree fetching.
 
 ## Development Environment
 
@@ -64,18 +67,19 @@ This document outlines the technologies used, development setup, technical const
 
 ## API Integrations
 
-- **GitHub REST API**:
-  - Git Trees (`/repos/{owner}/{repo}/git/trees/{tree_sha}?recursive=1`): For fetching full repository structure efficiently. <https://docs.github.com/en/rest/git/trees#get-a-tree>
-  - Repository Contents (`/repos/{owner}/{repo}/contents/{path}`): For downloading individual file content. <https://docs.github.com/en/rest/repos/contents#get-repository-content>
-  - Branches (`/repos/{owner}/{repo}/branches/{branch}`): To get the SHA of the default branch head. <https://docs.github.com/en/rest/branches/branches#get-a-branch>
-- **VS Code Extension API**: For integrating with VS Code, <https://code.visualstudio.com/api/references/vscode-api>
+- **GitHub REST API (v3)**:
+  - **Git Trees (`GET /repos/{owner}/{repo}/git/trees/{tree_sha}?recursive=1`)**: Primary endpoint for fetching the full repository structure efficiently. Handles nested directories in a single call. [Docs](https://docs.github.com/en/rest/git/trees#get-a-tree)
+  - **Repository Contents (`GET /repos/{owner}/{repo}/contents/{path}`)**: Used to download the content of individual files selected by the user. [Docs](https://docs.github.com/en/rest/repos/contents#get-repository-content)
+  - **Branches (`GET /repos/{owner}/{repo}/branches/{branch}`)**: Used initially to get the commit SHA of the target branch's head, which is needed as the `{tree_sha}` for the Git Trees API call. [Docs](https://docs.github.com/en/rest/branches/branches#get-a-branch)
+  - **Authentication**: Uses optional Personal Access Token (PAT) provided via the `aidd.githubToken` VS Code setting in the `Authorization: Bearer <TOKEN>` header to handle private repositories and increase rate limits.
+- **VS Code Extension API**: Core API for all extension functionality, including TreeView, commands, configuration (`vscode.workspace.getConfiguration('aidd').get('githubToken')`), notifications, file system access, etc. [Docs](https://code.visualstudio.com/api/references/vscode-api)
 
 ## Technical Constraints
 
-- **GitHub API Rate Limiting**: Applies to all requests. Using the `git/trees` API reduces the *number* of requests for structure fetching but might return large responses. Authenticated requests (`aidd.githubToken`) have higher limits. Need to monitor usage.
-- **GitHub API `truncated` Flag**: The `git/trees` API may return truncated results for extremely large repositories. Need a strategy if this occurs.
-- **VS Code Extension Performance**: Handling potentially large datasets from the `git/trees` API in the TreeView requires efficient processing and rendering.
-- **Cross-platform Compatibility**: Ensure file system operations and paths work correctly on Windows, macOS, and Linux.
+- **GitHub API Rate Limiting**: Applies to all requests. Unauthenticated requests have lower limits (60/hour). Authenticated requests using the PAT via the `aidd.githubToken` setting have significantly higher limits (5000/hour). Rate limit information is checked in API responses.
+- **GitHub API `truncated` Flag**: The `git/trees` API endpoint (`GET /repos/{owner}/{repo}/git/trees/{tree_sha}?recursive=1`) may return a `truncated: true` field in the response if the repository contains more than 100,000 files. Handling this scenario (e.g., notifying the user, potentially fetching in chunks if possible) is not currently implemented (see Technical Debt in `systemPatterns.md`).
+- **VS Code Extension Performance**: Processing and rendering potentially large file trees (especially after a `git/trees` call) in the TreeView needs to be performant to avoid UI freezes.
+- **Cross-platform Compatibility**: File system paths and operations (`fs` module) must be handled carefully to work across Windows, macOS, and Linux. Using `path.join` and `path.sep` is recommended.
 
 ## Monitoring and Logging
 

@@ -36,7 +36,7 @@ Refining core functionality, improving code structure through refactoring, parti
 ## Active Decisions
 
 - **TreeView Implementation**: Using VS Code's built-in TreeView with custom checkboxes via `SelectionService`.
-- **GitHub API Approach**: Using native Node.js https module with optional PAT via `aidd.githubToken`. Utilizing Git Trees API for structure, Contents API for downloads.
+- **GitHub API Approach**: Using native Node.js https module with optional PAT for authentication. Utilizing efficient API calls for structure and content fetching.
 - **Error Handling Strategy**: Implementing comprehensive error handling with user-friendly messages, especially for API limits and download issues.
 
 ## Important Patterns and Preferences
@@ -50,7 +50,7 @@ Refining core functionality, improving code structure through refactoring, parti
 ## Learnings and Insights
 
 - Centralizing selection state in `SelectionService` simplifies management.
-- Using `git/trees?recursive=1` is highly efficient for fetching repository structure.
+- Utilizing efficient GitHub API endpoints (like Git Trees) is crucial for performance when fetching repository structure.
 - Local recursive selection improves UI responsiveness.
 - Testing remains crucial for validating end-to-end flows and UI interactions.
 
@@ -67,7 +67,7 @@ Refining core functionality, improving code structure through refactoring, parti
 
 ## Recent Discoveries
 
-- GitHub's `git/trees` API with `recursive=1` is the standard for fetching complete file listings.
+- GitHub's Git Trees API is highly effective for fetching complete file listings efficiently.
 - VS Code's `onDidChangeCheckboxState` (if applicable/used) simplifies checkbox handling.
 
 ## Current Experiments

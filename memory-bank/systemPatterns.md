@@ -15,11 +15,11 @@ The AI-Driven Dev Rules VS Code extension follows a modular architecture with cl
 
 ## Key Technical Decisions
 
-- **Native Node.js https module**: Using built-in Node.js modules instead of third-party libraries to minimize dependencies and bundle size
-- **VS Code TreeView API**: Leveraging VS Code's native TreeView API for displaying repository structure
-- **VS Code Configuration API**: Using VS Code's configuration system (`aidd.githubToken`) for securely handling the optional GitHub PAT.
-- **Modular Architecture**: Separating concerns into distinct modules for better maintainability
-- **TypeScript Interfaces**: Using TypeScript interfaces for clear contracts between components
+- **Native Node.js https module**: Using built-in Node.js modules instead of third-party libraries to minimize dependencies and bundle size.
+- **VS Code TreeView API**: Leveraging VS Code's native TreeView API for displaying repository structure.
+- **VS Code Configuration API**: Utilizing VS Code's configuration system for securely handling optional authentication tokens (PAT).
+- **Modular Architecture**: Separating concerns into distinct modules (Services, API, Views, etc.) for better maintainability.
+- **TypeScript Interfaces**: Using TypeScript interfaces for clear contracts between components.
 
 ## Design Patterns
 
@@ -54,11 +54,11 @@ Extension Core
 
 ## Critical Implementation Paths
 
-1.  **GitHub API Integration (Git Trees)**
-    *   Implement efficient fetching of the entire repository structure using the `git/trees?recursive=1` API endpoint.
-    *   Handle potential `truncated` responses for very large repositories.
-    *   Implement robust error handling specific to the Git Trees API (e.g., invalid SHA, repo not found).
-    *   Continue using optional `Authorization` header via `aidd.githubToken`.
+1.  **GitHub API Integration (Structure Fetching)**
+    *   Implement efficient fetching of the entire repository structure using appropriate GitHub API endpoints (details in `techContext.md`).
+    *   Handle potential API limitations (e.g., truncation) for very large repositories.
+    *   Implement robust error handling specific to the GitHub API interactions.
+    *   Utilize optional authentication tokens passed via VS Code settings.
 
 2.  **TreeView Implementation & Local Selection**
     *   Transform the flat data from Git Trees API into a hierarchical `TreeItem` structure.
@@ -75,35 +75,35 @@ Extension Core
 ## Error Handling Strategy
 
 - **API Errors**: Catch and display meaningful error messages for GitHub API issues
-- **Rate Limiting**: Detect rate limit errors and inform user with clear instructions. Encourage users to provide a token via `aidd.githubToken` setting to increase limits.
-- **Network Issues**: Graceful handling of network failures with retry options
-- **File System Errors**: Proper error handling for file system operations with user feedback
+- **Rate Limiting**: Detect rate limit errors and inform user with clear instructions. Encourage users to provide an authentication token via settings to increase limits.
+- **Network Issues**: Graceful handling of network failures with retry options.
+- **File System Errors**: Proper error handling for file system operations with user feedback.
 
 ## Performance Considerations
 
-- **Efficient Fetching**: Using the `git/trees?recursive=1` API significantly reduces the number of API calls compared to recursive `contents` calls.
-- **Initial Load Processing**: Processing and displaying the potentially large dataset from `git/trees` might be a bottleneck. Monitor and optimize TreeView rendering if needed.
+- **Efficient Fetching**: Utilizing efficient GitHub API endpoints (like Git Trees) reduces the number of API calls for structure fetching.
+- **Initial Load Processing**: Processing and displaying potentially large datasets from the API might be a bottleneck. Monitor and optimize TreeView rendering if needed.
 - **Local Selection**: Recursive selection/deselection is performed locally, making it fast and responsive without additional API calls.
-- **Caching**: Caching the `git/trees` response can improve performance for subsequent views of the same repository/branch.
-- **Truncated Responses**: Need a strategy for handling the `truncated` flag in `git/trees` responses for extremely large repositories (though this is rare).
-- **Asynchronous Operations**: Ensure UI remains responsive during the initial API call and download process.
+- **Caching**: Caching API responses can improve performance for subsequent views of the same repository/branch.
+- **Truncated Responses**: Need a strategy for handling potential API response truncation for extremely large repositories.
+- **Asynchronous Operations**: Ensure UI remains responsive during API calls and download processes.
 
 ## Security Patterns
 
-- **Input Validation**: Validate all user inputs before making API requests
-- **Error Message Sanitization**: Ensure error messages don't expose sensitive information
-- **Secure Credential Handling**: Utilize VS Code's secure configuration storage (`aidd.githubToken`) for the optional GitHub PAT. Avoid storing credentials directly in the extension's code or state.
+- **Input Validation**: Validate all user inputs before making API requests.
+- **Error Message Sanitization**: Ensure error messages don't expose sensitive information.
+- **Secure Credential Handling**: Utilize VS Code's secure configuration storage for optional authentication tokens (PAT). Avoid storing credentials directly in the extension's code or state.
 
 ## Scalability Approach
 
 The extension's scalability for large repositories is improved by:
 
-- **Single API Call Fetching**: Using `git/trees?recursive=1` fetches the structure efficiently.
+- **Efficient API Fetching**: Using appropriate API endpoints (like Git Trees) fetches the structure efficiently.
 - **Local State Management**: Selection state is managed locally, avoiding API calls during interaction.
-- **Potential Bottlenecks**: Focus shifts to handling potentially large datasets in memory for the TreeView and managing `truncated` API responses if they occur.
+- **Potential Bottlenecks**: Focus shifts to handling potentially large datasets in memory for the TreeView and managing potential API response truncation if they occur.
 
 ## Technical Debt
 
-- **Truncated Tree Handling**: No specific handling for the `truncated` flag in the `git/trees` API response is implemented yet. Needs investigation if encountered with large rule repositories.
+- **Truncated API Response Handling**: No specific handling for potential API response truncation (e.g., `truncated` flag in Git Trees) is implemented yet. Needs investigation if encountered.
 - **Advanced Filtering/Search**: Deferred to future versions. Could enhance rule discoverability.
-- **Private Repositories**: While authentication is supported via `aidd.githubToken`, explicit testing and potential UI adjustments for private repositories haven't been prioritized.
+- **Private Repositories**: While authentication is supported via settings, explicit testing and potential UI adjustments for private repositories haven't been prioritized.
