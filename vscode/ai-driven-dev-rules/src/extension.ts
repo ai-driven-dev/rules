@@ -18,14 +18,18 @@ import { ExplorerView } from "./views/explorer/explorerView";
 import { WelcomeView } from "./views/welcome/welcomeView";
 
 export function activate(context: vscode.ExtensionContext): void {
-  const logger: ILogger = new Logger("GitHub Explorer", true);
-  logger.info("GitHub Explorer extension is now active");
+  const logger: ILogger = new Logger("AI-Driven Dev Rules", true);
+  logger.info("AI-Driven Dev Rules extension is now active");
 
   const storageService: IStorageService = new StorageService(context);
-  
+
   const config = vscode.workspace.getConfiguration("aidd");
-  const showWelcomeOnStartup = config.get<boolean>("showWelcomeOnStartup") ?? true;
-  const autoRefreshInterval = config.get<number | null>("autoRefreshInterval", null);
+  const showWelcomeOnStartup =
+    config.get<boolean>("showWelcomeOnStartup") ?? true;
+  const autoRefreshInterval = config.get<number | null>(
+    "autoRefreshInterval",
+    null,
+  );
 
   const httpClient: IHttpClient = new HttpClient(logger);
   const rateLimitManager: IRateLimitManager = new RateLimitManager(logger);
@@ -38,10 +42,9 @@ export function activate(context: vscode.ExtensionContext): void {
     rateLimitManager,
     logger,
   );
-  
+
   const downloadService = new DownloadService(logger, httpClient);
 
-  
   const selectionService = new SelectionService(logger, explorerStateService);
 
   const explorerView = new ExplorerView(
@@ -62,7 +65,6 @@ export function activate(context: vscode.ExtensionContext): void {
     }),
   );
 
-  
   registerCommands({
     context,
     explorerView,
@@ -75,7 +77,6 @@ export function activate(context: vscode.ExtensionContext): void {
     vscode.commands.executeCommand("aidd.welcomeView.focus");
   }
 
-  
   setupAutoRefresh(context, autoRefreshInterval, logger);
 }
 

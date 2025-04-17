@@ -65,14 +65,14 @@ export function registerCommands(dependencies: CommandDependencies): void {
     vscode.commands.registerCommand("aidd.clearStorage", async () => {
       logger.debug("Clear storage command executed");
       const confirm = await vscode.window.showWarningMessage(
-        "This will clear all GitHub Explorer storage, including recent repositories and settings. Are you sure?",
+        "This will clear all AI-Driven Dev Rules storage, including recent repositories and settings. Are you sure?",
         { modal: true },
         "Yes",
       );
       if (confirm === "Yes") {
         storageService.clearStorage();
         vscode.window.showInformationMessage(
-          "GitHub Explorer storage has been cleared.",
+          "AI-Driven Dev Rules storage has been cleared.",
         );
 
         vscode.commands.executeCommand("aidd.refresh");

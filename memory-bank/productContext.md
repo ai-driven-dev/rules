@@ -42,22 +42,22 @@ AI development tools require clear, structured rules to operate effectively. Mai
 
 ## User Flows
 
-1.  **Discovering and Downloading Rules**:
-    *   User opens the AI-Driven Dev Rules view in VS Code.
-    *   User configures the source repository (or uses default). Adds PAT if needed for private repos.
-    *   Extension displays available rule sets/files from the repository.
-    *   User selects desired rules.
-    *   User initiates download.
-    *   Rules are downloaded into the user's workspace.
+1. **Discovering and Downloading Rules**:
+    - User opens the AI-Driven Dev Rules view in VS Code.
+    - User configures the source repository (or uses default). Adds PAT if needed for private repos.
+    - Extension displays available rule sets/files from the repository.
+    - User selects desired rules.
+    - User initiates download.
+    - Rules are downloaded into the user's workspace.
 
-2.  **Contributing Rules (Conceptual)**:
-    *   Expert developer creates/updates rules in a designated GitHub repository.
-    *   (Future) Potential review/validation process within the community/platform.
+2. **Contributing Rules (Conceptual)**:
+    - Expert developer creates/updates rules in a designated GitHub repository.
+    - (Future) Potential review/validation process within the community/platform.
 
-3.  **Updating Rules (V2)**:
-    *   Extension periodically checks configured repositories for updates to downloaded rules.
-    *   User is notified of available updates.
-    *   User chooses to apply updates.
+3. **Updating Rules (V2)**:
+    - Extension periodically checks configured repositories for updates to downloaded rules.
+    - User is notified of available updates.
+    - User chooses to apply updates.
 
 ## Success Metrics
 

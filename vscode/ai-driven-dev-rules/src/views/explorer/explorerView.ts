@@ -51,7 +51,7 @@ export class ExplorerView {
     this.context.subscriptions.push(
       this.treeView.onDidChangeVisibility((e) => {
         if (e.visible) {
-          this.logger.debug("GitHub Explorer view became visible");
+          this.logger.debug("AI-Driven Dev Rules view became visible");
         }
       }),
     );
