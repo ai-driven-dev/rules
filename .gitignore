@@ -7,3 +7,5 @@ out
 dist
 
 .env
+
+.cursor/rules/08-domain-specific-rules/*.mdc
