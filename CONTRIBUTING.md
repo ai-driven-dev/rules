@@ -1,36 +1,61 @@
-# CONTRIBUTING
+# CONTRIBUTION
 
-❯ vsce login AI-Driven-Dev
-<https://marketplace.visualstudio.com/manage/publishers/>
-Personal Access Token for publisher 'AI-Driven-Dev': ************************************************************************************
+Notre but est de se partager LES MEILLEURES RÈGLES pour mieux coder avec l'IA.
 
-The Personal Access Token verification succeeded for the publisher 'AI-Driven-Dev'.
+Rejoignez le Discord pour accéder aux lives tous les vendredis et aux channels privés sur les Cursor Rules.
 
----
+[![Discord](https://img.shields.io/badge/Join%20Discord-7289DA?style=for-the-badge&logo=discord&logoColor=white)](https://discord.gg/invite/ai-driven-dev)
 
-## Prerequisites
+> Vidéo à venir ce vendredi 18 avril 2025
 
-## Adding Features
+## Dépôt Communautaire
 
-- [ ] Standardized memory system -> Memory, PRDs, Tasks, ADR, LLM.txt, downloaded docs,
-- [ ] Agents (`modes.json`) when Cursor is ready
+Ce dépôt sert à mettre en avant les membres contributeurs de l'AI-Driven Dev.
 
-## Adding Rules
+### Tableau de contribution
 
-- [ ] Contributing Standards for extension + rules
+| Niveau | Responsabilités | Accessibilité |
+|--------|----------------|-------|
+| 🌱 **Alpha** | Création et améliorations des règles, Contribution doc | ☆☆☆ |
+| 🧑‍💻 **Beta** | Coder l'extension VSCode | ☆★★ |
+| 🚀 **Delta** | Prompt Engineering | ★★★ |
 
-## Improving Rules
+### Qui peut nous rejoindre ?
 
-## Building Extensions
+La plus petite amélioration sera bénéfique à la communauté, si vous avez un compte GitHub, n'hésitez pas !
 
-- [ ] Publish extension to marketplace
-- [ ] Index table for rules references
-- [ ] Synthlang convert when writing prompt
-- [ ] Idenpendant Base rules -> will copy into .cursor/rules, .clinerules, .github/prompts etc
+### Comment Contribuer ?
 
-## Next Demo on Discord
+- Forker le dépôt [https://github.com/ai-driven-dev/rules](https://github.com/ai-driven-dev/rules)
+- Commitez vos changements
+- **Faire une pull-request** pour que l'on intègre vos changements.
+- Demander l'avis d'un reviewer @AIDrivenDev.
+- On merge ça vite pour que ça bénéficie à la communauté.
 
-- [ ] Le Journal
-  - [ ] Seeding more users
-  - [ ] Admin table
-  - [ ] User deletion
+## Todo list
+
+Voici la liste des fonctionnalités à venir par Team.
+
+### 🌱 Team Alpha
+
+Responsable de la qualité du dépôt et des règles
+
+- [ ] Amélioration de la documentation [README.md](README.md), [CONTRIBUTING.MD](./CONTRIBUTING.md)...
+- [ ] Optimiser les règles existantes dans [./.cursor/rules](./.cursor/rules/)
+- [ ] Créer une nouvelle règle à partager avec le [./.cursor/rules/meta-generator.mdc](./.cursor/rules/meta-generator.mdc)
+
+### 🧑‍💻 Team Beta
+
+Responsable du développement de l'extension VSCode "AI-Driven Dev Rules".
+
+- [ ] Standards de contribution pour l'extension + règles de [./vscode/ai-driven-dev-rules/README.md](./vscode/ai-driven-dev-rules/README.md).
+- [ ] Configurer `Biome` avec `lefthook`.
+- [ ] Règles de base indépendantes dans un dossier `base-rules` → copiées dans .cursor/rules, .clinerules, .github/prompts, etc.
+
+### 🚀 Team Delta
+
+Responsable d'améliorer le mécanisme de génération, d'ajouter de nouvelles features.
+
+- [ ] Améliorer le système de mémoire standardisé → Mémoire, PRDs, Tâches, ADR, LLM.txt, documents téléchargés
+- [ ] Compression syntaxique sur le [./.cursor/rules/meta-generator.mdc](./.cursor/rules/meta-generator.mdc)
+- [ ] Définir les standards Agentics (`modes.json`) quand Cursor sera prêt
