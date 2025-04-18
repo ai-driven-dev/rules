@@ -48,10 +48,10 @@ flowchart LR
     title[Extension VS Code pour récupération des règles depuis GitHub]
     class title titleClass
     
-    A[Extension VS Code] -->|1| B[Connexion GitHub avec Token (optionnel)]
-    B -->|2| C[Récupération structure dépôt]
-    C -->|3| D[Sélection et téléchargement des Règles]
-    D -->|4| E[Utilisation + Commit des règles dans l'IDE]
+    A[Extension VS Code] -->|1| B["Connexion GitHub avec Token (optionnel)"]
+    B -->|2| C["Récupération structure dépôt"]
+    C -->|3| D["Sélection et téléchargement des Règles"]
+    D -->|4| E["Utilisation + Commit des règles dans l'IDE"]
     
     style A fill:#4b89dc,stroke:#2e5daa,color:white,stroke-width:2px,border-radius:10px,font-weight:bold
     style B fill:#2ecc71,stroke:#27ae60,color:white,stroke-width:2px,border-radius:10px,font-weight:bold
