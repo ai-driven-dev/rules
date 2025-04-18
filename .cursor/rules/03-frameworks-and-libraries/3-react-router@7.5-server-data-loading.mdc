@@ -4,22 +4,21 @@ globs: apps/frontend/app/routes/**/*.tsx
 alwaysApply: false
 ---
 
-# React Router 7.5 Data Loading Standards
-
-- MANDATORY: use types generated in "./+types"
-
-Load data from API using loaders with this example:
+MANDATORY:
+- search for generated types in frontend ".react-router/types/app/routes"
+- use Route.LoaderArgs
+- use Route.ComponentProps
 
 ```typescript
-// filename: routes/admin.tsx
-import type { Route } from '../../.react-router/types/app/routes/+types/admin';
+// filename: routes/groups.tsx
+import type { Route } from 'apps/frontend/.react-router/types/app/routes/+types/groups';
 
 export async function loader({ params }: Route.LoaderArgs) {
   const group = ...
   return group;
 }
 
-export default function Admin({
+export default function Groups({
   loaderData,
 }: Route.ComponentProps) {
   const { name, description } = loaderData;

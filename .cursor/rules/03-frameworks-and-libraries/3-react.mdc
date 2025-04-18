@@ -1,33 +1,31 @@
 ---
-description: APPLY React standards WHEN coding with React
+description: Apply React standards for component structure, separation of concerns, state management, and accessibility when developing with React in `apps/frontend`.
 globs: apps/frontend/**/*.tsx
 alwaysApply: false
 ---
 
-# React Framework Standards
+Component Structure:
+- Use functional components.
+- Keep components light and small.
+- Strongly type `props`.
 
-## Component Structure
-- Functional Components
-- Light and small
-- Strongly props typing
+Separation:
+- Split into sub-components by responsibility.
+- Move shared components outside the parent folder.
+- Create private sub-components for single use.
+- Follow smart/dumb component pattern.
 
-## Splitting
-- Split in sub-components by responsibility
-- If component is shared, move it outside component folder.
-- If component is only for the parent component, create sub-component.
-- Follow smart/dumb component pattern -> React components are dumb
+State:
+- Delegate state and logic to a smart component.
+- Declare calculated variables at the top (dumb component).
+- Place `displayName` at the bottom of the file.
+- Do not use default export.
+- Return `null` if mandatory props are missing.
+- One component per file (except tiny private components).
 
-## State
-- State and logic are deported in a dedicated place (smart component)
-- Declare vars on top of component for tiny calculation (dump component)
-- `displayName` at bottom
-- No default export
-- Returns `null` if mandatory props do not exist
-- One component per file, except for tiny private component for readability
-
-## Style and Accessibility
-- Mobile first
-- Use existing UI components
-- Semantic HTML elements
-- Proper ARIA attributes
-- Ensure keyboard navigation
+Style and Accessibility:
+- Think mobile-first.
+- Use existing UI components.
+- Use semantic HTML elements.
+- Add appropriate ARIA attributes.
+- Ensure keyboard navigation.

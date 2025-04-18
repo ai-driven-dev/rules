@@ -3,8 +3,7 @@ description: APPLY package installation rules WHEN installation new package
 alwaysApply: false
 ---
 
-# Version Management Standards
-
-- Never install new package directly, always ask user
-- Avoid new packages installation, check current first
+- Never install new package directly
+- Always ask user
+- Check existing packages before proposing new
 - Prefer stable versions
