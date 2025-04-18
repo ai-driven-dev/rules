@@ -18,6 +18,7 @@ Partagez vos règles IA personnalisées avec la communauté.
   - [Des règles optimisées en 3 minutes](#des-règles-optimisées-en-3-minutes)
 - [👨‍💻 Comment installer les règles AIDD ?](#-comment-installer-les-règles-aidd-)
   - [Télécharger l'extension "AI-Driven Dev Rules"](#télécharger-lextension-ai-driven-dev-rules)
+  - [Problèmes connus](#problèmes-connus)
   - [Utiliser l'extension](#utiliser-lextension)
 - [🚀 Bien démarrer](#-bien-démarrer)
   - [Comment coder avec des règles ?](#comment-coder-avec-des-règles-)
@@ -68,6 +69,16 @@ flowchart LR
 - Ouvrir la palette de commandes (`Ctrl + Shift + P`)
 - Entrer `Extension: Install from VSIX`
 - Installer l'extension !
+
+### Problèmes connus
+
+L'API de GitHub est open mais vous pouvez vous faire Rate Limit.
+
+1. Récupérer un Token sur GitHub [https://github.com/settings/tokens](https://github.com/settings/tokens).
+2. AUCUN ROLE NÉCESSAIRE.
+3. Dans VSCode, ouvrir les Réglages.
+4. Rechercher: "Aidd: GitHub Token"
+5. **Rajouter votre Token pour éviter une réponse HTTP 429**
 
 ### Utiliser l'extension
 
