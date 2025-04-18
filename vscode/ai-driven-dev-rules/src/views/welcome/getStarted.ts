@@ -72,20 +72,21 @@ export function getWelcomeViewContent(): string {
                 .info-item {
                     display: flex;
                     align-items: flex-start;
-                    margin-bottom: 15px;
+                    margin-bottom: 10px;
+                    margin-top: 20px;
                 }
                 .info-item .number {
-                    background-color: var(--vscode-badge-background);
-                    color: var(--vscode-badge-foreground);
+                    background-color: var(--vscode-button-background);
+                    color: white;
                     width: 20px;
                     height: 20px;
                     border-radius: 50%;
-                    display: flex;
+                    display: inline-flex;
                     align-items: center;
                     justify-content: center;
                     font-size: 12px;
+                    margin-bottom: 5px;
                     margin-right: 10px;
-                    flex-shrink: 0;
                 }
                 .info-item .content {
                     flex: 1;
@@ -135,7 +136,7 @@ export function getWelcomeViewContent(): string {
                 
                 <div class="action-container">
                     <button class="action-button" onclick="setRepository()">
-                        Add new repository
+                        Add a repository
                     </button>
                     <button class="action-button secondary-button" onclick="showDocumentation()">
                         Documentation
@@ -144,22 +145,22 @@ export function getWelcomeViewContent(): string {
             </div>
             
             <div class="section">
-                <h2>Getting Started</h2>
+                <h2>🚀 Getting Started</h2>
                 <div class="info-item">
                     <div class="number">1</div>
-                    <div class="content"><strong>Connect to one or multiple repositories</strong</div>
+                    <div class="content"><strong>Add a repository</strong>: That will be fetched.</div>
                 </div>
                 <div class="info-item">
                     <div class="number">2</div>
-                    <div class="content">Select elements</div>
+                    <div class="content"><strong>Check Rules</strong>: Browse repository and choose needed rules.</div>
                 </div>
                 <div class="info-item">
                     <div class="number">3</div>
-                    <div class="content">Sync theme locally</div>
+                    <div class="content"><strong>Synchronize</strong>: Download selected elements into your workspace.</div>
                 </div>
                 <div class="info-item">
                     <div class="number">4</div>
-                    <div class="content">Use and commit to Git!</div>
+                    <div class="content"><strong>Use & Commit</strong>: Integrate the rules into AI-Driven Dev flow!</div>
                 </div>
             </div>
             

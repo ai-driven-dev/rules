@@ -112,7 +112,7 @@
         "aidd.githubToken": {
           "type": "string",
           "default": "",
-          "description": "Votre token d'accès personnel (PAT) GitHub. Optionnel, mais recommandé pour augmenter les limites de taux de l'API. Générez-en un [ici](https://github.com/settings/personal-access-tokens).",
+          "description": "Token d'accès personnel (PAT) GitHub. Optionnel, mais recommandé pour augmenter les limites de taux de l'API: https://github.com/settings/personal-access-tokens",
           "scope": "machine-overridable"
         },
         "aidd.maxRecentRepositories": {
