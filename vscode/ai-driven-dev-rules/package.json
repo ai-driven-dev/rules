@@ -43,6 +43,11 @@
         "command": "aidd.openSettings",
         "title": "AI-Driven Dev Rules: Open Settings",
         "icon": "$(gear)"
+      },
+      {
+        "command": "aidd.clearStorage",
+        "title": "AI-Driven Dev Rules: Clear Storage",
+        "icon": "$(trash)"
       }
     ],
     "viewsContainers": {

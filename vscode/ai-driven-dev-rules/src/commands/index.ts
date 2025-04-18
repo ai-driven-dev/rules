@@ -15,9 +15,7 @@ interface CommandDependencies {
 }
 
 export function registerCommands(dependencies: CommandDependencies): void {
-  
-  const { context, explorerView, logger, storageService, githubService } =
-    dependencies;
+  const { context, explorerView, logger, storageService } = dependencies;
 
   context.subscriptions.push(
     vscode.commands.registerCommand(
@@ -58,8 +56,6 @@ export function registerCommands(dependencies: CommandDependencies): void {
       explorerView.downloadSelectedFiles();
     }),
   );
-
-  
 
   context.subscriptions.push(
     vscode.commands.registerCommand("aidd.clearStorage", async () => {

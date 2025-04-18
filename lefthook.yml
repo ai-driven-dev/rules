@@ -1,6 +1,9 @@
-# pre-commit:
-#   commands:
-#     check:
-#       glob: "*.{ts,json}"
-#       run: npx biome check --write --unsafe --colors=off --no-errors-on-unmatched --files-ignore-unknown=true .
-#       stage_fixed: true
+pre-commit:
+  commands:
+    typecheck:
+      description: "Typecheck"
+      run: cd vscode/ai-driven-dev-rules && npm run typecheck
+    format:
+      glob: "*.{ts,json}"
+      run: npx biome check --write --unsafe --colors=off --no-errors-on-unmatched --files-ignore-unknown=true .
+      stage_fixed: true

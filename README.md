@@ -103,25 +103,11 @@ La structure suivante est utilisée, selon le format :
 #-rule-name[@version][-specificity].mdc
 ```
 
-Exemples:
-
-```text
-3-react.mdc
-3-react@18.mdc
-3-react@19.mdc
-3-react@19-hook.mdc
-3-react@19.1-hook.mdc
-```
-
-Tableau de correspondance:
-
-| Partie | Description | Obligatoire |
-| ------ | ----------- | ----------- |
-| `3` | Numéro catégorie | ✅ |
-| `react` | Nom | ✅ |
-| `@19.1` | Version | Optionnel |
-| `-hooks` | Sous-partie spécifique | Optionnel |
-| `.mdc` | Extension pour Cursor | ✅ |
+- `#` : Numéro de la catégorie (voir ci-dessous)
+- `-rule-name` : Nom de la règle
+- `@version` : Version de la règle (*optionnel*)
+- `-specificity` : Sous-partie spécifique (*optionnel*)
+- `.mdc` : Extension pour Cursor
 
 ### 2. Organisation des dossiers
 
