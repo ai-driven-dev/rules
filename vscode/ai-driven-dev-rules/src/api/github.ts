@@ -149,7 +149,7 @@ export class GitHubApiService implements IGitHubApiService {
       `Fetching recursive tree for ${owner}/${name}, branch: ${branch}`,
     );
 
-    const branchApiUrl = `${this.baseApiUrl}/repos/${owner}/${name}/branches/${branch}`;
+    const branchApiUrl = `${this.baseApiUrl}/repos/${owner}/${name}/branches/${branch || "main"}`;
     const branchResult =
       await this.makeApiRequest<GithubBranchResponse>(branchApiUrl);
 
