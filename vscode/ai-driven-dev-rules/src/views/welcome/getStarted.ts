@@ -148,7 +148,7 @@ export function getWelcomeViewContent(): string {
                 <h2>🚀 Getting Started</h2>
                 <div class="info-item">
                     <div class="number">1</div>
-                    <div class="content"><strong>Add a repository</strong>: That will be fetched.</div>
+                    <div class="content"><strong>Add a repository</strong>: That will be fetched (default is "ai-driven-dev/rules").</div>
                 </div>
                 <div class="info-item">
                     <div class="number">2</div>

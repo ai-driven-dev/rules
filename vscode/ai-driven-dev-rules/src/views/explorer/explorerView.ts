@@ -186,6 +186,8 @@ export class ExplorerView {
       vscode.window.showInformationMessage(
         `Connected to GitHub repository: ${repository.owner}/${repository.name}`,
       );
+      // Ensure the view is visible after successfully setting the repository
+      vscode.commands.executeCommand(`${ExplorerView.VIEW_ID}.focus`);
     } catch (error) {
       this.logger.error(
         `Error connecting to repository: ${repository.owner}/${repository.name}`,
