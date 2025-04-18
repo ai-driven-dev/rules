@@ -4,23 +4,23 @@ Notre but est de se partager **LES MEILLEURES RÈGLES** pour mieux coder avec l'
 
 > Vidéo à venir ce vendredi 18 avril 2025
 
-## Dépôt Communautaire
+## Rejoindre la Core Team
 
 **Ce dépôt sert à mettre en avant les membres contributeurs de l'AI-Driven Dev.**
 
 | Niveau | Responsabilités | Accessibilité |
 |--------|----------------|-------|
-| 🌱 **Alpha** | Création et améliorations des règles, Contribution doc | ☆☆☆ |
-| 🧑‍💻 **Beta** | Coder l'extension VSCode | ☆★★ |
-| 🚀 **Delta** | Prompt Engineering | ★★★ |
+| 🌱 **Alpha** | Création et améliorations des règles, Contribution doc | ★★★ |
+| 🧑‍💻 **Beta** | Coder l'extension VSCode | ★★☆ |
+| 🚀 **Delta** | Prompt Engineering | ★☆☆ |
 
-### Qui
+### Qui peut nous rejoindre ?
 
 **Tous les devs, peu importe le niveau peuvent rejoindre l'aventure.**
 
 La plus petite amélioration sera bénéfique à la communauté : si vous avez un compte GitHub, n'hésitez pas !
 
-### Comment
+### Comment contribuer ?
 
 Avant toute chose, rejoignez-nous sur les Lives privés du Discord :
 [![Discord](https://img.shields.io/badge/Join%20Discord-7289DA?style=for-the-badge&logo=discord&logoColor=white)](https://discord.gg/invite/ai-driven-dev)
@@ -33,7 +33,7 @@ Avant toute chose, rejoignez-nous sur les Lives privés du Discord :
 
 ## Todo list
 
-Voici la liste des fonctionnalités à venir par Team.
+Voici la liste des fonctionnalités à venir, par Team.
 
 ### 🌱 Team Alpha
 
@@ -49,6 +49,7 @@ Responsable du développement de l'extension VSCode "AI-Driven Dev Rules".
 
 - [ ] Standards de contribution pour l'extension + règles de [./vscode/ai-driven-dev-rules/README.md](./vscode/ai-driven-dev-rules/README.md).
 - [ ] Configurer `Biome` avec `lefthook`.
+- [ ] Possibilité de mettre à jour une règle existante par son nom
 - [ ] Règles de base indépendantes dans un dossier `base-rules` → copiées dans .cursor/rules, .clinerules, .github/prompts, etc.
 
 ### 🚀 Team Delta
