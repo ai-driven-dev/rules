@@ -2,9 +2,9 @@
   "name": "ai-driven-dev-rules",
   "displayName": "AI-Driven Dev Rules",
   "description": "Browse and download files from GitHub repositories directly within VS Code",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "engines": {
-    "vscode": "^1.98.0"
+    "vscode": "^1.92.0"
   },
   "repository": {
     "type": "git",
@@ -146,18 +146,15 @@
     }
   },
   "scripts": {
-    "vscode:prepublish": "npm run compile",
-    "compile": "tsc -p ./",
-    "build": "npx vsce package",
+    "vscode:package": "npx vsce package",
+    "vscode:prepublish": "tsc -p ./",
     "watch": "tsc -watch -p ./",
-    "lint": "eslint src",
-    "lint:fix": "eslint src --fix",
     "typecheck": "tsc --noEmit"
   },
   "devDependencies": {
     "@biomejs/biome": "^1.9.4",
     "@types/node": "20.x",
-    "@types/vscode": "^1.98.0",
+    "@types/vscode": "^1.92.0",
     "@typescript-eslint/eslint-plugin": "^8.28.0",
     "@typescript-eslint/parser": "^8.28.0",
     "eslint": "^9.23.0",

@@ -1,5 +1,5 @@
 ---
-description: This rule is essential for maintaining consistency and quality in rule creation across the codebase. It must be followed whenever: (1) A user requests a new rule to be created, (2) An existing rule needs modification, (3) The user asks to remember certain behaviors or patterns, or (4) Future behavior changes are requested. This rule ensures proper organization, clear documentation, and effective rule application by defining standard formats, naming conventions, and content requirements. It's particularly crucial for maintaining the rule hierarchy, ensuring rules are discoverable by the AI, and preserving the effectiveness of the rule-based system. The rule system is fundamental to project consistency, code quality, and automated assistance effectiveness.
+description: Rules Generator
 globs: .cursor/rules/**
 alwaysApply: false
 ---
@@ -8,54 +8,78 @@ alwaysApply: false
 
 ```mdc
 ---
-description: {Comprehensive description that provides full context and clearly indicates when this rule should be applied. Include key scenarios, impacted areas, and why following this rule is important. While being thorough, remain focused and relevant. The description should be detailed enough that the agent can confidently determine whether to apply the rule in any given situation.}
-globs: {path to apply OR blank}
-alwaysApply: {true or false}
+description: to_generate
+globs: to_generate
+alwaysApply: to_generate
 ---
 
 Sub rule 1:
 - Rule 1
 - Rule 2
 
-Sub rule ...:
-- ...
+...
 ```
 
-### Organizational Folders (Create if non existent)
+## Steps
 
-| Number | Category | Examples |
-| ------ | -------- | -------- |
-| `00` | 🏛️ `architecture` | Clean, Onion, 3-tiers... |
-| `01` | 📏 `standards` | Coding, Naming, formatting, structure |
-| `02` | 💻 `programming-languages` | JavaScript, TypeScript, Python |
-| `03` | 🛠️ `frameworks-and-libraries` | React, Vue, Angular, Next.js |
-| `04` | ⚙️ `tools-and-configurations` | Git, ESLint, Webpack, Docker |
-| `05` | 🔄 `workflows-and-processes` | PR reviews, deployment, CI/CD |
-| `06` | 📋 `templates-and-models` | Project templates, PRDs, READMEs |
-| `07` | ✅ `quality-assurance` | Testing, security, performance |
-| `08` | 🎯 `domain-specific-rules` | To share with your team |
-| `09` | 🔍 `other` | Doesn't fit in any other category |
+- Between each steps wait for user approval.
 
-## Glob Pattern Examples
-
-NEVER use quotes around glob patterns, NEVER group glob extensions with `{}`:
-
-- Core standards: .cursor/rules/*.mdc
-- Language rules: *.cs,*.cpp
-- Testing standards: *.test.ts,*.test.js
-- React components: src/components/**/*.tsx
-- Documentation: docs/**/*.md,*.md
-- Configuration files: *.config.js
-- Build artifacts: dist/**/*
-- Multiple extensions: *.js,*.ts, *.tsx
-- Multiple patterns: dist/**/*.*, docs/**/*.md, *test*.*
-
-## Critical Rules
+### 1. Structure
 
 - Check if this is an existing rule to update under all .cursor/rules sub-folders
-- Use "Rule Template" filling front-matter header
+
+#### Rule name
+- Respect format
+```text
+#-rule-name[@version][-specificity].mdc
+```
+
+#### Rule directory
 - Write in .cursor/rules/{folder}/{rule}.mdc
 
+{folder}:
+- `00-architecture`
+- `01-standards`
+- `02-programming-languages`
+- `03-frameworks-and-libraries`
+- `04-tools-and-configurations`
+- `05-workflows-and-processes`
+- `06-templates-and-models`
+- `07-quality-assurance`
+- `08-domain-specific-rules`
+- `09-other`
+
+
+### 2. frontmatter header
+
+#### Generate `description`
+
+One line. Comprehensive description that provides full context and clearly indicates when this rule should be applied. Include key scenarios, impacted areas, and why following this rule is important. While being thorough, remain focused and relevant. The description should be detailed enough that the agent can confidently determine whether to apply the rule in any given situation.
+
+#### Generate `globs`
+
+- Appropriate extension language based (e.g. `*.tsx` for React)
+- Appropriate sub-folder: can be `features`, `controller` etc
+- Appropriate repo: `apps/frontend`, `apps/backend`
+
+> Example for React: `globs: apps/frontend/**/*.tsx`
+
+#### Generate `alwaysApply`
+- Mostly false, double check if this REALLY needs to be applied globally
+
+
+### 3. Rule content
+
+#### Groups 
+- Identify rule groups.
+- Wait for user validation.
+
+#### Generate/Change Rules content
+- Bullet points only
 - Translate example into generic rule format
-- Write commands only. Use bullet points. Keep each line ultra short (3–7 words). No fluff.
-- 1 rule per bullet point
+- Remove non-essential, no fluff.
+- Write commands only.
+- 1 ultra short (3–7 words) rule per bullet point
+
+### 4. Filled template
+- Write proper filled template in proper dir WITH frontmatter header.

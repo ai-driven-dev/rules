@@ -21,7 +21,6 @@ Partagez vos règles IA personnalisées avec la communauté.
   - [Utiliser l'extension](#utiliser-lextension)
 - [🚀 Bien démarrer](#-bien-démarrer)
   - [Comment coder avec des règles ?](#comment-coder-avec-des-règles-)
-  - [Démo Vidéo](#démo-vidéo)
 - [✅ Ajouter vos règles](#-ajouter-vos-règles)
   - [1. Structure de nommage (à plat)](#1-structure-de-nommage-à-plat)
   - [2. Organisation des dossiers](#2-organisation-des-dossiers)
@@ -64,18 +63,25 @@ flowchart LR
 
 ### Télécharger l'extension "AI-Driven Dev Rules"
 
-- Téléchargez la dernière version de l’extension depuis [ai-driven-dev-rules-0.0.1.vsix]("./vscode/ai-driven-dev-rules/ai-driven-dev-rules-0.0.1.vsix")
+- Téléchargez la dernière version de l’extension depuis [ai-driven-dev-rules-0.0.2.vsix]("https://github.com/ai-driven-dev/rules/blob/main/vscode/ai-driven-dev-rules/ai-driven-dev-rules-0.0.2.vsix")
 - Ouvrez Cursor
 - Ouvrez la palette de commandes (Ctrl + Shift + P)
 - Tapez `Extension: Install from VSIX`
+- Installez l'extension !
 
 ### Utiliser l'extension
 
-Demain...Vendredi 18 avril 2025.
+> Vidéo prévue ce vendredi 18 avril 2025
+
+1. Ouvrir l'extension via l'icône GitHub sur le côté.
+2. Cliquez sur le bouton "Add Repository" (par défaut ce sera celui-ci)
+3. Télécharger le dossier `.cursor/rules`.
 
 ## 🚀 Bien démarrer
 
 ### Comment coder avec des règles ?
+
+> Vidéo prévue ce vendredi 18 avril 2025
 
 1. Ouvrir le mode Agent de votre IDE (comme Cursor).
 2. Donner du contexte avec votre prompt: `use real users in @admin.tsx from @users.controller.ts`
@@ -88,10 +94,6 @@ Bonus:
 ```markdown
 Vérifie l'application des règles.
 ```
-
-### Démo Vidéo
-
-Demain...Vendredi 18 avril 2025.
 
 ## ✅ Ajouter vos règles
 
@@ -143,9 +145,12 @@ Les règles sont organisées par dossiers, chaque dossier représentant une cat�
 
 ### 3. Générations et Mises à jour
 
-1. Ouvrir un nouveau Terminal de chat.
-2. Pointer vers `@rules/generator.md`.
-3. Demander à l'IA.
+> Vidéo prévue ce vendredi 18 avril 2025
+
+1. Ouvrir un nouveau Terminal de chat **en mode Agent**.
+2. Choisir le modèle `GPT 4.1`.
+3. Ajouter la Cursor Rules `meta-generator.mdc`.
+4. Promptez !
 
 **Créer une nouvelle règle :**
 
