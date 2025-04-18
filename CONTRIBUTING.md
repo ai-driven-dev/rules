@@ -1,18 +1,12 @@
 # CONTRIBUTION
 
-Notre but est de se partager LES MEILLEURES RÈGLES pour mieux coder avec l'IA.
-
-Rejoignez le Discord pour accéder aux lives tous les vendredis et aux channels privés sur les Cursor Rules.
-
-[![Discord](https://img.shields.io/badge/Join%20Discord-7289DA?style=for-the-badge&logo=discord&logoColor=white)](https://discord.gg/invite/ai-driven-dev)
+Notre but est de se partager **LES MEILLEURES RÈGLES** pour mieux coder avec l'IA.
 
 > Vidéo à venir ce vendredi 18 avril 2025
 
 ## Dépôt Communautaire
 
-Ce dépôt sert à mettre en avant les membres contributeurs de l'AI-Driven Dev.
-
-### Tableau de contribution
+**Ce dépôt sert à mettre en avant les membres contributeurs de l'AI-Driven Dev.**
 
 | Niveau | Responsabilités | Accessibilité |
 |--------|----------------|-------|
@@ -20,17 +14,22 @@ Ce dépôt sert à mettre en avant les membres contributeurs de l'AI-Driven Dev.
 | 🧑‍💻 **Beta** | Coder l'extension VSCode | ☆★★ |
 | 🚀 **Delta** | Prompt Engineering | ★★★ |
 
-### Qui peut nous rejoindre ?
+### Qui
 
-La plus petite amélioration sera bénéfique à la communauté, si vous avez un compte GitHub, n'hésitez pas !
+**Tous les devs, peu importe le niveau peuvent rejoindre l'aventure.**
 
-### Comment Contribuer ?
+La plus petite amélioration sera bénéfique à la communauté : si vous avez un compte GitHub, n'hésitez pas !
 
-- Forker le dépôt [https://github.com/ai-driven-dev/rules](https://github.com/ai-driven-dev/rules)
-- Commitez vos changements
-- **Faire une pull-request** pour que l'on intègre vos changements.
-- Demander l'avis d'un reviewer @AIDrivenDev.
-- On merge ça vite pour que ça bénéficie à la communauté.
+### Comment
+
+Avant toute chose, rejoignez-nous sur les Lives privés du Discord :
+[![Discord](https://img.shields.io/badge/Join%20Discord-7289DA?style=for-the-badge&logo=discord&logoColor=white)](https://discord.gg/invite/ai-driven-dev)
+
+1. Forker le dépôt [https://github.com/ai-driven-dev/rules](https://github.com/ai-driven-dev/rules)
+2. Commitez vos changements
+3. **Faire une pull-request** pour que l'on intègre vos changements.
+4. Demander l'avis d'un reviewer @AIDrivenDev.
+5. On merge ça vite pour que ça bénéficie à la communauté.
 
 ## Todo list
 

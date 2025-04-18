@@ -11,14 +11,15 @@ Partagez vos règles IA personnalisées avec la communauté.
 > Pour celles et ceux qui recherchent le système de KB de Christophe, un dépôt est en cours de création !
 >
 
+Envie de faire avec nous ?
+[>>> 🔥 REJOINDRE LA CORE TEAM <<<](./CONTRIBUTING.md)
+
 ## Table des matières
 
 - [Table des matières](#table-des-matières)
-- [🧠 Avantages](#-avantages)
-  - [Des règles optimisées en 3 minutes](#des-règles-optimisées-en-3-minutes)
+- [🧠 4 minutes pour commencer](#-4-minutes-pour-commencer)
 - [👨‍💻 Comment installer les règles AIDD ?](#-comment-installer-les-règles-aidd-)
   - [Télécharger l'extension "AI-Driven Dev Rules"](#télécharger-lextension-ai-driven-dev-rules)
-  - [Problèmes connus](#problèmes-connus)
   - [Utiliser l'extension](#utiliser-lextension)
 - [🚀 Bien démarrer](#-bien-démarrer)
   - [Comment coder avec des règles ?](#comment-coder-avec-des-règles-)
@@ -29,16 +30,16 @@ Partagez vos règles IA personnalisées avec la communauté.
   - [Bonus : Démo](#bonus--démo)
 - [🇫🇷 Contributions disponibles](#-contributions-disponibles)
 
-## 🧠 Avantages
+## 🧠 4 minutes pour commencer
 
-- 🎯 Créer des règles optimisées pour Cursor
-- 🤝 Partagées et validées par la communauté
-- 📋 Structure uniforme pour tous les contributeurs
-- 🚀 Simple et rapide pour contribuer
+Avantages :
 
-### Des règles optimisées en 3 minutes
+- **Apprendre à générer** des règles IA
+- **Créer des règles optimisées** pour Cursor (partagées et validées par la communauté)
+- **Standard de contribution** pour tous les contributeurs
+- **Ultra simple** et rapide à setup
 
-L'essence est très simple.
+Flow :
 
 ```mermaid
 flowchart LR
@@ -64,28 +65,28 @@ flowchart LR
 
 ### Télécharger l'extension "AI-Driven Dev Rules"
 
-- Télécharger la dernière version depuis [ai-driven-dev-rules-0.0.2.vsix](https://github.com/ai-driven-dev/rules/blob/main/vscode/ai-driven-dev-rules/ai-driven-dev-rules-0.0.2.vsix)
-- Ouvrir Cursor
-- Ouvrir la palette de commandes (`Ctrl + Shift + P`)
-- Entrer `Extension: Install from VSIX`
-- Installer l'extension !
+1. Télécharger la dernière version [ai-driven-dev-rules-0.0.2.vsix](https://github.com/ai-driven-dev/rules/blob/main/vscode/ai-driven-dev-rules/ai-driven-dev-rules-0.0.2.vsix)
+2. Ouvrir Cursor
+3. Dans la palette de commandes (`Ctrl + Shift + P`)
+4. Taper `Extension: Install from VSIX`
+5. Installer l'extension et cliquer sur le nouvelle icône GitHub !
 
-### Problèmes connus
+Problèmes connus :
 
-L'API de GitHub est open mais vous pouvez vous faire Rate Limit.
+> L'API de GitHub est open mais vous pouvez vous faire Rate Limit.
 
 1. Récupérer un Token sur GitHub [https://github.com/settings/tokens](https://github.com/settings/tokens).
 2. AUCUN ROLE NÉCESSAIRE.
 3. Dans VSCode, ouvrir les Réglages.
-4. Rechercher: "Aidd: GitHub Token"
+4. Rechercher: `Aidd: GitHub Token`.
 5. **Rajouter votre Token pour éviter une réponse HTTP 429**
 
 ### Utiliser l'extension
 
 > Vidéo prévue ce vendredi 18 avril 2025
 
-1. Ouvrir l'extension via l'icône GitHub sur le côté.
-2. Cliquez sur le bouton "Add Repository" (par défaut ce sera celui-ci)
+1. Ouvrir l'extension "AI-Driven Dev Rules" via l'icône GitHub
+2. Cliquer sur le bouton `Add Repository` (ou utilisez directement notre dépôt ⭐ Featured)
 3. Télécharger le dossier `.cursor/rules`.
 
 ## 🚀 Bien démarrer
@@ -95,8 +96,8 @@ L'API de GitHub est open mais vous pouvez vous faire Rate Limit.
 > Vidéo prévue ce vendredi 18 avril 2025
 
 1. Ouvrir le mode Agent de votre IDE (comme Cursor).
-2. Donner du contexte avec votre prompt: `use real users in @admin.tsx from @users.controller.ts`
-3. Le chat devrait charger les règles correspondantes.
+2. Donner du contexte avec votre prompt: `use real users in @admin.tsx from @users.controller.ts`.
+3. L'agent crée les règles correspondantes AVEC VOUS.
 
 Bonus:
 
@@ -112,9 +113,9 @@ Contribuer aux règles AI-Driven Dev est TRÈS simple et direct.
 
 ### 1. Structure de nommage (à plat)
 
-Toutes les règles sont stockées dans un dossier dédié appelé `.cursor/rules`.
+Stockage flat dans `.cursor/rules`.
 
-La structure suivante est utilisée, selon le format :
+Nom des règles :
 
 ```text
 #-rule-name[@version][-specificity].mdc
@@ -125,17 +126,6 @@ La structure suivante est utilisée, selon le format :
 - `@version` : Version de la règle (*optionnel*)
 - `-specificity` : Sous-partie spécifique (*optionnel*)
 - `.mdc` : Extension pour Cursor
-
-Exemples:
-
-```text
-./.cursor/rules/03-frameworks-and-libraries/
-├── 3-react.mdc
-├── 3-react@18.mdc
-├── 3-react@19.mdc
-├── 3-react@19-hook.mdc
-└── 3-react@19.1-hook.mdc
-```
 
 ### 2. Organisation des dossiers
 
@@ -154,11 +144,22 @@ Les règles sont organisées par dossiers, chaque dossier représentant une cat�
 | `08` | 🎯 `domain-specific-rules` | À partager avec votre équipe |
 | `09` | 🔍 `other` | Ne rentre dans aucune autre catégorie |
 
+Exemples :
+
+```text
+./.cursor/rules/03-frameworks-and-libraries/
+├── 3-react.mdc
+├── 3-react@18.mdc
+├── 3-react@19.mdc
+├── 3-react@19-hook.mdc
+└── 3-react@19.1-hook.mdc
+```
+
 ### 3. Générations et Mises à jour
 
 > Vidéo prévue ce vendredi 18 avril 2025
 
-1. Ouvrir un nouveau Terminal de chat **en mode Agent**.
+1. Ouvrir un chat **en mode Agent**.
 2. Choisir le modèle `GPT 4.1`.
 3. Ajouter la Cursor Rules `meta-generator.mdc`.
 4. Promptez !
@@ -199,6 +200,4 @@ Vous pouvez contribuer à ce projet en :
 - Améliorer les règles existantes
 - Maintenir l'extension VSCode
 
-[![Discord](https://img.shields.io/badge/Join%20Discord-7289DA?style=for-the-badge&logo=discord&logoColor=white)](https://discord.gg/invite/ai-driven-dev)
-
-[>>> Voir plus <<<](./CONTRIBUTING.md)
+[>>> 🔥 REJOINDRE LA CORE TEAM <<<](./CONTRIBUTING.md)
