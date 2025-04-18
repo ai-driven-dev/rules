@@ -1,0 +1,86 @@
+---
+description: APPLY Tailwind CSS 4.1 standards WHEN writing CSS or using Tailwind utilities
+globs: "**/*tailwind.css", "**/*.tsx", "**/*.jsx", "**/*.vue", "**/*.svelte"
+---
+
+# Tailwind CSS 4.1 Standards
+
+## Context
+- Tailwind CSS v4.1 introduces breaking changes from v3
+- Modern browser requirements must be met
+- New configuration approach using CSS instead of JavaScript
+- Changes in utility classes, variants, and best practices
+
+## Requirements
+
+### Configuration
+- Use CSS-based configuration instead of JavaScript in `tailwind.css` file
+
+### CSS Variables
+- Use CSS variables for theme values instead of `theme()` function:
+  - ✅ `var(--color-red-500)`
+  - ❌ `theme(colors.red.500)`
+- For media queries, use CSS variable names:
+  - ✅ `theme(--breakpoint-xl)`
+  - ❌ `theme(screens.xl)`
+
+### Utility Classes
+- Register custom utilities using `@utility` instead of `@layer`:
+```css
+@utility btn {
+  border-radius: 0.5rem;
+  padding: 0.5rem 1rem;
+  background-color: ButtonFace;
+}
+```
+
+### Variants
+- Apply variants left-to-right (new in v4):
+  - ✅ `*:first:pt-0`
+  - ❌ `first:*:pt-0`
+- Use parentheses for CSS variables in arbitrary values:
+  - ✅ `bg-(--brand-color)`
+  - ❌ `bg-[--brand-color]`
+
+### Mobile/Touch Devices
+- Hover styles only apply on devices that support hover:
+  - Use `@media (hover: hover)` for hover effects
+  - Don't rely on hover for critical functionality
+
+### Component Frameworks
+- For Vue/Svelte/CSS Modules, use `@reference` to import theme:
+```css
+@reference "../../app.css";
+```
+- Prefer direct CSS variables over `@apply`:
+```css
+/* ✅ Preferred */
+h1 { color: var(--text-red-500); }
+
+/* ❌ Avoid when possible */
+h1 { @apply text-red-500; }
+```
+
+### Removed Features
+- Don't use deprecated opacity utilities:
+  - ✅ `bg-black/50`
+  - ❌ `bg-opacity-50`
+- Don't use `@tailwind` directives:
+  - ✅ `@import "tailwindcss"`
+  - ❌ `@tailwind base`
+- Don't use JavaScript config features:
+  - `corePlugins`
+  - `safelist`
+  - `separator`
+  - `resolveConfig`
+
+### Best Practices
+- Use modern CSS features:
+  - `@property`
+  - `color-mix()`
+- Include outline colors explicitly for transitions:
+```html
+<button class="outline-cyan-500 transition hover:outline-2">
+```
+- Sort utilities by property count for proper cascade
+- Use CSS cascade layers for organization 

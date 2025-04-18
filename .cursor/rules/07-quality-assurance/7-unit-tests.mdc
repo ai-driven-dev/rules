@@ -1,0 +1,11 @@
+---
+description: APPLY testing standards WHEN writing unit tests
+globs: apps/**/*.unit.*
+---
+
+# Unit Tests
+- Test one unit of functionality at a time
+- Mock dependencies from infrastructure
+- Test edge cases and error conditions
+- Keep tests fast and independent
+- Avoid fragile testing (like expecting exact messages)

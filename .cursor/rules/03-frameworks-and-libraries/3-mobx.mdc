@@ -1,0 +1,30 @@
+---
+description: APPLY MobX state management patterns WHEN managing application state
+globs: apps/frontend/app/**/*.store.ts
+alwaysApply: false
+---
+
+# MobX State Management Standards
+
+Store Structure: 
+- Organize stores by domain's feature
+- Class-based stores
+- Never use decorators
+- Implement proper dependency injection between stores
+- Inject the store into the parent component for better state management
+
+Observables and Actions: 
+- Use `get` for computed
+- Use `makeAutoObservable` in the store constructor.
+- Use `action.bound` for callback in class
+- Use `computed properties` for all derived values, even small (e.g., `instructionLength`).
+- Use `runInAction` for async operations and mutations.
+- Prefer `reaction` over `autorun` when possible
+
+Testing: 
+- Write unit tests for all stores
+- Mock dependencies in store tests (never other store function)
+- Test computed properties
+- Test reactions and side effects
+- Test only store (`smart`), not the UI (`dumb`).
+- Use correct dependencies with proper typed params with existing functions only.

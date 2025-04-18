@@ -1,0 +1,10 @@
+---
+description: APPLY React Router rules WHEN dealing with route or data loading
+globs: apps/frontend/app/routes/**/*.tsx
+alwaysApply: false
+---
+
+# React Router 7.5
+
+- Never use Remix
+- Type everything using generated types in `"./+types/{route-name}";`

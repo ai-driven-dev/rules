@@ -1,0 +1,20 @@
+---
+description: APPLY testing integration standards WHEN writing integration tests
+globs: apps/**/*.integration.*
+---
+
+# Testing Integrations Tests
+
+## Data
+- List input data (DTO)
+- List expectations of output
+- Follow testing flow path from input controller to deep services until output expected data
+
+## External API calls
+- Mock external API calls, mocking external data result
+- Make sure those external calls are called with valid input data
+
+## Asynchronous commands
+- Since commands can be launch and async, we need to check:
+  - command has been launched
+  - results are correctly emitted back

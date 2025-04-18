@@ -1,0 +1,9 @@
+---
+description: APPLY feature based architecture WHEN organizing code in frontend
+globs: apps/frontend/**
+alwaysApply: false
+---
+
+- Smart/Dumb components pattern
+  - Smart handle fetching and logic
+  - Dump display only with interfaces

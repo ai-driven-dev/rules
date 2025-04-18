@@ -1,0 +1,19 @@
+---
+description: APPLY testing standards WHEN writing tests
+globs: apps/**/*.spec.*, apps/**/*.test.*
+---
+
+# Testing Standards
+
+## Organization
+- Files by feature for specific domain
+- Group related tests in `describe`
+
+## Core testing
+- Use English
+- Follow the AAA pattern (Arrange, Act, Assert)
+- Action based testing to test real user interactions.
+
+### Common Rules
+- Name tests descriptively
+- Do not create types, use existing or ask user where they are if not found.

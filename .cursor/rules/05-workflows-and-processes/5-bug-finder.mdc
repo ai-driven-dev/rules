@@ -1,0 +1,15 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# Bug finding Rules
+
+- Summarize the issue with you own words
+- List action paths between files (e.g. user clicks button -> calls function in file1 -> updates state in file2...)
+- Find relevant files to find bug in codebase based on issue description
+- If necessary, put logging messages in the code to trace the issue
+- List 3 best potential causes with small description + confidence level
+- Wait for user's confirmation before proceeding
+- Once confirmed, provide the 3 best steps to fix the issue
+- Ask for confirmation before proceeding

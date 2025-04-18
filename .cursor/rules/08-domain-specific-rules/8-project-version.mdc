@@ -1,0 +1,30 @@
+---
+description: APPLY project-specific rules TO ensure consistent documentation across projects
+globs: **/*
+alwaysApply: true
+---
+
+# Project-Specific Rules Template
+
+## Applications and Packages
+- Always use `pnpm` instead of `npm` or `yarn`
+
+| Application  | Path  | Description  |
+|-------------|--------|-------------|
+| Monorepo Root | `/package.json` | Global monorepo configuration, shared scripts, and common development dependencies |
+| Frontend | `/apps/frontend/package.json` | Remix frontend application with React 19, MobX, and Tailwind |
+| Backend | `/apps/backend/package.json` | NestJS API with Prisma, authentication, and external integrations |
+| Shared Types | `/packages/shared-types/package.json` | Shared types between frontend and backend |
+
+## Critical Dependencies
+
+- Frontend (React 19+) : Main UI library
+- Frontend (Remix 2+) : Fullstack React framework
+- Frontend (MobX 6+) : Reactive state management
+- Frontend (Tailwind CSS 4+) : Utility-first CSS framework
+- Backend (NestJS 11+) : Node.js backend framework
+- Backend (Prisma 6+) : ORM and database client
+- All (TypeScript 5+) : Strongly typed programming language
+- Frontend (Vite 6+) : Build tool and development server
+- All (ESLint 9+) : JavaScript/TypeScript linter
+- All (Prettier 3+) : Code formatter

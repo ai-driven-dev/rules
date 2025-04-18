@@ -7,6 +7,10 @@
 
 Partagez vos règles IA personnalisées avec la communauté.
 
+>
+> Pour celles et ceux qui recherchent le système de KB de Christophe, un dépôt est en cours de création !
+>
+
 ## Table des matières
 
 - [Table des matières](#table-des-matières)
@@ -112,7 +116,7 @@ La structure suivante est utilisée, selon le format :
 Exemples:
 
 ```text
-./.cursor/rules/3-frameworks-and-libraries/
+./.cursor/rules/03-frameworks-and-libraries/
 ├── 3-react.mdc
 ├── 3-react@18.mdc
 ├── 3-react@19.mdc
@@ -146,20 +150,25 @@ Les règles sont organisées par dossiers, chaque dossier représentant une cat�
 **Créer une nouvelle règle :**
 
 ```markdown
-@rules/generator.md
+Generate cursor rules for: ...
+```
 
-Generate a new rule for:
+**Créer une nouvelle règle (depuis un example) :**
+
+```markdown
+Based on example, generate cursor rules for: ...
+
+<example>
+...
+</example>
 ```
 
 **Mettre à jour une règle existante :**
 
 ```markdown
-@rules/generator.md
+Update cursor rules with: ...
 
-Update rule: @rules/my-rule.md
-
-With new specs:
-- 
+@3-react@18.mdc
 ```
 
 ### Bonus : Démo

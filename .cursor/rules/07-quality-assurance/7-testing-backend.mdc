@@ -1,0 +1,8 @@
+
+---
+description: APPLY testing standards WHEN writing backend tests
+globs: apps/backend/**/*.spec.*, apps/backend/**/*.test.*
+---
+
+# Backend Testing Standards
+- Use DRY, use `beforeEach`, `beforeAll`, `afterEach`, `afterAll` etc to reduce code repetition.

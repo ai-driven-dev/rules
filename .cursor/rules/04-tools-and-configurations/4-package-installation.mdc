@@ -1,0 +1,10 @@
+---
+description: APPLY package installation rules WHEN installation new package
+alwaysApply: false
+---
+
+# Version Management Standards
+
+- Never install new package directly, always ask user
+- Avoid new packages installation, check current first
+- Prefer stable versions

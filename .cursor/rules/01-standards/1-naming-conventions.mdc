@@ -1,0 +1,42 @@
+---
+description: APPLY naming conventions WHEN writing new code (files, variables, functions...)
+globs: apps/**/*
+alwaysApply: true
+---
+
+# Naming Conventions Standards
+
+## General Principles
+- Descriptive
+- Reveal intent
+- No single letter (except for loops)
+- No abbreviations except for common ones (e.g., ID, HTTP)
+- Consistent terminology across codebase
+
+## Files and Directories
+- Use kebab-case for file and directory names (e.g. `user-profile`)
+- Group files by feature/domain rather than type (e.g. `users/user-profile/`)
+- Use suffixes to indicate file type/purpose (e.g., `.component.tsx`, `.service.ts`)
+- Keep file names consistent with the primary export
+
+### Classes and Interfaces
+- Use PascalCase for class and interface names (e.g. `UserProfile`)
+- Use nouns or noun phrases for class names
+- No class prefix (e.g `I` like `IUser`) or suffix (e.g `type` like `UserType`) 
+- Use descriptive suffixes for specific types (e.g., `DeleteUserCommand`, `FindAllUsersCommand`)
+
+### Functions and Methods
+- Use camelCase for function and method names (e.g. `findAll()`)
+- Verbs functions that perform actions
+- Nouns functions that return values
+- Prefix boolean getters with `is`, `has`, or `should`
+- No anemic models (no `getId`/`setId`).
+
+### Variables and Properties
+- Use camelCase for variable and property names (e.g. `userProfile: UserProfile;`)
+- Use plural names for arrays and collections
+
+### Constants
+- Use UPPER_SNAKE_CASE for constants (e.g. `MAX_CONNECTIONS_ALLOWED`)
+- Define constants at the appropriate scope
+- Group related constants in `enum` or `object`

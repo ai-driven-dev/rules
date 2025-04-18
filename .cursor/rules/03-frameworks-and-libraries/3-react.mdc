@@ -1,0 +1,33 @@
+---
+description: APPLY React standards WHEN coding with React
+globs: apps/frontend/**/*.tsx
+alwaysApply: false
+---
+
+# React Framework Standards
+
+## Component Structure
+- Functional Components
+- Light and small
+- Strongly props typing
+
+## Splitting
+- Split in sub-components by responsibility
+- If component is shared, move it outside component folder.
+- If component is only for the parent component, create sub-component.
+- Follow smart/dumb component pattern -> React components are dumb
+
+## State
+- State and logic are deported in a dedicated place (smart component)
+- Declare vars on top of component for tiny calculation (dump component)
+- `displayName` at bottom
+- No default export
+- Returns `null` if mandatory props do not exist
+- One component per file, except for tiny private component for readability
+
+## Style and Accessibility
+- Mobile first
+- Use existing UI components
+- Semantic HTML elements
+- Proper ARIA attributes
+- Ensure keyboard navigation

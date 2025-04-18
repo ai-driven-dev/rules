@@ -1,0 +1,98 @@
+---
+description: APPLY Clean Architecture principles WHEN organizing code in backend
+globs: apps/backend/**
+alwaysApply: false
+---
+
+Layers:
+- Separate code into distinct layers: Domain, Application, Infrastructure, Presentation
+- Dependencies point inward (Presentation → Application → Domain)
+- Domain layer independent of technical concerns
+- Interfaces define boundaries between layers
+
+Domain Layer:
+- Business entities and logic
+- Pure domain models
+- Framework-independent
+- Domain services for complex operations
+- Repository interfaces in domain layer
+
+Application Layer:
+- Use cases orchestrate domain logic
+- Application services focused on a single responsibility
+- DTO with validation for data transfer
+
+Infrastructure Layer:
+- Implement repository interfaces defined in the domain layer
+- Handle external concerns like databases, APIs, and file systems
+- Infrastructure details isolated from business logic
+
+Presentation Layer:
+- Focus on API concerns and request/response handling
+- Controllers for HTTP requests
+- Responsibilities: Error handling, Validation, Response formatting
+
+# Schema
+
+```mermaid
+graph TB
+    %% Presentation Layer
+    subgraph Presentation
+        C[Controller]
+        V[Validation]
+        E[Error Handling]
+        R[Response Formatting]
+    end
+
+    %% Application Layer
+    subgraph Application
+        UC[Use Case]
+        AS[Application Service]
+        RequestDTO[Request DTO]
+        ResponseDTO[Response DTO]
+    end
+
+    %% Domain Layer
+    subgraph Domain
+        BE[Business Entity]
+        BL[Business Logic]
+        DS[Domain Service]
+        RI[Repository Interface]
+    end
+
+    %% Infrastructure Layer
+    subgraph Infrastructure
+        REPO[Repository Implementation]
+        DB[(Database)]
+        API[External APIs]
+        FS[File System]
+    end
+
+    %% Data flow and communication
+    C -->|HTTP Request| V
+    V -->|Validated Request| RequestDTO
+    RequestDTO -->|Validated Data| UC
+    UC -->|Orchestrates| AS
+    AS -->|Uses| DS
+    DS -->|Domain Rules| BL
+    BL -->|Operates on| BE
+    
+    UC -->|Query| RI
+    RI -->|Interface| REPO
+    REPO -->|Raw Data| DB
+    DB -->|Raw Data| REPO
+    REPO -->|Maps to| BE
+    BE -->|Domain Logic| DS
+    DS -->|Business Result| UC
+    UC -->|Maps to| ResponseDTO
+    ResponseDTO -->|Formatted Data| R
+    R -->|HTTP Response| C
+
+    %% Error handling flow
+    C -.->|Errors| E
+    
+    %% Implementation relationships
+    REPO -.implements.-> RI
+    REPO -->|External Calls| API
+    REPO -->|File Operations| FS
+```
