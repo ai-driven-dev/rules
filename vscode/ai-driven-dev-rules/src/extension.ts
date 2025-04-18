@@ -43,7 +43,11 @@ export function activate(context: vscode.ExtensionContext): void {
     logger,
   );
 
-  const downloadService = new DownloadService(logger, httpClient);
+  const downloadService = new DownloadService(
+    logger,
+    httpClient,
+    githubService,
+  );
 
   const selectionService = new SelectionService(logger, explorerStateService);
 

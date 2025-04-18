@@ -36,7 +36,6 @@ export class StorageService implements IStorageService {
 
     const filteredRepos = repos.filter(
       (repo) =>
-        // Check only owner and name for uniqueness, ignore branch
         !(repo.owner === repository.owner && repo.name === repository.name),
     );
 

@@ -110,11 +110,10 @@ export class ExplorerView {
 
     this.selectionService.clearSelection();
 
-    // Define the featured repository
     const featuredRepo: GithubRepository = {
       owner: "ai-driven-dev",
       name: "rules",
-      branch: "", // Assuming default branch or branch isn't needed for display label consistency
+      branch: "",
     };
     const featuredRepoId = `${featuredRepo.owner}/${featuredRepo.name}`;
 
@@ -124,20 +123,19 @@ export class ExplorerView {
         label: "$(repo) Enter repository URL...",
         description: "Specify a GitHub repository URL",
       },
-      // Add the featured repository first
+
       {
-        label: `$(star-full) ${featuredRepo.owner}/${featuredRepo.name}`, // Use a star icon
+        label: `$(star-full) ${featuredRepo.owner}/${featuredRepo.name}`,
         description: "Featured repository",
         repo: featuredRepo,
       },
     ];
 
-    // Add stored repositories, excluding the featured one if present
     for (const repo of storedRepos) {
       const repoId = `${repo.owner}/${repo.name}`;
       if (repoId !== featuredRepoId) {
         items.push({
-          label: `$(history) ${repo.owner}/${repo.name}`, // Use history icon for others
+          label: `$(history) ${repo.owner}/${repo.name}`,
           description: repo.branch
             ? `Branch: ${repo.branch}`
             : "Default branch",
@@ -147,7 +145,7 @@ export class ExplorerView {
     }
 
     const selection = await vscode.window.showQuickPick(items, {
-      placeHolder: "Select a featured or recent repository, or enter a URL", // Updated placeholder
+      placeHolder: "Select a featured or recent repository, or enter a URL",
       matchOnDescription: true,
     });
 
@@ -208,7 +206,7 @@ export class ExplorerView {
       vscode.window.showInformationMessage(
         `Connected to GitHub repository: ${repository.owner}/${repository.name}`,
       );
-      // Ensure the view is visible after successfully setting the repository
+
       vscode.commands.executeCommand(`${ExplorerView.VIEW_ID}.focus`);
     } catch (error) {
       this.logger.error(

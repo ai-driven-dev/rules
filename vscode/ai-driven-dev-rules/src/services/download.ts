@@ -1,6 +1,7 @@
 import * as fs from "node:fs";
 import * as path from "node:path";
 import * as vscode from "vscode";
+import type { IGitHubApiService } from "../api/github";
 import type { GithubRepository } from "../api/types";
 import type { IHttpClient } from "./httpClient";
 import type { ILogger } from "./logger";
@@ -33,12 +34,15 @@ export class DownloadService implements IDownloadService {
   private isCancelled = false;
 
   private readonly httpClient: IHttpClient;
+  private readonly githubApiService: IGitHubApiService;
 
   constructor(
     private readonly logger: ILogger,
     httpClient: IHttpClient,
+    githubApiService: IGitHubApiService,
   ) {
     this.httpClient = httpClient;
+    this.githubApiService = githubApiService;
   }
 
   public async downloadFiles(
@@ -210,11 +214,25 @@ export class DownloadService implements IDownloadService {
     }
 
     try {
-      await this.httpClient.downloadFile(url, targetPath);
-      this.logger.debug(`HttpClient successfully downloaded ${url}`);
-    } catch (error) {
-      this.logger.error(`HttpClient failed to download ${url}`, error);
+      const contentResult = await this.githubApiService.fetchFileContent(url);
 
+      if (!contentResult.success) {
+        throw contentResult.error || new Error("Failed to fetch file content");
+      }
+
+      await fs.promises.writeFile(targetPath, contentResult.data);
+      this.logger.debug(
+        `GitHubApiService successfully fetched content from ${url} and wrote to ${targetPath}`,
+      );
+    } catch (error) {
+      this.logger.error(
+        `GitHubApiService failed to fetch/write content from ${url}`,
+        error,
+      );
+
+      try {
+        await fs.promises.unlink(targetPath);
+      } catch (unlinkError) {}
       throw error;
     }
   }

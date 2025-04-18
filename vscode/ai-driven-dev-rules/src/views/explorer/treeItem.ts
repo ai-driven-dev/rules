@@ -47,7 +47,6 @@ export class ExplorerTreeItem extends vscode.TreeItem {
           : vscode.TreeItemCheckboxState.Unchecked;
       }
     } catch (e) {
-      // Ignore error if checkboxState is not supported
       console.error("Checkbox state not supported", e);
     }
   }
