@@ -1,12 +1,15 @@
 pre-commit:
   commands:
-
     typecheck:
       description: "Typecheck"
       run: cd vscode/ai-driven-dev-rules && npm run typecheck
     build_extension:
       description: "Build our VSCode extension"
-      run: cd vscode/ai-driven-dev-rules && npm run vscode:prepublish && npm run vscode:package
+      run: |
+        cd vscode/ai-driven-dev-rules
+        npm run vscode:prepublish
+        npm run vscode:package
+        git add ai-driven-dev-rules-*.vsix
     format:
       glob: "*.{ts,json}"
       run: npx biome check --write --unsafe --colors=off --no-errors-on-unmatched --files-ignore-unknown=true .
