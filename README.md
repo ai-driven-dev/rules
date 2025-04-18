@@ -109,6 +109,17 @@ La structure suivante est utilisée, selon le format :
 - `-specificity` : Sous-partie spécifique (*optionnel*)
 - `.mdc` : Extension pour Cursor
 
+Exemples:
+
+```text
+./.cursor/rules/3-frameworks-and-libraries/
+├── 3-react.mdc
+├── 3-react@18.mdc
+├── 3-react@19.mdc
+├── 3-react@19-hook.mdc
+└── 3-react@19.1-hook.mdc
+```
+
 ### 2. Organisation des dossiers
 
 Les règles sont organisées par dossiers, chaque dossier représentant une catégorie.
