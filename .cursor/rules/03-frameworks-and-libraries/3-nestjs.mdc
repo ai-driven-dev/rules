@@ -3,56 +3,50 @@ description: APPLY NestJS framework standards WHEN developing with NestJS
 globs: apps/backend/src/**/*.ts
 alwaysApply: false
 ---
+Architecture:
+- Use modular structure
 
-# NestJS Framework Standards
+Modules:
+- Import new files in parent module
 
-## Architecture
-- NestJS modular architecture
+Classes:
+- Use DI for external interactions
+- Use plain class for utilities
 
-## Modules
-- When creating new file, import it in its parent's module
+Controllers:
+- Only handle HTTP layer
+- Use DTOs for input/output
+- Call use-cases, not repositories
 
-## Classes
-- DI when interactions needed (domain services, db etc.)
-- Regular class for utilities
+Domain Objects:
+- Validate with class-validator
 
-## Controllers
-- Controllers only handles HTTP requests and responses
-- `ValidationPipe` might no be necessary because `main.ts` uses `useGlobalPipes`.
-- Controllers receives and returns class-validator DTOs
-- Controllers call use-cases (or `commands`, `queries`), never call repositories.
+Domain Services:
+- Encapsulate domain logic
+- No DB access
 
-## Domain Objects
-- Domain objects received are validated by `class-validator`.
+Use Cases:
+- Use commands/queries for DB
+- Never call DB directly
 
-## "Domain" Services
-- Domain logic with specific rules or validation
-- Keep services focused on a single responsibility
-- No database interaction
+Repositories:
+- Implement domain interface
+- Export const KEY
+- Type with model property
+- Return domain objects only
+- Keep Prisma types internal
 
-## Use-case Driven
-- Use `Commands` and `Queries` to access DB through repositories.
-- Database NEVER called in use-case, use repositories.
+Mappers:
+- Use DI for mappers
+- Map all properties
+- Return validated instances
 
-## Repositories
-- Repository implements domain interface.
-- Always export const with `KEY`
-- Type with `Model.Property` instead of primitive if possible (e.g. `email: string` -> `email: User['email']`).
-- A Repository returns only Domain objects, never DTOs or Prisma types.
-- Prisma types stay in Repositories, never leaving Infrastructure.
-
-## Mappers
-- Use `NestJS` DI for mappers
-- Reassign every props (mandatory).
-- Return new validated instances
-
-## Testing
+Testing:
 - Use Jest
-- Import all necessary modules at the beginning
-- Do NOT mock database for integration tests
+- Import all modules
+- No DB mock for integration
 
-## Seed
-- Calling repositories might no be necessary except to validate domain logic, most of the time use Prisma client directly.
-- Must use types in `@prisma/client` (e.g. `Prisma.UserCreateInput`)
-- Assume DB is empty : no need for deletion/prune
-- Injected as NestJS services for DI.
+Seed:
+- Use Prisma types
+- Assume empty DB
+- Inject as service

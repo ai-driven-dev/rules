@@ -27,6 +27,7 @@ Envie de faire avec nous ?
   - [1. Structure de nommage (à plat)](#1-structure-de-nommage-à-plat)
   - [2. Organisation des dossiers](#2-organisation-des-dossiers)
   - [3. Générations et Mises à jour](#3-générations-et-mises-à-jour)
+  - [4. Exemple d'une bonne règle](#4-exemple-dune-bonne-règle)
   - [Bonus : Démo](#bonus--démo)
 - [🇫🇷 Contributions disponibles](#-contributions-disponibles)
 
@@ -187,6 +188,12 @@ Update cursor rules with: ...
 
 @3-react@18.mdc
 ```
+
+### 4. Exemple d'une bonne règle
+
+Les règles générées doivent être le plus court possible.
+
+Exemple : [./.cursor/rules/01-standards/1-clean-code.mdc](./.cursor/rules/01-standards/1-clean-code.mdc)
 
 ### Bonus : Démo
 

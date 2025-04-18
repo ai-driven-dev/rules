@@ -1,42 +1,41 @@
 ---
 description: APPLY naming conventions WHEN writing new code (files, variables, functions...)
-globs: apps/**/*
 alwaysApply: true
 ---
 
 # Naming Conventions Standards
 
-## General Principles
-- Descriptive
-- Reveal intent
-- No single letter (except for loops)
-- No abbreviations except for common ones (e.g., ID, HTTP)
-- Consistent terminology across codebase
+General Principles:
+- Use descriptive names
+- Reveal intent in all names
+- No single-letter names (except loops)
+- No abbreviations except common ones
+- Use consistent terminology
 
-## Files and Directories
-- Use kebab-case for file and directory names (e.g. `user-profile`)
-- Group files by feature/domain rather than type (e.g. `users/user-profile/`)
-- Use suffixes to indicate file type/purpose (e.g., `.component.tsx`, `.service.ts`)
-- Keep file names consistent with the primary export
+Files and Directories:
+- Use kebab-case for files and folders
+- Group by feature or domain
+- Add suffix for file type or purpose
+- Match file name to main export
 
-### Classes and Interfaces
-- Use PascalCase for class and interface names (e.g. `UserProfile`)
-- Use nouns or noun phrases for class names
-- No class prefix (e.g `I` like `IUser`) or suffix (e.g `type` like `UserType`) 
-- Use descriptive suffixes for specific types (e.g., `DeleteUserCommand`, `FindAllUsersCommand`)
+Classes and Interfaces:
+- Use PascalCase for names
+- Use nouns or noun phrases
+- No prefix or suffix for class/interface
+- Add descriptive suffix for specific types
 
-### Functions and Methods
-- Use camelCase for function and method names (e.g. `findAll()`)
-- Verbs functions that perform actions
-- Nouns functions that return values
-- Prefix boolean getters with `is`, `has`, or `should`
-- No anemic models (no `getId`/`setId`).
+Functions and Methods:
+- Use camelCase for names
+- Use verbs for actions
+- Use nouns for value-returning
+- Prefix booleans with is, has, should
+- No anemic models
 
-### Variables and Properties
-- Use camelCase for variable and property names (e.g. `userProfile: UserProfile;`)
-- Use plural names for arrays and collections
+Variables and Properties:
+- Use camelCase for names
+- Use plural for arrays/collections
 
-### Constants
-- Use UPPER_SNAKE_CASE for constants (e.g. `MAX_CONNECTIONS_ALLOWED`)
-- Define constants at the appropriate scope
-- Group related constants in `enum` or `object`
+Constants:
+- Use UPPER_SNAKE_CASE
+- Scope constants appropriately
+- Group related constants in enum or object

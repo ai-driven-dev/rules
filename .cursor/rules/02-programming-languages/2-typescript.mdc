@@ -4,30 +4,27 @@ globs: **/*.ts, **/*/.tsx
 alwaysApply: false
 ---
 
-# TypeScript Standards
+Strict Types:
+- Type everything explicitly
+- Never use `any` or `unknown`
+- Avoid `as` for type conversion
+- Use type guards for assertions
+- Use generics for reusable functions
 
-## Strict Types
-- Always type everything
-- `strict: true` in tsconfig.json
-- Never use `any` and `unknown`
-- Never use the `as` operator for type conversions
-- Prefer type assertions with guards (`is`, `instanceof`, etc.)
-- Use generic types for reusable functions
+Interfaces and Types:
+- Use `interface` for extensible objects
+- Use `type` for unions and primitives
 
-## Interfaces and Types
-- Use `interface` for objects that can be extended
-- Use `type` for unions, intersections, and primitive types
+Nullability:
+- Avoid `null` and `undefined` in returns
 
-## Nullability
-- Avoid `null` or `undefined` values in return types
+Enumerations:
+- Prefer string literal unions to enums
+- Use const enums if needed
+- Define enum values explicitly
 
-## Enumerations
-- Prefer string literal unions to enums when possible
-- If enums are necessary, use const enums to optimize generated code
-- Explicitly define enum values
+Lint & Error:
+- Catch errors as `unknown | Error`
 
-## Lint & Error
-- Type errors with `catch(error: unknown | Error)`.
-
-## Generics
-- Use descriptive names for type parameters (not just `T`)
+Generics:
+- Use descriptive type parameter names

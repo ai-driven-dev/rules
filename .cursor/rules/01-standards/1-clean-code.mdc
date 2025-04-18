@@ -3,30 +3,31 @@ description: APPLY Clean Code principles WHENEVER writing code
 alwaysApply: true
 ---
 
-Code:
-- Never comments
-- Strict type
-- Never us untyped values
-- Explicit Constants over magic numbers
-- No double negatives
-- Readable variable names (even if longer)
-- Generate simplest code possible
-- DRY
+Code Quality:
+- Write no comments
+- Use strict types only
+- Disallow untyped values
+- Use explicit constants, never magic numbers
+- Avoid double negatives
+- Use long, readable variable names
+- Write the simplest code possible
+- Eliminate duplication (DRY)
 
-Max Length:
-- Functions: Lines = 30, Params = 5
-- File: 300 lines
-- Folders: 10 sub-files
+Length Limits:
+- Max 30 lines per function
+- Max 5 params per function
+- Max 300 lines per file
+- Max 10 sub-files per folder
 
 Responsibilities:
-- 1 file = 1 responsibility
+- One responsibility per file
 
 Functions:
-- No flag params
+- No flag parameters
 
 Errors:
 - Fail fast
-- Early throws errors
-- Custom domain errors
-- Meaningful errors translated to the user's language
+- Throw errors early
+- Use custom domain errors
+- Translate errors to user language
 - Log errors in EN with error codes

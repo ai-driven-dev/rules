@@ -67,19 +67,21 @@ One line. Comprehensive description that provides full context and clearly indic
 #### Generate `alwaysApply`
 - Mostly false, double check if this REALLY needs to be applied globally
 
-
 ### 3. Rule content
 
-#### Groups 
-- Identify rule groups.
-- Wait for user validation.
+#### Groups (optional)
+- Not needed for short rules content
+- Identify rule groups
+- Wait for user validation
+- No MD titles, use "Group's name :"
 
 #### Generate/Change Rules content
+- Backticks for code ref
 - Bullet points only
 - Translate example into generic rule format
-- Remove non-essential, no fluff.
-- Write commands only.
+- Remove non-essential, no fluff
+- Write commands only
 - 1 ultra short (3–7 words) rule per bullet point
 
 ### 4. Filled template
-- Write proper filled template in proper dir WITH frontmatter header.
+- Write proper filled template in proper dir WITH frontmatter header
