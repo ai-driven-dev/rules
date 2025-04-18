@@ -118,7 +118,7 @@
         "aidd.maxRecentRepositories": {
           "type": "number",
           "default": 5,
-          "description": "Nombre maximum de dépôts récents à mémoriser dans la liste.",
+          "description": "Nombre maximum de dépôts (autres que le dépôt 'Featured') à mémoriser dans la liste de sélection rapide.",
           "minimum": 1,
           "scope": "window"
         },

@@ -19,6 +19,7 @@ Core functionality is implemented, including repository browsing via Git Trees A
 - **Repository Fetching**: Uses efficient `git/trees?recursive=1` API (`github.ts`).
 - **Selection Logic**: Centralized in `SelectionService`, handles local recursive selection/deselection.
 - **Download Logic**: `explorerView.ts` correctly maps selected items (files & dirs) and passes them to `DownloadService`, enabling recursive download. `DownloadService` handles directory creation and file fetching.
+- **Featured Repository**: The Quick Pick list for selecting repositories now always shows `ai-driven-dev/rules` as a "Featured" item at the top.
 
 ## Known Issues
 

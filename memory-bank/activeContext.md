@@ -10,6 +10,7 @@ Refining core functionality, improving code structure through refactoring, parti
 
 ## Recent Changes
 
+- [2025-04-18]: **Featured Repository**: Modified `explorerView.ts` (`promptForRepository`) to always display `ai-driven-dev/rules` as a "Featured repository" (using `$(star-full)` icon) at the top of the Quick Pick list when adding/selecting a repository. Other stored repositories are now shown with a `$(history)` icon. Updated the `placeHolder` text and the description for the `aidd.maxRecentRepositories` setting in `package.json` to reflect this change.
 - [2025-04-15]: Reviewed Memory Bank files. No new development updates provided since [2025-04-13].
 - [2025-04-13]: **Implemented Recursive Download**: Modified `explorerView.ts` (`downloadSelectedFiles`) to correctly map all selected items (files and directories, including recursively selected ones) and pass them to `DownloadService`. The service already handled creating directories and downloading files from the list. Fixed associated TypeScript errors during implementation.
 - [2025-04-13]: **Refactored recursive selection**: Implemented *local* recursive selection/deselection logic in `SelectionService` and `ExplorerTreeProvider`. When a directory checkbox is toggled, the selection state of all its descendants is updated based on the already fetched tree data, without requiring further API calls. Removed previous progress indicators related to API-based recursive selection.

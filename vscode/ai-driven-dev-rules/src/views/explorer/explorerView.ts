@@ -110,22 +110,44 @@ export class ExplorerView {
 
     this.selectionService.clearSelection();
 
-    const recentRepos = this.storageService.getRecentRepositories();
+    // Define the featured repository
+    const featuredRepo: GithubRepository = {
+      owner: "ai-driven-dev",
+      name: "rules",
+      branch: "", // Assuming default branch or branch isn't needed for display label consistency
+    };
+    const featuredRepoId = `${featuredRepo.owner}/${featuredRepo.name}`;
+
+    const storedRepos = this.storageService.getRecentRepositories();
     const items: (vscode.QuickPickItem & { repo?: GithubRepository })[] = [
       {
         label: "$(repo) Enter repository URL...",
         description: "Specify a GitHub repository URL",
       },
+      // Add the featured repository first
+      {
+        label: `$(star-full) ${featuredRepo.owner}/${featuredRepo.name}`, // Use a star icon
+        description: "Featured repository",
+        repo: featuredRepo,
+      },
     ];
-    for (const repo of recentRepos) {
-      items.push({
-        label: `$(github) ${repo.owner}/${repo.name}`,
-        description: repo.branch ? `Branch: ${repo.branch}` : "Default branch",
-        repo,
-      });
+
+    // Add stored repositories, excluding the featured one if present
+    for (const repo of storedRepos) {
+      const repoId = `${repo.owner}/${repo.name}`;
+      if (repoId !== featuredRepoId) {
+        items.push({
+          label: `$(history) ${repo.owner}/${repo.name}`, // Use history icon for others
+          description: repo.branch
+            ? `Branch: ${repo.branch}`
+            : "Default branch",
+          repo,
+        });
+      }
     }
+
     const selection = await vscode.window.showQuickPick(items, {
-      placeHolder: "Select or enter a GitHub repository",
+      placeHolder: "Select a featured or recent repository, or enter a URL", // Updated placeholder
       matchOnDescription: true,
     });
 
