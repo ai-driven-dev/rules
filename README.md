@@ -63,11 +63,11 @@ flowchart LR
 
 ### Télécharger l'extension "AI-Driven Dev Rules"
 
-- Téléchargez la dernière version de l’extension depuis [ai-driven-dev-rules-0.0.2.vsix]("https://github.com/ai-driven-dev/rules/blob/main/vscode/ai-driven-dev-rules/ai-driven-dev-rules-0.0.2.vsix")
-- Ouvrez Cursor
-- Ouvrez la palette de commandes (Ctrl + Shift + P)
-- Tapez `Extension: Install from VSIX`
-- Installez l'extension !
+- Télécharger la dernière version depuis [ai-driven-dev-rules-0.0.2.vsix](https://github.com/ai-driven-dev/rules/blob/main/vscode/ai-driven-dev-rules/ai-driven-dev-rules-0.0.2.vsix)
+- Ouvrir Cursor
+- Ouvrir la palette de commandes (`Ctrl + Shift + P`)
+- Entrer `Extension: Install from VSIX`
+- Installer l'extension !
 
 ### Utiliser l'extension
 
