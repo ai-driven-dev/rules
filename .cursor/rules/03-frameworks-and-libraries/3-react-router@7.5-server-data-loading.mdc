@@ -4,7 +4,7 @@ globs: apps/frontend/app/routes/**/*.tsx
 alwaysApply: false
 ---
 
-MANDATORY:
+Mandatory Rules for React Router Data Loading:
 - search for generated types in frontend ".react-router/types/app/routes"
 - use Route.LoaderArgs
 - use Route.ComponentProps

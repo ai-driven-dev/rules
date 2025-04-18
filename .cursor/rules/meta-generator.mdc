@@ -33,7 +33,6 @@ Sub rule 1:
 ```text
 #-rule-name[@version][-specificity].mdc
 ```
-
 #### Rule directory
 - Write in .cursor/rules/{folder}/{rule}.mdc
 
@@ -48,7 +47,6 @@ Sub rule 1:
 - `07-quality-assurance`
 - `08-domain-specific-rules`
 - `09-other`
-
 
 ### 2. frontmatter header
 

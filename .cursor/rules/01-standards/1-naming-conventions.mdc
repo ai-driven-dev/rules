@@ -3,8 +3,6 @@ description: APPLY naming conventions WHEN writing new code (files, variables, f
 alwaysApply: true
 ---
 
-# Naming Conventions Standards
-
 General Principles:
 - Use descriptive names
 - Reveal intent in all names

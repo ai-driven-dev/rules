@@ -3,6 +3,7 @@ description: APPLY Clean Architecture principles WHEN organizing code in backend
 globs: apps/backend/**
 alwaysApply: false
 ---
+
 Layer Structure:
 - Separate code by layer: Domain, Application, Infrastructure, Presentation
 - Direct dependencies inward only

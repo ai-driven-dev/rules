@@ -3,6 +3,7 @@ description: APPLY NestJS framework standards WHEN developing with NestJS
 globs: apps/backend/src/**/*.ts
 alwaysApply: false
 ---
+
 Architecture:
 - Use modular structure
 

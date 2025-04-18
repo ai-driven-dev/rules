@@ -3,6 +3,7 @@ description: APPLY feature based architecture WHEN organizing code in frontend
 globs: apps/frontend/**
 alwaysApply: false
 ---
+
 - Organize code by business feature
 - Place all feature code in its own folder
 - Co-locate components, hooks, and state per feature

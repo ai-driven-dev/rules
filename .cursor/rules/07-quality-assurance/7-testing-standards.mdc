@@ -1,19 +1,16 @@
 ---
-description: APPLY testing standards WHEN writing tests
+description: Apply general testing standards for clarity and consistency when writing any test. Covers organization, naming, and core principles like AAA.
 globs: apps/**/*.spec.*, apps/**/*.test.*
+alwaysApply: false
 ---
 
-# Testing Standards
+Organization:
+- Organize test files by feature.
+- Group related tests using `describe`.
 
-## Organization
-- Files by feature for specific domain
-- Group related tests in `describe`
-
-## Core testing
-- Use English
-- Follow the AAA pattern (Arrange, Act, Assert)
-- Action based testing to test real user interactions.
-
-### Common Rules
-- Name tests descriptively
-- Do not create types, use existing or ask user where they are if not found.
+Core Principles:
+- Write tests in English.
+- Follow Arrange-Act-Assert (AAA) pattern.
+- Prefer action-based user interaction tests.
+- Use descriptive test names.
+- Use existing types for tests.

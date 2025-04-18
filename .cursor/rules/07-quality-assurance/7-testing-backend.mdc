@@ -1,8 +1,13 @@
-
 ---
-description: APPLY testing standards WHEN writing backend tests
+description: Apply backend testing standards for maintainability and reliability when writing backend tests. Focus on setup/teardown hooks and avoiding repetition.
 globs: apps/backend/**/*.spec.*, apps/backend/**/*.test.*
+alwaysApply: false
 ---
 
-# Backend Testing Standards
-- Use DRY, use `beforeEach`, `beforeAll`, `afterEach`, `afterAll` etc to reduce code repetition.
+Setup and Teardown:
+- Use setup hooks (`beforeEach`, `beforeAll`).
+- Use teardown hooks (`afterEach`, `afterAll`).
+
+Code Quality:
+- Avoid code repetition in tests.
+- Keep tests independent and focused.
