@@ -1,0 +1,54 @@
+---
+description: Apply Symfony 7 best practices for project structure, configuration, business logic, controllers, templates, forms, internationalization, security, web assets, and tests in all PHP source files. Ensures maintainability, security, and consistency across Symfony applications by following official recommendations.
+globs: src/**/*.php
+alwaysApply: false
+---
+
+Project Structure :
+- Use default Symfony directory structure
+- Organize code by PHP namespaces, not bundles
+
+Configuration :
+- Use environment variables for infrastructure config
+- Store secrets with Symfony secrets management
+- Use parameters for app config in `services.yaml`
+- Prefix parameters with `app.`
+- Use short, consistent parameter names
+- Define rarely changed options as class constants
+
+Business Logic :
+- Use autowiring for service dependencies
+- Make services private by default
+- Use PHP instead of YAML for custom service config
+
+Controllers :
+- Extend `AbstractController` for controllers
+- Use attributes for routing, caching, security
+- Inject dependencies via constructor
+- Use entity value resolvers when convenient
+
+Templates :
+- Use snake_case for template names and variables
+- Prefix template fragments with underscore
+
+Forms :
+- Define forms as PHP classes
+- Add form buttons in templates, not classes
+- Define validation constraints on domain objects
+- Use single action to render and process forms
+
+Internationalization :
+- Use XLIFF format for translation files
+- Use keys for translations, not content strings
+
+Security :
+- Define a single firewall unless multiple auth systems
+- Use auto password hasher
+- Use voters for complex security logic
+
+Web Assets :
+- Use AssetMapper for managing web assets
+
+Tests :
+- Smoke test all URLs with functional tests
+- Hard-code URLs in functional tests
