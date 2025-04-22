@@ -49,20 +49,19 @@ flowchart TD
     classDef core fill:#d9f7be,stroke:#b7eb8f,stroke-width:1px,border-radius:6px,padding:10px
     classDef action fill:#fffbe6,stroke:#ffe58f,stroke-width:1px,border-radius:6px,padding:10px
 
-    subgraph "Workflow AI-Driven Dev Rules"
+    subgraph "Workflow AIDD Rules"
         direction TB
 
-        A(1. Ouvrir Extension) --> B{2. Choisir/Ajouter Dépôt};
-        B -- Dépôt Public --> C[3. Récupération Structure via API];
-        B -- Dépôt Privé + PAT --> C;
-        C --> D(4. Explorer Règles);
-        D --> E(5. Sélectionner Règles);
-        E --> F(6. Télécharger Règles);
-        F --> G(7. Règles dans Workspace);
-        G --> H(8. Vérifier Mises à Jour);
-        H -- Statut (🔄/✅) --> D;
-        G --> I(9. Utiliser Règles);
-
+        A["1. Ouvrir Extension"] --> B{"2. Choisir/Ajouter Dépôt"};
+        B -- "Dépôt Public" --> C["3. Récupérer Structure (API)"];
+        B -- "Dépôt Privé + PAT" --> C;
+        C --> D["4. Explorer Règles"];
+        D --> E["5. Sélectionner Règles"];
+        E --> F["6. Télécharger Règles"];
+        F --> G["7. Règles dans Workspace"];
+        G --> H["8. Vérifier MàJ"];
+        H -- "Statut (🔄/✅)" --> D;
+        G --> I["9. Utiliser Règles"];
     end
 
     class A,B setup;
