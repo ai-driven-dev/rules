@@ -6,13 +6,18 @@ This document tracks the current work focus, recent changes, next steps, active 
 
 ## Current Focus
 
-Refining core functionality, improving code structure through refactoring, particularly focusing on the download and selection mechanisms.
+Testing and refining the newly implemented update status check and view filtering features. Ensuring robustness and clear user feedback.
 
 ## Recent Changes
 
-- [2025-04-18]: **Featured Repository**: Modified `explorerView.ts` (`promptForRepository`) to always display `ai-driven-dev/rules` as a "Featured repository" (using `$(star-full)` icon) at the top of the Quick Pick list when adding/selecting a repository. Other stored repositories are now shown with a `$(history)` icon. Updated the `placeHolder` text and the description for the `aidd.maxRecentRepositories` setting in `package.json` to reflect this change.
-- [2025-04-15]: Reviewed Memory Bank files. No new development updates provided since [2025-04-13].
-- [2025-04-13]: **Implemented Recursive Download**: Modified `explorerView.ts` (`downloadSelectedFiles`) to correctly map all selected items (files and directories, including recursively selected ones) and pass them to `DownloadService`. The service already handled creating directories and downloading files from the list. Fixed associated TypeScript errors during implementation.
+- [2025-04-22]: **Corrected Update Status Bug**: Fixed an issue where newly downloaded files were incorrectly marked as "new" (✅) after a status refresh. Ensured the file SHA is correctly passed from `ExplorerView` to `DownloadService` so it can be stored in `workspaceState`. (`ExplorerView.downloadSelectedFiles`)
+- [2025-04-22]: **Merged Update View**: Removed the separate "Rule Updates" view. Integrated update status directly into the main "Repository Explorer" view using emoji prefixes (🔄 for updated, ✅ for new) on the item labels. Items deleted remotely are now hidden. (`ExplorerTreeItem`, `ExplorerTreeProvider`, `package.json`, `extension.ts`, `commands/index.ts`)
+- [2025-04-22]: **Corrected Filtering Logic**: Refined the path filtering logic in `ExplorerTreeProvider.matchesIncludeFilters` to correctly match exact paths and directory prefixes based on the `aidd.includePaths` setting.
+- [2025-04-22]: **Added View Filtering**: Implemented filtering in `ExplorerTreeProvider` based on the new `aidd.includePaths` configuration setting. Added listener in `extension.ts` to refresh the view when the setting changes. (`ExplorerTreeProvider`, `package.json`, `extension.ts`)
+- [2025-04-22]: **Added Update Status Check**: Implemented manual update checking (`aidd.refreshRuleStatus` command, button, status bar item). Compares local SHAs (stored during download via modified `DownloadService`) with remote SHAs fetched via `UpdateCheckService`. (`DownloadService`, `UpdateCheckService`, `ExplorerTreeProvider`, `ExplorerTreeItem`, `StatusBarService`, `package.json`, `extension.ts`, `commands/index.ts`)
+- [2025-04-18]: **Featured Repository**: Modified `explorerView.ts` (`promptForRepository`) to always display `ai-driven-dev/rules` as a "Featured repository" (`$(star-full)` icon). Other stored repositories use `$(history)`. Updated related settings descriptions.
+- [2025-04-15]: Reviewed Memory Bank files.
+- [2025-04-13]: **Implemented Recursive Download**: Modified `explorerView.ts` (`downloadSelectedFiles`) to correctly map selected items for `DownloadService`.
 - [2025-04-13]: **Refactored recursive selection**: Implemented *local* recursive selection/deselection logic in `SelectionService` and `ExplorerTreeProvider`. When a directory checkbox is toggled, the selection state of all its descendants is updated based on the already fetched tree data, without requiring further API calls. Removed previous progress indicators related to API-based recursive selection.
 - [2025-04-13]: **Refactored repository content fetching**: Replaced previous recursive `contents` API calls with a single, efficient call to the GitHub Git Trees API (`GET /repos/{owner}/{repo}/git/trees/{tree_sha}?recursive=1`) in `github.ts`. This fetches the entire repository structure in one request.
 - [2025-04-12]: Renamed extension to "AI-Driven Dev Rules" (aidd)
@@ -32,13 +37,19 @@ Refining core functionality, improving code structure through refactoring, parti
 
 ## Next Steps
 
-1. **Testing**: Thoroughly test the download functionality with various scenarios (different repositories, selections, network conditions).
+1. **Testing**:
+    - Thoroughly test the **update status check** functionality (correct status detection, emoji display, status bar feedback).
+    - Thoroughly test the **view filtering** (`aidd.includePaths`) with various path combinations.
+    - Thoroughly test the **download functionality** (including SHA storage) with various scenarios.
+2. **Refinement**: Improve UI/UX based on testing (e.g., clarity of tooltips, status bar messages).
 
 ## Active Decisions
 
 - **TreeView Implementation**: Using VS Code's built-in TreeView with custom checkboxes via `SelectionService`.
 - **GitHub API Approach**: Using native Node.js https module with optional PAT for authentication. Utilizing efficient API calls for structure and content fetching.
-- **Error Handling Strategy**: Implementing comprehensive error handling with user-friendly messages, especially for API limits and download issues.
+- **Error Handling Strategy**: Implementing comprehensive error handling with user-friendly messages, especially for API limits, download issues, and update checks. Using status bar for persistent feedback on checks.
+- **Update Indication**: Using emoji prefixes (🔄, ✅) directly in the main explorer view label instead of a separate view. Hiding remotely deleted files.
+- **Filtering**: Applying include path filters directly during item processing in the TreeProvider.
 
 ## Important Patterns and Preferences
 
@@ -53,7 +64,9 @@ Refining core functionality, improving code structure through refactoring, parti
 - Centralizing selection state in `SelectionService` simplifies management.
 - Utilizing efficient GitHub API endpoints (like Git Trees) is crucial for performance when fetching repository structure.
 - Local recursive selection improves UI responsiveness.
-- Testing remains crucial for validating end-to-end flows and UI interactions.
+- Storing state (like downloaded file SHAs) in `workspaceState` allows for persistence between sessions.
+- Separating concerns into services (`DownloadService`, `UpdateCheckService`, `StatusBarService`, etc.) improves maintainability.
+- Testing remains crucial for validating end-to-end flows and UI interactions, especially with state management and API interactions.
 
 ## Current Challenges
 
@@ -61,6 +74,7 @@ Refining core functionality, improving code structure through refactoring, parti
   - **Performance**: Potential bottleneck in processing/rendering large datasets from `git/trees`. Needs monitoring.
   - **User Experience**: For repositories resulting in >50 files selected for download, implement a confirmation dialog asking the user to proceed.
   - **Truncation**: Handling the `truncated` flag from the `git/trees` API is not yet implemented (low priority until observed).
+- **Scalability of Status Check**: For repositories with thousands of files, comparing local state with the full remote tree might become slow. Needs monitoring.
 
 ## Open Questions
 
@@ -78,4 +92,4 @@ Refining core functionality, improving code structure through refactoring, parti
 
 ## Notes
 
-Focus is now shifting towards ensuring the reliability and robustness of the core download feature.
+Focus is now shifting towards testing and refining the update check and filtering features alongside the core download functionality.

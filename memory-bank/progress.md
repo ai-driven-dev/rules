@@ -6,7 +6,7 @@ This document tracks what works, what's left to build, current status, known iss
 
 ## Current Status
 
-Core functionality is implemented, including repository browsing via Git Trees API, local recursive selection, and **recursive download**. The download command now correctly processes files within selected directories. Testing and enhanced error handling are the next major steps.
+Core functionality (browsing, selection, download) is implemented. **Update status checking** and **view filtering** based on configuration are also implemented. Focus is now on testing these features.
 
 ## What Works
 
@@ -18,13 +18,20 @@ Core functionality is implemented, including repository browsing via Git Trees A
 - **Repository Browsing**: TreeView displays repository structure.
 - **Repository Fetching**: Uses efficient `git/trees?recursive=1` API (`github.ts`).
 - **Selection Logic**: Centralized in `SelectionService`, handles local recursive selection/deselection.
-- **Download Logic**: `explorerView.ts` correctly maps selected items (files & dirs) and passes them to `DownloadService`, enabling recursive download. `DownloadService` handles directory creation and file fetching.
-- **Featured Repository**: The Quick Pick list for selecting repositories now always shows `ai-driven-dev/rules` as a "Featured" item at the top.
+- **Download Logic & SHA Storage**: `explorerView.ts` maps selected items (including SHA) to `DownloadFile`. `DownloadService` downloads files and stores their SHAs in `workspaceState`.
+- **Update Status Check**: Manual check via `aidd.refreshRuleStatus` command compares local and remote SHAs using `UpdateCheckService`.
+- **Update Status Display**: Status (🔄 Updated, ✅ New) is shown via emoji prefixes in the main `ExplorerTreeProvider` view. Remotely deleted files are hidden.
+- **Status Bar Feedback**: `StatusBarService` indicates the status of update checks.
+- **View Filtering**: `ExplorerTreeProvider` filters displayed items based on the `aidd.includePaths` setting. View refreshes automatically when the setting changes.
+- **Featured Repository**: Quick Pick list highlights the featured repository.
 
 ## Known Issues
 
-- **Error Handling**: Specific error handling for `git/trees` API (including `truncated` flag) and enhanced download error handling are not yet implemented.
-- **Potential Performance with Large Repos**: Displaying the TreeView after loading a very large repository structure via `git/trees` might be slow. Needs monitoring.
+- **Error Handling**: Specific error handling for `git/trees` API (including `truncated` flag) needs review. Error reporting for update checks relies on status bar and notifications.
+- **Potential Performance with Large Repos**:
+    - Displaying the TreeView after loading a very large repository structure might be slow.
+    - **Update Status Check**: Fetching the full remote tree for status checks might be slow for very large repositories.
+- **Filtering Logic**: Basic path/prefix filtering implemented. More complex glob patterns or regex are not supported.
 
 ## Evolution of Decisions
 
@@ -33,8 +40,9 @@ Core functionality is implemented, including repository browsing via Git Trees A
 - **UI Approach**: Considered custom WebView → Decided on native TreeView, for better integration with VS Code
 - **Token Handling**: Considered environment variables (`.env`, system) → Decided on standard VS Code configuration setting (`aidd.githubToken`) for security and user experience.
 - **Selection State**: Initial approach with state in `TreeItem` → Refactored to central `SelectionService`.
-- **Repository Fetching**: Recursive `contents` API calls → Single `git/trees?recursive=1` API call for efficiency.
+- **Repository Fetching**: Recursive `contents` API calls → Single `git/trees?recursive=1` API call for efficiency (used for both browsing and update checks).
 - **Recursive Selection**: API calls on directory check → Local state update based on pre-fetched data for responsiveness.
+- **Update View**: Separate "Rule Updates" view → Integrated status display (emojis) into the main explorer view.
 
 ## Performance Metrics
 
@@ -42,7 +50,7 @@ Core functionality is implemented, including repository browsing via Git Trees A
 
 ## Testing Status
 
-- **Testing**: Required to validate end-to-end functionality, especially recursive download and UI interactions.
+- **Testing**: Required to validate end-to-end functionality, especially download (with SHA storage), update status checking, and view filtering.
 
 ## Deployment History
 
@@ -50,4 +58,4 @@ Core functionality is implemented, including repository browsing via Git Trees A
 
 ## Notes
 
-The project is well-positioned to begin implementation with a clear understanding of requirements and architecture. The focus will be on creating a clean, maintainable codebase that follows VS Code extension best practices. The incremental development approach will allow for regular testing and refinement throughout the process.
+Recent work focused on adding update status checking and view filtering. The update status is now integrated directly into the main explorer view using emojis. Key bug fixes related to SHA storage during download were implemented. Next steps involve thorough testing of these new features.

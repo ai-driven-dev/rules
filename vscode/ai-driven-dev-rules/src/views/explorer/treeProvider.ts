@@ -4,6 +4,11 @@ import type { GithubContent, GithubRepository } from "../../api/types";
 import type { IExplorerStateService } from "../../services/explorerStateService";
 import type { ILogger } from "../../services/logger";
 import type { ISelectionService } from "../../services/selection";
+import type { IStatusBarService } from "../../services/statusBarService"; // Import StatusBarService interface
+import type {
+  FileUpdateStatus,
+  IUpdateCheckService,
+} from "../../services/updateCheckService"; // Import update service and status type
 import type { ExplorerTreeItem } from "./treeItem";
 import { TreeItemFactory } from "./treeItemFactory";
 
@@ -16,14 +21,18 @@ export class ExplorerTreeProvider
   readonly onDidChangeTreeData = this._onDidChangeTreeData.event;
 
   private readonly initialLoadDepth = 3;
-  private readonly recursiveLoadDepth = 5;
+  // private readonly recursiveLoadDepth = 5; // Not used directly anymore with fetchRepositoryContentRecursive
   private treeItemFactory: TreeItemFactory;
+  private updateStatusMap: Map<string, FileUpdateStatus["status"]> = new Map(); // Store update statuses
 
   constructor(
     private readonly githubService: IGitHubApiService,
     private readonly logger: ILogger,
     private readonly selectionService: ISelectionService,
     private readonly stateService: IExplorerStateService,
+    private readonly updateCheckService: IUpdateCheckService,
+    private readonly statusBarService: IStatusBarService, // Inject StatusBarService
+    private readonly context: vscode.ExtensionContext,
     extensionPath: string,
   ) {
     this.treeItemFactory = new TreeItemFactory(extensionPath, logger);
@@ -37,7 +46,10 @@ export class ExplorerTreeProvider
   public async setRepository(repository: GithubRepository): Promise<void> {
     this.stateService.setRepository(repository);
     this.selectionService.clearSelection();
+    this.updateStatusMap.clear(); // Clear statuses when repo changes
     this._onDidChangeTreeData.fire(undefined);
+    // Optionally trigger an initial update check here
+    // this.refreshAndUpdateStatus();
   }
 
   /** Returns the currently loaded repository information */
@@ -55,6 +67,7 @@ export class ExplorerTreeProvider
       const currentRepo = this.stateService.getRepository();
       this.stateService.resetState();
       this.stateService.setRepository(currentRepo);
+      this.updateStatusMap.clear(); // Clear statuses on full refresh
       this._onDidChangeTreeData.fire(undefined);
     }
   }
@@ -96,6 +109,13 @@ export class ExplorerTreeProvider
         ? vscode.TreeItemCheckboxState.Checked
         : vscode.TreeItemCheckboxState.Unchecked;
     }
+
+    // Ensure the item's tooltip reflects the latest known status
+    const status = this.updateStatusMap.get(element.content.path);
+    element.setUpdateStatus(status); // Update tooltip etc.
+
+    // TODO: Optionally modify icon based on status here
+
     return element;
   }
 
@@ -112,6 +132,11 @@ export class ExplorerTreeProvider
       const rootItems = this.stateService.getRootItems();
       if (rootItems) {
         this.logger.debug("Returning cached root items from state.");
+        // Ensure cached items have their status applied (using for...of)
+        for (const item of rootItems) {
+          const status = this.updateStatusMap.get(item.content.path);
+          item.setUpdateStatus(status);
+        }
         return rootItems;
       }
       if (this.stateService.isRootLoading()) {
@@ -135,7 +160,11 @@ export class ExplorerTreeProvider
         this.logger.debug(
           `Found ${childrenFromMap.length} pre-loaded children in map for ${elementPath}.`,
         );
-
+        // Ensure pre-loaded children have their status applied (using for...of)
+        for (const item of childrenFromMap) {
+          const status = this.updateStatusMap.get(item.content.path);
+          item.setUpdateStatus(status);
+        }
         element.children = childrenFromMap;
         return childrenFromMap;
       }
@@ -280,7 +309,30 @@ export class ExplorerTreeProvider
     explicitParent?: ExplorerTreeItem,
   ): ExplorerTreeItem[] {
     const createdItems: ExplorerTreeItem[] = [];
+    const filters = this.getIncludeFilters(); // Get filters once
+
     for (const content of contents) {
+      // --- Filtering Logic ---
+      // 1. Apply includePaths filter first
+      if (!this.matchesIncludeFilters(content.path, filters)) {
+        this.logger.debug(
+          `Skipping item due to includePaths filter: ${content.path}`,
+        );
+        continue; // Skip this item if it doesn't match filters
+      }
+
+      // 2. Check update status and skip if remote-deleted
+      const status = this.updateStatusMap.get(content.path);
+      if (status === "remote-deleted") {
+        this.logger.debug(
+          `Skipping item because it's marked as remote-deleted: ${content.path}`,
+        );
+        continue; // Don't show items deleted remotely
+      }
+
+      // --- End Filtering Logic ---
+
+      // Determine parent
       let parentToUse = explicitParent;
       if (!parentToUse) {
         const parentPath = content.path.includes("/")
@@ -291,12 +343,74 @@ export class ExplorerTreeProvider
         }
       }
 
+      // Create the item first
       const newItem = this.treeItemFactory.createItem(content, parentToUse);
 
+      // Then set its status
+      newItem.setUpdateStatus(status); // Use the status determined before the parent logic
+
+      // Map and add to list
       this.stateService.mapItem(newItem);
       createdItems.push(newItem);
     }
+
+    // No need to filter the createdItems array anymore, filtering is done inside the loop
+    this.logger.debug(
+      `processAndCacheItems: Processed ${contents.length} items, returning ${createdItems.length} after filtering.`,
+    );
     return createdItems;
+  }
+
+  /** Parses the includePaths setting into an array of strings */
+  private getIncludeFilters(): string[] {
+    const config = vscode.workspace.getConfiguration("aidd");
+    const includePathsString = config.get<string>("includePaths") ?? "";
+    if (!includePathsString.trim()) {
+      return [];
+    }
+    return includePathsString
+      .split(",")
+      .map((p) => p.trim())
+      .filter((p) => p.length > 0);
+  }
+
+  /** Checks if a given path matches any of the include filters.
+   *  An item matches if its path is exactly one of the filters,
+   *  or if its path starts with a filter followed by '/'.
+   */
+  private matchesIncludeFilters(itemPath: string, filters: string[]): boolean {
+    if (filters.length === 0) {
+      return true; // No filters means include everything
+    }
+
+    for (const filter of filters) {
+      // Normalize filter slightly: remove trailing slash if present for comparison consistency
+      const normalizedFilter = filter.endsWith("/")
+        ? filter.slice(0, -1)
+        : filter;
+
+      // 1. Exact match
+      if (itemPath === normalizedFilter) {
+        this.logger.debug(
+          `Filter match (exact): '${itemPath}' == '${normalizedFilter}'`,
+        ); // Use debug
+        return true;
+      }
+
+      // 2. Item is within a filtered directory
+      // Ensure filter is treated as a directory by adding '/'
+      if (itemPath.startsWith(`${normalizedFilter}/`)) {
+        this.logger.debug(
+          `Filter match (starts with): '${itemPath}' starts with '${normalizedFilter}/'`,
+        ); // Use debug
+        return true;
+      }
+    }
+
+    this.logger.debug(
+      `No filter match for: '${itemPath}' against filters: [${filters.join(", ")}]`,
+    ); // Use debug
+    return false; // No match found
   }
 
   private findChildrenInMap(parentPath: string): ExplorerTreeItem[] {
@@ -318,6 +432,7 @@ export class ExplorerTreeProvider
       }
     }
 
+    // Sort children: directories first, then alphabetically
     children.sort((a, b) => {
       if (a.content.type === "dir" && b.content.type !== "dir") {
         return -1;
@@ -327,7 +442,7 @@ export class ExplorerTreeProvider
       }
       return a.content.name.localeCompare(b.content.name);
     });
-    return children;
+    return children; // Added missing return statement
   }
 
   public async getTreeItemsByPaths(
@@ -340,5 +455,79 @@ export class ExplorerTreeProvider
       `Retrieved ${items.length} items from state map for paths: ${paths.join(", ")}`,
     );
     return items;
+  }
+
+  // --- Update Check Logic ---
+
+  /**
+   * Performs an update check for the current repository and refreshes the view.
+   */
+  public async refreshAndUpdateStatus(): Promise<void> {
+    const repository = this.getCurrentRepository();
+    if (!repository) {
+      this.logger.warn(
+        "refreshAndUpdateStatus called but no repository is set.",
+      );
+      vscode.window.showWarningMessage("Please select a repository first.");
+      return;
+    }
+
+    this.logger.info(
+      `Starting update status check for ${repository.owner}/${repository.name}...`,
+    );
+    this.statusBarService.setCheckingUpdates(); // Use status bar
+
+    try {
+      const result = await this.updateCheckService.checkUpdates(repository);
+      let success = false;
+      let details = "";
+
+      if (result.error) {
+        this.logger.error("Error during update check:", result.error);
+        vscode.window.showErrorMessage(
+          `Failed to check for updates: ${result.error.message}`,
+        );
+        this.updateStatusMap.clear(); // Clear statuses on error
+        details = `Error: ${result.error.message}`;
+      } else {
+        success = true;
+        this.logger.info(
+          `Update check successful. Found ${result.statuses.length} statuses.`,
+        );
+        // Update the internal map (using for...of)
+        this.updateStatusMap.clear();
+        let updatesAvailable = 0;
+        for (const s of result.statuses) {
+          this.updateStatusMap.set(s.filePath, s.status);
+          if (s.status === "update-available") {
+            updatesAvailable++;
+          }
+        }
+        details =
+          updatesAvailable > 0
+            ? `${updatesAvailable} update(s) available.`
+            : "All rules up-to-date.";
+      }
+      this.statusBarService.setUpdatesChecked(success, details);
+    } catch (error) {
+      this.logger.error("Unexpected error during update check:", error);
+      const errorMessage =
+        error instanceof Error ? error.message : String(error);
+      vscode.window.showErrorMessage(
+        `An unexpected error occurred while checking for updates: ${errorMessage}`,
+      );
+      this.updateStatusMap.clear(); // Clear statuses on error
+      this.statusBarService.setUpdatesChecked(
+        false,
+        `Unexpected error: ${errorMessage}`,
+      );
+    } finally {
+      this.logger.debug("Update check finished, refreshing tree view.");
+      // Refresh the entire tree to apply new statuses/tooltips
+      this._onDidChangeTreeData.fire(undefined);
+      // Optionally reset status bar to idle after a delay, or keep the result shown
+      // For now, let's keep the result shown until next action
+      // setTimeout(() => this.statusBarService.setIdle(), 5000);
+    }
   }
 }

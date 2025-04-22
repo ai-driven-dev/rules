@@ -36,9 +36,12 @@ AI development tools require clear, structured rules to operate effectively. Mai
 - **Rule Repository Browser**: Interface within VS Code to browse rule sets available in configured GitHub repositories.
 - **Repository Configuration**: Ability to specify the main rule repository and add other public/private repositories (using PAT for private).
 - **Rule Selection**: Interface to select specific rule files or directories to download.
-- **Rule Download**: Mechanism to download selected rules into the user's current workspace, preserving structure.
-- **(V2) Update Notification**: System to inform users when downloaded rules have updates available in the source repository.
-- **(V2) Rule Update Mechanism**: Functionality to apply updates to previously downloaded rules.
+- **Rule Download**: Mechanism to download selected rules into the user's current workspace, preserving structure and storing file SHAs.
+- **Update Status Check**: Manual check (via button/status bar) comparing local SHAs with remote SHAs. Status (🔄 Updated, ✅ New) indicated directly on files in the explorer view.
+- **View Filtering**: Option (`aidd.includePaths`) to filter the displayed rules based on specified paths/names.
+- **(V2 / Future) Update Application**: Functionality to actually download and apply updates to previously downloaded rules.
+- **(V2 / Future) Automated Update Check/Notification**: System to automatically check for updates and inform users.
+
 
 ## User Flows
 
@@ -54,18 +57,24 @@ AI development tools require clear, structured rules to operate effectively. Mai
     - Expert developer creates/updates rules in a designated GitHub repository.
     - (Future) Potential review/validation process within the community/platform.
 
-3. **Updating Rules (V2)**:
-    - Extension periodically checks configured repositories for updates to downloaded rules.
-    - User is notified of available updates.
-    - User chooses to apply updates.
+3. **Checking Rule Status (Current)**:
+    - User clicks the "Check for Rule Updates" button (`$(sync)`) or the status bar item.
+    - Extension fetches the remote repository tree and compares SHAs with locally stored SHAs (from previous downloads).
+    - Files in the explorer view are prefixed with an emoji (🔄 for updated, ✅ for new) if their status changed. Tooltips provide details.
+    - Status bar indicates the result of the check.
+
+4. **Applying Updates (Future - V2)**:
+    - User identifies rules with updates (via emoji/tooltip).
+    - (Future) User triggers an "Update Rule" action (e.g., from context menu).
+    - Extension re-downloads the specific rule, overwriting the local version and updating the stored SHA.
 
 ## Success Metrics
 
 - **Rule Set Availability**: Growing number of high-quality rule sets for popular technologies.
 - **Community Engagement**: Active contributions and reviews of rule sets (future metric).
 - **Adoption**: Number of developers actively using the extension to manage rules.
-- **Update Rate**: Frequency with which users update their downloaded rules (V2 metric).
-- **User Satisfaction**: Positive feedback regarding the ease of finding and applying rules.
+- **Update Check Usage**: Frequency of manual update checks.
+- **User Satisfaction**: Positive feedback regarding the ease of finding, applying rules, and checking for updates.
 
 ## Future Considerations
 

@@ -2,7 +2,7 @@
   "name": "ai-driven-dev-rules",
   "displayName": "AI-Driven Dev Rules",
   "description": "Browse and download files from GitHub repositories directly within VS Code",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "engines": {
     "vscode": "^1.92.0"
   },
@@ -48,6 +48,11 @@
         "command": "aidd.clearStorage",
         "title": "AI-Driven Dev Rules: Clear Storage",
         "icon": "$(trash)"
+      },
+      {
+        "command": "aidd.refreshRuleStatus",
+        "title": "AI-Driven Dev Rules: Check for Rule Updates",
+        "icon": "$(sync)"
       }
     ],
     "viewsContainers": {
@@ -91,6 +96,11 @@
           "command": "aidd.downloadSelected",
           "when": "view == ai-driven-dev-rules",
           "group": "navigation"
+        },
+        {
+          "command": "aidd.refreshRuleStatus",
+          "when": "view == ai-driven-dev-rules",
+          "group": "navigation@3"
         },
         {
           "command": "aidd.openSettings",
@@ -140,6 +150,12 @@
           "default": null,
           "description": "Intervalle (en secondes) pour rafraîchir automatiquement l'explorateur de dépôt. Mettre à 'null' pour désactiver.",
           "minimum": 10,
+          "scope": "window"
+        },
+        "aidd.includePaths": {
+          "type": "string",
+          "default": ".cursor,.clinerules",
+          "description": "Liste de chemins ou noms de fichiers/dossiers à inclure dans l'explorateur, séparés par des virgules. Si vide, tout est inclus. Ex: .cursor,docs/,README.md",
           "scope": "window"
         }
       }

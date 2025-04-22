@@ -10,6 +10,7 @@ export interface DownloadFile {
   targetPath: string;
   type: "file" | "dir";
   size?: number;
+  sha?: string; // Added SHA for tracking updates
 
   downloadUrl?: string | null;
   base64Content?: string;
@@ -35,14 +36,17 @@ export class DownloadService implements IDownloadService {
 
   private readonly httpClient: IHttpClient;
   private readonly githubApiService: IGitHubApiService;
+  private readonly context: vscode.ExtensionContext; // Added context for workspaceState
 
   constructor(
     private readonly logger: ILogger,
     httpClient: IHttpClient,
     githubApiService: IGitHubApiService,
+    context: vscode.ExtensionContext, // Added context
   ) {
     this.httpClient = httpClient;
     this.githubApiService = githubApiService;
+    this.context = context; // Store context
   }
 
   public async downloadFiles(
@@ -143,11 +147,31 @@ export class DownloadService implements IDownloadService {
 
         const settledResults = await Promise.allSettled(allFilePromises);
 
+        // Prepare workspace state update
+        const workspaceStateKey = `aidd.downloadedFiles.${repository.owner}.${repository.name}`; // Corrected: repo -> name
+        const currentState =
+          this.context.workspaceState.get<{
+            [filePath: string]: { sha: string };
+          }>(workspaceStateKey) || {};
+        let stateUpdated = false;
+
         for (const result of settledResults) {
           if (result.status === "fulfilled") {
             results.push(result.value);
-            if (result.value.success) {
-              this.logger.debug(`Processed ${result.value.file.targetPath}`);
+            if (result.value.success && result.value.file.sha) {
+              // Store SHA on successful download
+              const fileInfo = result.value.file;
+              const shaValue = fileInfo.sha; // shaValue is string | undefined here
+              // Use explicit type casting `as string` since we are inside the `if` block
+              currentState[fileInfo.targetPath] = { sha: shaValue as string };
+              stateUpdated = true;
+              this.logger.debug(
+                `Processed and recorded SHA for ${fileInfo.targetPath}`,
+              );
+            } else if (result.value.success) {
+              this.logger.debug(
+                `Processed ${result.value.file.targetPath} (no SHA provided)`,
+              );
             }
           } else {
             if (
@@ -161,6 +185,22 @@ export class DownloadService implements IDownloadService {
                 result.reason,
               );
             }
+          }
+        }
+
+        // Save updated state if changes were made
+        if (stateUpdated) {
+          try {
+            await this.context.workspaceState.update(
+              workspaceStateKey,
+              currentState,
+            );
+            this.logger.info(
+              `Updated workspace state for repository ${repository.owner}/${repository.name}`, // Corrected: repo -> name
+            );
+          } catch (error) {
+            this.logger.error("Failed to update workspace state", error);
+            // Optionally notify the user or handle this error
           }
         }
 

@@ -1,7 +1,7 @@
 # AI-Driven Dev Rules
 
 ![Status](https://img.shields.io/badge/status-active-brightgreen)
-![Version](https://img.shields.io/badge/version-0.0.2-blue)
+![Version](https://img.shields.io/badge/version-0.0.3-blue)
 ![Contributors](https://img.shields.io/badge/contributors-welcome-orange)
 [![Discord](https://img.shields.io/discord/1173363373115723796?color=7289da&label=discord&logo=discord&logoColor=white)](https://discord.gg/invite/ai-driven-dev)
 
@@ -40,33 +40,43 @@ Avantages :
 - **Standard de contribution** pour tous les contributeurs
 - **Ultra simple** et rapide à setup
 
-Flow :
+Workflow :
 
 ```mermaid
-flowchart LR
-    classDef titleClass fill:none,stroke:none,color:#333333,font-size:16px,font-weight:bold
-    title[Extension VS Code pour récupération des règles depuis GitHub]
-    class title titleClass
-    
-    A[Extension VS Code] -->|1| B["Connexion GitHub avec Token (optionnel)"]
-    B -->|2| C["Récupération structure dépôt"]
-    C -->|3| D["Sélection et téléchargement des Règles"]
-    D -->|4| E["Utilisation + Commit des règles dans l'IDE"]
-    
-    style A fill:#4b89dc,stroke:#2e5daa,color:white,stroke-width:2px,border-radius:10px,font-weight:bold
-    style B fill:#2ecc71,stroke:#27ae60,color:white,stroke-width:2px,border-radius:10px,font-weight:bold
-    style C fill:#9b59b6,stroke:#8e44ad,color:white,stroke-width:2px,border-radius:10px,font-weight:bold
-    style D fill:#f39c12,stroke:#e67e22,color:white,stroke-width:2px,border-radius:10px,font-weight:bold
-    style E fill:#e74c3c,stroke:#c0392b,color:white,stroke-width:2px,border-radius:10px,font-weight:bold
-    
-    linkStyle 0,1,2,3 stroke-width:2px,stroke:#888888,color:black
+flowchart TD
+    classDef default fill:#f0f2f5,stroke:#d9d9d9,stroke-width:1px,border-radius:6px,padding:10px
+    classDef setup fill:#e6f7ff,stroke:#91d5ff,stroke-width:1px,border-radius:6px,padding:10px
+    classDef core fill:#d9f7be,stroke:#b7eb8f,stroke-width:1px,border-radius:6px,padding:10px
+    classDef action fill:#fffbe6,stroke:#ffe58f,stroke-width:1px,border-radius:6px,padding:10px
+
+    subgraph "Workflow AI-Driven Dev Rules"
+        direction TB
+
+        A(1. Ouvrir Extension) --> B{2. Choisir/Ajouter Dépôt};
+        B -- Dépôt Public --> C[3. Récupération Structure via API];
+        B -- Dépôt Privé + PAT --> C;
+        C --> D(4. Explorer Règles);
+        D --> E(5. Sélectionner Règles);
+        E --> F(6. Télécharger Règles);
+        F --> G(7. Règles dans Workspace);
+        G --> H(8. Vérifier Mises à Jour);
+        H -- Statut (🔄/✅) --> D;
+        G --> I(9. Utiliser Règles);
+
+    end
+
+    class A,B setup;
+    class C,D,E,G,I core;
+    class F,H action;
+
+    linkStyle default stroke:#b0b0b0,stroke-width:1.5px;
 ```
 
 ## 👨‍💻 Comment installer les règles AIDD ?
 
 ### Télécharger l'extension "AI-Driven Dev Rules"
 
-1. Télécharger la dernière version [ai-driven-dev-rules-0.0.2.vsix](https://github.com/ai-driven-dev/rules/blob/main/vscode/ai-driven-dev-rules/ai-driven-dev-rules-0.0.2.vsix)
+1. Télécharger la dernière version [ai-driven-dev-rules-0.0.3.vsix](https://github.com/ai-driven-dev/rules/blob/main/vscode/ai-driven-dev-rules/ai-driven-dev-rules-0.0.3.vsix)
 2. Ouvrir Cursor
 3. Dans la palette de commandes (`Ctrl + Shift + P`)
 4. Taper `Extension: Install from VSIX`

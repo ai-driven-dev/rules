@@ -5,7 +5,10 @@ import type { DownloadFile, IDownloadService } from "../../services/download";
 import type { IExplorerStateService } from "../../services/explorerStateService";
 import type { ILogger } from "../../services/logger";
 import type { ISelectionService } from "../../services/selection";
+import type { IStatusBarService } from "../../services/statusBarService";
 import type { IStorageService } from "../../services/storage";
+import type { IUpdateCheckService } from "../../services/updateCheckService";
+// Removed import for UpdatesTreeProvider
 import { parseRepositoryUrl } from "../../utils/githubUtils";
 import type { ExplorerTreeItem } from "./treeItem";
 import { ExplorerTreeProvider } from "./treeProvider";
@@ -13,7 +16,7 @@ import { ExplorerTreeProvider } from "./treeProvider";
 export class ExplorerView {
   public static readonly VIEW_ID = "ai-driven-dev-rules";
 
-  private treeProvider: ExplorerTreeProvider;
+  public readonly treeProvider: ExplorerTreeProvider; // Make public to access from extension.ts
   private treeView!: vscode.TreeView<ExplorerTreeItem>;
   private currentRepository: GithubRepository | null = null;
 
@@ -24,16 +27,23 @@ export class ExplorerView {
     private readonly storageService: IStorageService,
     private readonly downloadService: IDownloadService,
     private readonly selectionService: ISelectionService,
-
     private readonly stateService: IExplorerStateService,
+    private readonly updateCheckService: IUpdateCheckService,
+    private readonly statusBarService: IStatusBarService,
+    // Removed updatesTreeProvider from constructor params
   ) {
     this.treeProvider = new ExplorerTreeProvider(
       githubService,
       logger,
       selectionService,
       stateService,
+      updateCheckService,
+      statusBarService, // Pass StatusBarService
+      context,
       this.context.extensionPath,
     );
+    // Store the provider passed from extension.ts
+    // this.updatesTreeProvider = updatesTreeProvider; // Already done via constructor param
 
     this.treeView = vscode.window.createTreeView(ExplorerView.VIEW_ID, {
       treeDataProvider: this.treeProvider,
@@ -203,12 +213,16 @@ export class ExplorerView {
       this.selectionService.clearSelection();
       await this.treeProvider.setRepository(repository);
       this.storageService.addRecentRepository(repository);
+      // Removed call to updatesTreeProvider.setCurrentRepository
       vscode.window.showInformationMessage(
         `Connected to GitHub repository: ${repository.owner}/${repository.name}`,
       );
+      // Optionally trigger initial status check after setting repo
+      // vscode.commands.executeCommand("aidd.refreshRuleStatus");
 
       vscode.commands.executeCommand(`${ExplorerView.VIEW_ID}.focus`);
     } catch (error) {
+      // Removed call to updatesTreeProvider.setCurrentRepository
       this.logger.error(
         `Error connecting to repository: ${repository.owner}/${repository.name}`,
         error,
@@ -314,6 +328,7 @@ export class ExplorerView {
               targetPath: item.content.path,
               type: "file",
               size: item.content.size,
+              sha: item.content.sha, // Add the SHA property here
 
               downloadUrl: item.content.download_url,
               base64Content: item.content.content,

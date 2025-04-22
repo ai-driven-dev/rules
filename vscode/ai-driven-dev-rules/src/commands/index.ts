@@ -12,10 +12,11 @@ interface CommandDependencies {
   githubService: IGitHubApiService;
   logger: ILogger;
   storageService: IStorageService;
+  // Removed updatesTreeProvider from dependencies
 }
 
 export function registerCommands(dependencies: CommandDependencies): void {
-  const { context, explorerView, logger, storageService } = dependencies;
+  const { context, explorerView, logger, storageService } = dependencies; // Removed updatesTreeProvider from destructuring
 
   context.subscriptions.push(
     vscode.commands.registerCommand(
@@ -33,12 +34,16 @@ export function registerCommands(dependencies: CommandDependencies): void {
           explorerView.promptForRepository();
         }
       },
-    ),
-  );
+    ), // Close the first push call correctly
+  ); // End of the first push call
+
+  // Keep the original setRepository registration.
+  // ExplorerView.setRepository will be modified to handle updating UpdatesTreeProvider.
 
   context.subscriptions.push(
     vscode.commands.registerCommand("aidd.refresh", () => {
       explorerView.refreshView();
+      // Keep refresh separate for now. User uses the specific refresh status button for updates.
     }),
   );
 
@@ -89,6 +94,18 @@ export function registerCommands(dependencies: CommandDependencies): void {
         "workbench.action.openSettings",
         "@ext:ai-driven-dev-rules aidd.",
       );
+    }),
+  );
+
+  // Register the new command to check for rule updates
+  context.subscriptions.push(
+    vscode.commands.registerCommand("aidd.refreshRuleStatus", () => {
+      logger.debug("Refresh rule status command executed");
+      // Only refresh the main explorer view (which now handles status)
+      explorerView.treeProvider.refreshAndUpdateStatus().catch((error) => {
+        logger.error("Error executing refreshRuleStatus command", error);
+        // Error is handled and shown by the method itself
+      });
     }),
   );
 }

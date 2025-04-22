@@ -72,7 +72,7 @@ This document outlines the technologies used, development setup, technical const
   - **Repository Contents (`GET /repos/{owner}/{repo}/contents/{path}`)**: Used to download the content of individual files selected by the user. [Docs](https://docs.github.com/en/rest/repos/contents#get-repository-content)
   - **Branches (`GET /repos/{owner}/{repo}/branches/{branch}`)**: Used initially to get the commit SHA of the target branch's head, which is needed as the `{tree_sha}` for the Git Trees API call. [Docs](https://docs.github.com/en/rest/branches/branches#get-a-branch)
   - **Authentication**: Uses optional Personal Access Token (PAT) provided via the `aidd.githubToken` VS Code setting in the `Authorization: Bearer <TOKEN>` header to handle private repositories and increase rate limits.
-- **VS Code Extension API**: Core API for all extension functionality, including TreeView, commands, configuration (`vscode.workspace.getConfiguration('aidd').get('githubToken')`), notifications, file system access, etc. [Docs](https://code.visualstudio.com/api/references/vscode-api)
+- **VS Code Extension API**: Core API for all extension functionality, including TreeView, commands, configuration (`vscode.workspace.getConfiguration('aidd')`), notifications, file system access, status bar (`vscode.window.createStatusBarItem`), workspace state (`context.workspaceState`) for storing downloaded file SHAs, etc. [Docs](https://code.visualstudio.com/api/references/vscode-api)
 
 ## Technical Constraints
 

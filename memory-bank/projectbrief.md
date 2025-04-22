@@ -38,6 +38,9 @@ A VS Code extension enabling developers to discover, download, and manage commun
 - Configuration of source repositories and GitHub PAT via VS Code settings.
 - Basic error handling for API access and downloads.
 - Local recursive selection logic in the UI.
+- **Update Status Check**: Mechanism to check for updates to downloaded rules by comparing local and remote SHAs. Status indicated in the explorer view.
+- **View Filtering**: Ability to filter the explorer view based on a configured list of included paths (`aidd.includePaths` setting).
+- **Status Bar Indicator**: Displaying the status of update checks in the VS Code status bar.
 
 ### Out of Scope
 
@@ -46,7 +49,8 @@ A VS Code extension enabling developers to discover, download, and manage commun
 - Real-time collaboration features for rule editing.
 - Integration with specific AI tools beyond providing the rules.
 - Complex community management features (voting, detailed contributor profiles, etc.).
-- (Initially) Automated rule update mechanism (Planned for V2).
+- Automated *application* of rule updates (Manual check is now in scope).
+- Advanced diffing view for updates.
 
 ## Timeline (Initial Estimate - Subject to Revision)
 
