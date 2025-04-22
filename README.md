@@ -43,32 +43,23 @@ Avantages :
 Workflow :
 
 ```mermaid
-flowchart TD
-    classDef default fill:#f0f2f5,stroke:#d9d9d9,stroke-width:1px,border-radius:6px,padding:10px
-    classDef setup fill:#e6f7ff,stroke:#91d5ff,stroke-width:1px,border-radius:6px,padding:10px
-    classDef core fill:#d9f7be,stroke:#b7eb8f,stroke-width:1px,border-radius:6px,padding:10px
-    classDef action fill:#fffbe6,stroke:#ffe58f,stroke-width:1px,border-radius:6px,padding:10px
-
-    subgraph "Workflow AIDD Rules"
-        direction TB
-
-        A["1. Ouvrir Extension"] --> B{"2. Choisir/Ajouter Dépôt"};
-        B -- "Dépôt Public" --> C["3. Récupérer Structure (API)"];
-        B -- "Dépôt Privé + PAT" --> C;
-        C --> D["4. Explorer Règles"];
-        D --> E["5. Sélectionner Règles"];
-        E --> F["6. Télécharger Règles"];
-        F --> G["7. Règles dans Workspace"];
-        G --> H["8. Vérifier MàJ"];
-        H -- "Statut (🔄/✅)" --> D;
-        G --> I["9. Utiliser Règles"];
-    end
-
-    class A,B setup;
-    class C,D,E,G,I core;
-    class F,H action;
-
-    linkStyle default stroke:#b0b0b0,stroke-width:1.5px;
+flowchart LR
+    classDef titleClass fill:none,stroke:none,color:#333333,font-size:16px,font-weight:bold
+    title[Extension VS Code pour récupération des règles depuis GitHub]
+    class title titleClass
+    
+    A[Extension VS Code] -->|1| B[Connexion GitHub\n+ Token optionnel]
+    B -->|2| C[Récupération de la\nstructure du dépôt]
+    C -->|3| D[Sélection et téléchargement\ndes fichiers/règles]
+    D -->|4| E[Utilisation des règles\ndans l’IDE]
+    
+    style A fill:#4b89dc,stroke:#2e5daa,color:white,stroke-width:2px,border-radius:10px,font-weight:bold
+    style B fill:#2ecc71,stroke:#27ae60,color:white,stroke-width:2px,border-radius:10px,font-weight:bold
+    style C fill:#9b59b6,stroke:#8e44ad,color:white,stroke-width:2px,border-radius:10px,font-weight:bold
+    style D fill:#f39c12,stroke:#e67e22,color:white,stroke-width:2px,border-radius:10px,font-weight:bold
+    style E fill:#e74c3c,stroke:#c0392b,color:white,stroke-width:2px,border-radius:10px,font-weight:bold
+    
+    linkStyle 0,1,2,3 stroke-width:2px,stroke:#888888,color:black
 ```
 
 ## 👨‍💻 Comment installer les règles AIDD ?
