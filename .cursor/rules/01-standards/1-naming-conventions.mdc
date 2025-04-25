@@ -10,27 +10,13 @@ General Principles:
 - No abbreviations except common ones
 - Use consistent terminology
 
-Files and Directories:
-- Use kebab-case for files and folders
-- Group by feature or domain
-- Add suffix for file type or purpose
-- Match file name to main export
-
-Classes and Interfaces:
-- Use PascalCase for names
-- Use nouns or noun phrases
-- No prefix or suffix for class/interface
-- Add descriptive suffix for specific types
-
 Functions and Methods:
-- Use camelCase for names
 - Use verbs for actions
 - Use nouns for value-returning
 - Prefix booleans with is, has, should
 - No anemic models
 
 Variables and Properties:
-- Use camelCase for names
 - Use plural for arrays/collections
 
 Constants:

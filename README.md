@@ -84,8 +84,6 @@ Problèmes connus :
 
 ### Utiliser l'extension
 
-> Vidéo prévue ce vendredi 18 avril 2025
-
 1. Ouvrir l'extension "AI-Driven Dev Rules" via l'icône GitHub
 2. Cliquer sur le bouton `Add Repository` (ou utilisez directement notre dépôt ⭐ Featured)
 3. Télécharger le dossier `.cursor/rules`.
@@ -93,8 +91,6 @@ Problèmes connus :
 ## 🚀 Bien démarrer
 
 ### Comment coder avec des règles ?
-
-> Vidéo prévue ce vendredi 18 avril 2025
 
 1. Ouvrir le mode Agent de votre IDE (comme Cursor).
 2. Donner du contexte avec votre prompt: `use real users in @admin.tsx from @users.controller.ts`.
@@ -157,8 +153,6 @@ Exemples :
 ```
 
 ### 3. Générations et Mises à jour
-
-> Vidéo prévue ce vendredi 18 avril 2025
 
 1. Ouvrir un chat **en mode Agent**.
 2. Choisir le modèle `GPT 4.1`.
