@@ -3,52 +3,86 @@ description: Apply Symfony 7 best practices for project structure, configuration
 globs: src/**/*.php
 alwaysApply: false
 ---
-
 Project Structure :
-- Use default Symfony directory structure
-- Organize code by PHP namespaces, not bundles
+- Use Symfony binary for new projects
+- Follow default directory structure
+- Organize by PHP namespaces, not bundles
+- Place code in src/ by type
 
 Configuration :
-- Use environment variables for infrastructure config
-- Store secrets with Symfony secrets management
-- Use parameters for app config in `services.yaml`
-- Prefix parameters with `app.`
-- Use short, consistent parameter names
-- Define rarely changed options as class constants
+- Use YAML for service config
+- Use env vars for sensitive config
+- Store secrets with Symfony secrets
+- Use parameters in services.yaml
+- Prefix app params with app.
+- Use class constants for rare options
 
 Business Logic :
-- Use autowiring for service dependencies
+- Use autowiring for services
+- Use autoconfiguration for tags
 - Make services private by default
-- Use PHP instead of YAML for custom service config
+- Use PHP attributes for Doctrine mapping
 
 Controllers :
-- Extend `AbstractController` for controllers
-- Use attributes for routing, caching, security
-- Inject dependencies via constructor
-- Use entity value resolvers when convenient
+- Place controllers in src/Controller/
+- Keep controllers thin
+- Use type-hints and strict types
+- Return Response objects
+- Use JsonResponse for APIs
 
-Templates :
-- Use snake_case for template names and variables
-- Prefix template fragments with underscore
+Services & DI :
+- Register services in services.yaml
+- Use constructor injection
+- Keep services stateless
+
+Entities & Doctrine :
+- Place entities in src/Entity/
+- Use typed properties
+- Use repositories for queries
 
 Forms :
-- Define forms as PHP classes
-- Add form buttons in templates, not classes
-- Define validation constraints on domain objects
-- Use single action to render and process forms
+- Place forms in src/Form/
+- Use form classes for validation
 
-Internationalization :
-- Use XLIFF format for translation files
-- Use keys for translations, not content strings
+Templates & Twig :
+- Store templates in templates/
+- Use Twig for templating
+- Avoid logic in templates
+
+Routing :
+- Define routes in routes.yaml or attributes
+- Use named routes
 
 Security :
-- Define a single firewall unless multiple auth systems
-- Use auto password hasher
-- Use voters for complex security logic
+- Configure in security.yaml
+- Use built-in auth features
+- Hash passwords securely
 
-Web Assets :
-- Use AssetMapper for managing web assets
+Error Handling & Logging :
+- Use Symfony error handling
+- Log errors in EN with codes
+- Translate user error messages
 
-Tests :
-- Smoke test all URLs with functional tests
-- Hard-code URLs in functional tests
+Testing :
+- Place tests in tests/
+- Use PHPUnit for tests
+- Follow AAA in tests
+- Mock external dependencies
+
+Assets & Frontend :
+- Store assets in assets/
+- Use AssetMapper for assets
+
+Internationalization :
+- Store translations in translations/
+- Use translation component for text
+
+Coding Standards :
+- Use strict types everywhere
+- No magic numbers, use constants
+- Use descriptive names
+- One responsibility per file
+- Max 30 lines per function
+- Max 5 params per function
+- Max 300 lines per file
+- Max 10 sub-files per folder
