@@ -1,0 +1,88 @@
+---
+description: Apply Symfony 7 best practices for project structure, configuration, business logic, controllers, templates, forms, internationalization, security, web assets, and tests in all PHP source files. Ensures maintainability, security, and consistency across Symfony applications by following official recommendations.
+globs: src/**/*.php
+alwaysApply: false
+---
+Project Structure :
+- Use Symfony binary for new projects
+- Follow default directory structure
+- Organize by PHP namespaces, not bundles
+- Place code in src/ by type
+
+Configuration :
+- Use YAML for service config
+- Use env vars for sensitive config
+- Store secrets with Symfony secrets
+- Use parameters in services.yaml
+- Prefix app params with app.
+- Use class constants for rare options
+
+Business Logic :
+- Use autowiring for services
+- Use autoconfiguration for tags
+- Make services private by default
+- Use PHP attributes for Doctrine mapping
+
+Controllers :
+- Place controllers in src/Controller/
+- Keep controllers thin
+- Use type-hints and strict types
+- Return Response objects
+- Use JsonResponse for APIs
+
+Services & DI :
+- Register services in services.yaml
+- Use constructor injection
+- Keep services stateless
+
+Entities & Doctrine :
+- Place entities in src/Entity/
+- Use typed properties
+- Use repositories for queries
+
+Forms :
+- Place forms in src/Form/
+- Use form classes for validation
+
+Templates & Twig :
+- Store templates in templates/
+- Use Twig for templating
+- Avoid logic in templates
+
+Routing :
+- Define routes in routes.yaml or attributes
+- Use named routes
+
+Security :
+- Configure in security.yaml
+- Use built-in auth features
+- Hash passwords securely
+
+Error Handling & Logging :
+- Use Symfony error handling
+- Log errors in EN with codes
+- Translate user error messages
+
+Testing :
+- Place tests in tests/
+- Use PHPUnit for tests
+- Follow AAA in tests
+- Mock external dependencies
+
+Assets & Frontend :
+- Store assets in assets/
+- Use AssetMapper for assets
+
+Internationalization :
+- Store translations in translations/
+- Use translation component for text
+
+Coding Standards :
+- Use strict types everywhere
+- No magic numbers, use constants
+- Use descriptive names
+- One responsibility per file
+- Max 30 lines per function
+- Max 5 params per function
+- Max 300 lines per file
+- Max 10 sub-files per folder

@@ -1,6 +1,6 @@
 ---
 description: APPLY Clean Architecture principles WHEN organizing code in backend
-globs: apps/backend/**
+globs: apps/backend/**, src/**/*.php
 alwaysApply: false
 ---
 
