@@ -7,12 +7,10 @@
 
 Partagez vos règles IA personnalisées avec la communauté.
 
->
-> Pour celles et ceux qui recherchent le système de KB de Christophe, un dépôt est en cours de création !
->
-
 Envie de faire avec nous ?
 [>>> 🔥 REJOINDRE LA CORE TEAM <<<](./CONTRIBUTING.md)
+
+[![AI-Driven Dev Rules](docs/images/presentation-video.png)](https://www.youtube.com/watch?v=DFTc0W3oTyQ)
 
 ## Table des matières
 
@@ -47,18 +45,18 @@ flowchart LR
     classDef titleClass fill:none,stroke:none,color:#333333,font-size:16px,font-weight:bold
     title[Extension VS Code pour récupération des règles depuis GitHub]
     class title titleClass
-    
+
     A[Extension VS Code] -->|1| B[Connexion GitHub<br>+ Token optionnel]
     B -->|2| C[Récupération de la<br>structure du dépôt]
     C -->|3| D[Sélection et téléchargement<br>des fichiers/règles]
     D -->|4| E[Utilisation des règles<br>dans l’IDE]
-    
+
     style A fill:#4b89dc,stroke:#2e5daa,color:white,stroke-width:2px,border-radius:10px,font-weight:bold
     style B fill:#2ecc71,stroke:#27ae60,color:white,stroke-width:2px,border-radius:10px,font-weight:bold
     style C fill:#9b59b6,stroke:#8e44ad,color:white,stroke-width:2px,border-radius:10px,font-weight:bold
     style D fill:#f39c12,stroke:#e67e22,color:white,stroke-width:2px,border-radius:10px,font-weight:bold
     style E fill:#e74c3c,stroke:#c0392b,color:white,stroke-width:2px,border-radius:10px,font-weight:bold
-    
+
     linkStyle 0,1,2,3 stroke-width:2px,stroke:#888888,color:black
 ```
 
@@ -120,26 +118,26 @@ Nom des règles :
 
 - `#` : Numéro de la catégorie (voir ci-dessous)
 - `-rule-name` : Nom de la règle
-- `@version` : Version de la règle (*optionnel*)
-- `-specificity` : Sous-partie spécifique (*optionnel*)
+- `@version` : Version de la règle (_optionnel_)
+- `-specificity` : Sous-partie spécifique (_optionnel_)
 - `.mdc` : Extension pour Cursor
 
 ### 2. Organisation des dossiers
 
 Les règles sont organisées par dossiers, chaque dossier représentant une catégorie.
 
-| Numéro | Catégorie | Exemples |
-| ------ | --------- | -------- |
-| `00` | 🏛️ `architecture` | Clean, Onion, 3-tiers... |
-| `01` | 📏 `standards` | Coding, Naming, formatting, structure |
-| `02` | 💻 `programming-languages` | JavaScript, TypeScript, Python |
-| `03` | 🛠️ `frameworks-and-libraries` | React, Vue, Angular, Next.js |
-| `04` | ⚙️ `tools-and-configurations` | Git, ESLint, Webpack, Docker |
-| `05` | 🔄 `workflows-and-processes` | PR reviews, deployment, CI/CD |
-| `06` | 📋 `templates-and-models` | Project templates, PRDs, READMEs |
-| `07` | ✅ `quality-assurance` | Testing, security, performance |
-| `08` | 🎯 `domain-specific-rules` | À partager avec votre équipe |
-| `09` | 🔍 `other` | Ne rentre dans aucune autre catégorie |
+| Numéro | Catégorie                     | Exemples                              |
+| ------ | ----------------------------- | ------------------------------------- |
+| `00`   | 🏛️ `architecture`             | Clean, Onion, 3-tiers...              |
+| `01`   | 📏 `standards`                | Coding, Naming, formatting, structure |
+| `02`   | 💻 `programming-languages`    | JavaScript, TypeScript, Python        |
+| `03`   | 🛠️ `frameworks-and-libraries` | React, Vue, Angular, Next.js          |
+| `04`   | ⚙️ `tools-and-configurations` | Git, ESLint, Webpack, Docker          |
+| `05`   | 🔄 `workflows-and-processes`  | PR reviews, deployment, CI/CD         |
+| `06`   | 📋 `templates-and-models`     | Project templates, PRDs, READMEs      |
+| `07`   | ✅ `quality-assurance`        | Testing, security, performance        |
+| `08`   | 🎯 `domain-specific-rules`    | À partager avec votre équipe          |
+| `09`   | 🔍 `other`                    | Ne rentre dans aucune autre catégorie |
 
 Exemples :
 
