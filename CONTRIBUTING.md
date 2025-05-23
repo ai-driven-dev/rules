@@ -49,7 +49,12 @@ Responsable du développement de l'extension VSCode "AI-Driven Dev Rules".
 - [ ] Standards de contribution pour l'extension + règles de [./vscode/ai-driven-dev-rules/README.md](./vscode/ai-driven-dev-rules/README.md).
 - [ ] Configurer `Biome` avec `lefthook`.
 - [ ] Possibilité de mettre à jour une règle existante par son nom
+
+#### Kickstart routine IA
+
 - [ ] Règles de base indépendantes dans un dossier `base-rules` → copiées dans .cursor/rules, .clinerules, .github/prompts, etc.
+- [ ] Agents indépendants dans un dossier base que l'on peut utiliser dans `Roo`
+- [ ] Idée : Liste de MCPs à partager
 
 ### 🚀 Team Delta
 
