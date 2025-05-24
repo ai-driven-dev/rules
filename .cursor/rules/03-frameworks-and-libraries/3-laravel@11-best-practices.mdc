@@ -1,0 +1,147 @@
+---
+description: 
+globs: src/**/*.php
+alwaysApply: false
+---
+---
+description: Apply Laravel 11 best practices for project structure, configuration, business logic, controllers, templates, forms, internationalization, security, web assets, and tests in all PHP source files. Ensures maintainability, security, and consistency across Laravel applications by following official recommendations.
+globs: src/**/*.php
+alwaysApply: false
+---
+
+Project Structure:
+- Use Laravel installer or Composer for new projects: `laravel new project-name`
+- Follow default Laravel directory structure
+- Organize by Laravel conventions (Models, Controllers, etc.)
+- Place custom code in app/ by type
+- Use modules/packages for large applications
+
+Configuration:
+- Use .env for environment-specific config
+- Store sensitive config in .env (never commit)
+- Use config files in config/ for app settings
+- Access config via `config()` helper
+- Use environment-specific config files when needed
+- Store API keys and secrets in .env only
+
+Business Logic:
+- Use service container for dependency injection
+- Leverage Laravel's auto-discovery for service providers
+- Make services singleton when appropriate
+- Use PHP attributes for route model binding
+- Keep business logic in Service classes, not Models
+
+Controllers:
+- Place controllers in app/Http/Controllers/
+- Keep controllers thin - delegate to Services
+- Use type-hints and declare strict types
+- Return appropriate response types (JSON, views, etc.)
+- Use Resource Controllers for RESTful operations
+- Group related controllers in subdirectories
+
+Services & DI:
+- Register services in AppServiceProvider or dedicated providers
+- Use constructor injection
+- Keep services stateless
+- Use interfaces for better testability
+- Bind interfaces to implementations in service providers
+
+Models & Eloquent:
+- Place models in app/Models/
+- Use typed properties (PHP 8.0+)
+- Use Eloquent relationships properly
+- Keep query logic in Repository classes or scopes
+- Use accessors/mutators for data transformation
+- Implement proper fillable/guarded properties
+
+Form Requests & Validation:
+- Use Form Request classes in app/Http/Requests/
+- Keep validation rules in Form Requests
+- Use custom validation rules when needed
+- Return proper validation error responses
+
+Views & Blade:
+- Store views in resources/views/
+- Use Blade templating engine
+- Avoid complex logic in views
+- Use view composers for shared data
+- Organize views in subdirectories by feature
+
+Routing:
+- Define routes in routes/ files (web.php, api.php)
+- Use route model binding
+- Use named routes with `->name()`
+- Group related routes with Route::group()
+- Use route caching in production
+
+Authentication & Security:
+- Use Laravel Sanctum for API authentication
+- Use Laravel Breeze/Jetstream for web auth
+- Hash passwords with bcrypt/argon2
+- Use middleware for authorization
+- Validate and sanitize all inputs
+- Use CSRF protection for web routes
+
+Error Handling & Logging:
+- Use Laravel's exception handling
+- Log errors with appropriate levels
+- Use custom exception classes when needed
+- Return consistent API error responses
+- Use Laravel's localization for user messages
+
+Testing:
+- Place tests in tests/ directory
+- Use PHPUnit for unit/feature tests
+- Follow Arrange-Act-Assert pattern
+- Use factories for test data
+- Mock external services and APIs
+- Use database transactions for test isolation
+
+Assets & Frontend:
+- Store assets in resources/ (CSS, JS, images)
+- Use Laravel Mix or Vite for asset compilation
+- Use Laravel's asset() helper for URLs
+- Consider using Inertia.js for SPA-like experiences
+
+Internationalization:
+- Store translations in lang/ directory
+- Use translation keys with `__()` or `trans()`
+- Organize translations by feature/module
+- Use Laravel's localization middleware
+
+Queues & Jobs:
+- Place jobs in app/Jobs/
+- Keep jobs idempotent and retryable
+- Use appropriate queue drivers for environment
+- Handle job failures gracefully
+- Use job batching for related tasks
+
+Events & Listeners:
+- Place events in app/Events/
+- Place listeners in app/Listeners/
+- Use event discovery or register in EventServiceProvider
+- Keep listeners focused on single responsibility
+
+Coding Standards:
+- Use strict types everywhere: `declare(strict_types=1);`
+- No magic numbers - use constants or config values
+- Use descriptive variable and method names
+- Single responsibility per class/method
+- Maximum 30 lines per method
+- Maximum 5 parameters per method
+- Maximum 300 lines per class
+- Maximum 10 classes per directory
+- Use PSR-12 coding standards
+- Use Laravel's naming conventions consistently
+
+Additional Laravel-Specific Best Practices:
+- Use Eloquent ORM instead of raw queries when possible
+- Leverage Laravel's built-in features before custom solutions
+- Use artisan commands for recurring tasks
+- Follow Laravel's naming conventions strictly
+- Use Laravel's helper functions appropriately
+- Keep migrations simple and focused
+- Use seeders for development data
+- Use policies for authorization logic
+- Cache expensive operations appropriately
+- Use Laravel's rate limiting for API endpoints
