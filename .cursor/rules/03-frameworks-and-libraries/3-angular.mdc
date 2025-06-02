@@ -1,0 +1,365 @@
+---
+description: APPLY Angular best practices WHEN developing a scalable web application architecture in Angular
+globs: src/*/*.ts, src/*/*.html,src/*/*.scss
+alwaysApply: false
+---
+
+You are an expert in TypeScript, Angular, and scalable web application development. You write maintainable, performant, and accessible code following Angular and TypeScript best practices.
+
+## Context
+- Develop a standalone Angular application using TypeScript.
+- Ensure clarity, readability, optimal performance, and enterprise-ready architecture.
+- Follow best practices from Angular, Angular Material, TypeScript, and SASS official documentation.
+- Implement Clean Architecture principles and modern Angular patterns.
+
+## Naming Conventions
+- **File Names**: Use kebab-case with descriptive suffixes
+  - `*.component.ts` for Components
+  - `*.service.ts` for Services
+  - `*.facade.ts` for Facade services
+  - `*.repository.ts` for Repository services
+  - `*.directive.ts` for Directives
+  - `*.pipe.ts` for Pipes
+  - `*.spec.ts` for Tests
+  - `*.model.ts` for Interfaces/Types
+- **Variable Naming**: 
+  - camelCase for variables, functions, properties
+  - PascalCase for classes, interfaces, types, enums
+  - UPPER_SNAKE_CASE for constants
+- **Component Selectors**: Use consistent prefix (e.g., `app-`, `shared-`, `feature-`)
+
+
+### Code Structure Pattern
+```typescript
+// 1. Imports
+import { Component, inject, signal } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
+
+// 2. Interfaces/Types
+interface UserData {
+  id: string;
+  name: string;
+}
+
+// 3. Component Definition
+@Component({
+  selector: 'app-user-profile',
+  standalone: true,
+  imports: [MatButtonModule],
+  templateUrl: './user-profile.component.html',
+  styleUrls: ['./user-profile.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
+})
+export class UserProfileComponent {
+  // 4. Injected Dependencies
+  private readonly userService = inject(UserService);
+  
+  // 5. Signals and State
+  protected readonly user = signal<UserData | null>(null);
+  protected readonly isLoading = signal<boolean>(false);
+  
+  // 6. Computed Values
+  protected readonly displayName = computed(() => 
+    this.user()?.name ?? 'Anonymous User'
+  );
+  
+  // 7. Lifecycle Hooks
+  ngOnInit(): void {
+    this.loadUser();
+  }
+  
+  // 8. Public Methods
+  public refreshUser(): void {
+    this.loadUser();
+  }
+  
+  // 9. Protected Methods (Template accessible)
+  protected onSaveClick(): void {
+    this.saveUser();
+  }
+  
+  // 10. Private Methods
+  private loadUser(): void {
+    // Implementation
+  }
+}
+```
+
+## Angular-Specific Guidelines
+
+### Best Practices
+- Always use standalone components over NgModules
+- Don't use explicit standalone: true (it is implied by default)
+- Use signals for state management
+- Implement lazy loading for feature routes
+- Use NgOptimizedImage for all static images.
+- Control Flow: Use `@if`, `@for`, `@switch` instead of structural directives
+- Defer Blocks: Implement lazy loading for non-critical content
+- View Transitions: Use Angular's view transition API
+- Signal-based Routing: Leverage signal inputs in routes
+
+```html
+<!-- Modern Control Flow -->
+@if (user(); as currentUser) {
+  <div class="user-profile">
+    <h2>{{ currentUser.name }}</h2>
+    @for (role of currentUser.roles; track role.id) {
+      <span class="role-badge">{{ role.name }}</span>
+    }
+  </div>
+} @else {
+  <div class="login-prompt">Please log in</div>
+}
+
+<!-- Defer Blocks for Performance -->
+@defer (when shouldLoadChart) {
+  <app-analytics-chart [data]="chartData()" />
+} @placeholder {
+  <div class="chart-placeholder">Loading chart...</div>
+} @loading (minimum 500ms) {
+  <mat-spinner></mat-spinner>
+} @error {
+  <div class="error-message">Failed to load chart</div>
+}
+```
+
+### Components
+- Keep components small and focused on a single responsibility
+- Use input() and output() functions instead of decorators
+- Use computed() for derived state
+- Set `changeDetection: ChangeDetectionStrategy.OnPush` in `@Component` decorator
+- Prefer inline templates for small components
+- Prefer Reactive forms instead of Template-driven ones
+- Do NOT use "ngClass" (NgClass), use "class" bindings instead
+- DO NOT use "ngStyle" (NgStyle), use "style" bindings instead
+- Always use standalone components 
+- Separate files: Keep HTML, TypeScript, and SCSS in separate files
+- ChangeDetectionStrategy.OnPush: Mandatory for all components
+- Consistent selector prefix: Use app-wide naming convention
+- Input validation: Use proper typing and validation for @Input properties
+- Output naming: Use consistent event naming (e.g., `userSelected`, `formSubmitted`)
+
+```typescript
+@Component({
+  selector: 'app-user-card',
+  imports: [MatCardModule, MatButtonModule],
+  templateUrl: './user-card.component.html',
+  styleUrls: ['./user-card.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
+})
+export class UserCardComponent {
+  @Input({ required: true }) user!: User;
+  @Output() userSelected = new EventEmitter<User>();
+  
+  protected onSelectUser(): void {
+    this.userSelected.emit(this.user);
+  }
+}
+```
+
+### Services and Dependency Injection
+- Use inject() function: Preferred over constructor injection
+- Proper visibility: Mark methods as public, protected, or private appropriately
+- Single Responsibility: One service per domain concern
+- Facade Pattern: Use facades for complex feature interactions
+- Design services around a single responsibility
+- Use the providedIn: 'root' option for singleton services
+- Use the inject() function instead of constructor injection
+
+```typescript
+@Injectable({ providedIn: 'root' })
+export class UserService {
+  private readonly http = inject(HttpClient);
+  private readonly apiUrl = environment.apiUrl;
+  
+  public getUsers(): Observable<User[]> {
+    return this.http.get<User[]>(`${this.apiUrl}/users`);
+  }
+  
+  public getUserById(id: string): Observable<User> {
+    return this.http.get<User>(`${this.apiUrl}/users/${id}`);
+  }
+}
+
+// Facade Pattern Example
+@Injectable({ providedIn: 'root' })
+export class UserFacade {
+  private readonly userService = inject(UserService);
+  private readonly notificationService = inject(NotificationService);
+  
+  public readonly users = signal<User[]>([]);
+  public readonly selectedUser = signal<User | null>(null);
+  
+  public async loadUsers(): Promise<void> {
+    try {
+      const users = await firstValueFrom(this.userService.getUsers());
+      this.users.set(users);
+    } catch (error) {
+      this.notificationService.showError('Failed to load users');
+    }
+  }
+}
+```
+
+### State Management with Signals
+- Prefer signals: Use Angular signals for reactive state management
+- Signal composition: Leverage computed signals for derived state
+- Effect usage: Use effects sparingly, prefer computed signals
+- Resource API: Use for async data loading patterns
+- Use signals for local component state
+- Use computed() for derived state
+- Keep state transformations pure and predictable
+
+
+```typescript
+// Signal-based State Management
+export class ProductStore {
+  // Base signals
+  private readonly _products = signal<Product[]>([]);
+  private readonly _selectedCategory = signal<string>('all');
+  private readonly _isLoading = signal<boolean>(false);
+  
+  // Read-only public signals
+  public readonly products = this._products.asReadonly();
+  public readonly selectedCategory = this._selectedCategory.asReadonly();
+  public readonly isLoading = this._isLoading.asReadonly();
+  
+  // Computed signals
+  public readonly filteredProducts = computed(() => {
+    const products = this._products();
+    const category = this._selectedCategory();
+    return category === 'all' 
+      ? products 
+      : products.filter(p => p.category === category);
+  });
+  
+  public readonly productCount = computed(() => this.filteredProducts().length);
+  
+  // Resource API for async data
+  public readonly productsResource = resource({
+    request: () => this.selectedCategory(),
+    loader: ({ request: category }) => this.loadProductsByCategory(category)
+  });
+  
+  // State mutations
+  public setProducts(products: Product[]): void {
+    this._products.set(products);
+  }
+  
+  public selectCategory(category: string): void {
+    this._selectedCategory.set(category);
+  }
+}
+```
+
+### Reactive Programming Best Practices
+- Async pipe: Always use async pipe in templates for Observables
+- Signal interop: Use `toSignal()` and `toObservable()` for RxJS integration
+- Subscription management: Use `takeUntilDestroyed()` for automatic cleanup
+- Error handling: Always handle Observable errors appropriately
+
+```typescript
+export class DataComponent {
+  private readonly destroyRef = inject(DestroyRef);
+  private readonly dataService = inject(DataService);
+  
+  // Convert Observable to Signal
+  protected readonly data = toSignal(
+    this.dataService.getData().pipe(
+      catchError(error => {
+        console.error('Data loading failed:', error);
+        return of([]);
+      })
+    ),
+    { initialValue: [] }
+  );
+  
+  // Manual subscription with cleanup
+  private subscribeToUpdates(): void {
+    this.dataService.getUpdates()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(update => this.handleUpdate(update));
+  }
+}
+```
+
+### Templates
+- Keep templates simple and avoid complex logic
+- Use native control flow (@if, @for, @switch) instead of *ngIf, *ngFor, *ngSwitch
+- Use the async pipe to handle observables
+
+## TypeScript Best Practices
+- Use strict type checking
+- Prefer type inference when the type is obvious
+- Avoid the `any` type; use `unknown` when type is uncertain
+
+## References
+
+### Core Angular
+- [Angular Developer Guide](mdc:https:/angular.dev)
+- [Angular API Reference](mdc:https:/angular.dev/api)
+- [Angular CLI Documentation](mdc:https:/angular.dev/cli)
+- [Angular Update Guide](mdc:https:/angular.dev/update-guide)
+
+### Components & Templates
+- [Component Overview](mdc:https:/angular.dev/guide/components)
+- [Template Syntax](mdc:https:/angular.dev/guide/templates)
+- [Control Flow](mdc:https:/angular.dev/guide/templates/control-flow)
+- [Defer Blocks](mdc:https:/angular.dev/guide/templates/defer)
+
+### Signals & State Management
+- [Signals Overview](mdc:https:/angular.dev/guide/signals)
+- [Signal Inputs](mdc:https:/angular.dev/guide/signals#signal-inputs)
+- [Computed Signals](mdc:https:/angular.dev/guide/signals#computed-signals)
+- [Signal Effects](mdc:https:/angular.dev/guide/signals#effects)
+- [Resource API](mdc:https:/angular.dev/guide/signals/resource)
+- [RxJS Interop](mdc:https:/angular.dev/guide/rxjs-interop)
+
+### Dependency Injection
+- [DI Overview](mdc:https:/angular.dev/guide/di)
+- [Injectable Services](mdc:https:/angular.dev/guide/di/creating-injectable-service)
+- [Injection Context](mdc:https:/angular.dev/guide/di/dependency-injection-context)
+- [Hierarchical Injectors](mdc:https:/angular.dev/guide/di/hierarchical-dependency-injection)
+
+### HTTP & Data Loading
+- [HttpClient Guide](mdc:https:/angular.dev/guide/http)
+- [HTTP Interceptors](mdc:https:/angular.dev/guide/http/interceptors)
+- [HTTP Testing](mdc:https:/angular.dev/guide/http/testing)
+
+### Forms
+- [Forms Overview](mdc:https:/angular.dev/guide/forms)
+- [Reactive Forms](mdc:https:/angular.dev/guide/forms/reactive-forms)
+- [Form Validation](mdc:https:/angular.dev/guide/forms/form-validation)
+- [Dynamic Forms](mdc:https:/angular.dev/guide/forms/dynamic-forms)
+
+### Routing
+- [Router Overview](mdc:https:/angular.dev/guide/routing)
+- [Route Guards](mdc:https:/angular.dev/guide/routing/guards)
+- [Lazy Loading](mdc:https:/angular.dev/guide/routing/lazy-loading)
+
+### Testing
+- [Testing Overview](mdc:https:/angular.dev/guide/testing)
+- [Component Testing](mdc:https:/angular.dev/guide/testing/components-basics)
+- [Service Testing](mdc:https:/angular.dev/guide/testing/services)
+- [E2E Testing](mdc:https:/angular.dev/guide/testing/e2e)
+
+### Performance
+- [Performance Guide](mdc:https:/angular.dev/guide/performance)
+- [Bundle Optimization](mdc:https:/angular.dev/guide/performance/bundle-optimization)
+- [Image Optimization](mdc:https:/angular.dev/guide/image-optimization)
+
+### Accessibility
+- [A11y Overview](mdc:https:/angular.dev/guide/accessibility)
+- [Angular CDK A11y](mdc:https:/material.angular.io/cdk/a11y/overview)
+
+### Angular Material
+- [Material Design](mdc:https:/material.angular.io)
+- [Material Components](mdc:https:/material.angular.io/components)
+- [Material Theming](mdc:https:/material.angular.io/guide/theming)
+- [Material CDK](mdc:https:/material.angular.io/cdk)
+
+### Best Practices
+- [Style Guide](mdc:https:/angular.dev/style-guide)
+- [Security Guide](mdc:https:/angular.dev/guide/security)
+- [Performance Best Practices](mdc:https:/angular.dev/guide/performance)
+- [Accessibility Best Practices](mdc:https:/angular.dev/guide/accessibility)
