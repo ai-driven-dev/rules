@@ -1,931 +1,111 @@
 ---
-description: 
-globs: 
-alwaysApply: false
----
----
 description: APPLY Angular best practices WHEN developing a scalable web application architecture in Angular, TypeScript, Angular Material and SASS
 globs: src/*/*.ts, src/*/*.html,src/*/*.scss
 alwaysApply: false
 ---
 
-# Angular Framework Standards
-
-<version>1.0.0</version>
-
-You are an expert in Angular, TypeScript, Angular Material, SASS, and scalable web application architecture.
-
 ## Context
-- Develop a standalone Angular application using Angular 18+, TypeScript 5.0+, Angular Material 18+, and SASS.
-- Ensure clarity, readability, optimal performance, and enterprise-ready architecture.
-- Follow best practices from Angular, Angular Material, TypeScript, and SASS official documentation.
-- Implement Clean Architecture principles and modern Angular patterns.
+- Develop a standalone Angular application using the latest version of Angular.
+- Ensure clarity, readability, and optimal performance across all components.
+- Follow best practices from Angular official documentation.
 
-## Technology Stack
-- **Languages**: TypeScript 5.0+
-- **Framework**: Angular 18+ (standalone components only)
-- **UI Library**: Angular Material 18+
-- **Styling**: SASS/SCSS
-- **State Management**: Angular signals (primary), NgRx only for complex global state
-- **Testing**: Vitest for unit tests, Cypress for E2E tests
-- **Linting**: ESLint with Angular recommended rules, Prettier
-
-## Project Architecture
-
-### Folder Structure
-```
-src/
-├── app/
-│   ├── core/                 # Singleton services, guards, interceptors
-│   │   ├── services/
-│   │   ├── guards/
-│   │   ├── interceptors/
-│   │   └── models/
-│   ├── shared/              # Reusable components, directives, pipes
-│   │   ├── components/
-│   │   ├── directives/
-│   │   ├── pipes/
-│   │   └── utils/
-│   ├── features/            # Feature modules (lazy-loaded)
-│   │   ├── auth/
-│   │   ├── dashboard/
-│   │   └── user-management/
-│   ├── layout/              # Layout components
-│   │   ├── header/
-│   │   ├── sidebar/
-│   │   └── footer/
-│   └── assets/              # Static assets
-├── environments/            # Environment configurations
-└── styles/                  # Global SASS files
-```
-
-### Key Principles
-- **Clean Architecture**: Separation of concerns with clear boundaries
-- **SOLID Principles**: Single responsibility, dependency inversion
-- **Performance First**: OnPush strategy, lazy loading, optimized bundles
-- **Accessibility**: WCAG 2.1 AA compliance
-- **Immutability**: Pure functions and immutable data structures
-- **Type Safety**: Strict TypeScript configuration
+## General Guidelines
+- Prioritize performance, readability, and maintainability.
+- Use modular, reusable components.
+- Follow immutability principles and use pure functions where possible.
+- Ensure all responses are well-reasoned and accurate.
+- State Management: Angular signals (preferred), with NgRx and RxJS only if necessary
+- Testing Framework: Vitest for unit tests
 
 ## Naming Conventions
-- **File Names**: Use kebab-case with descriptive suffixes
-  - `*.component.ts` for Components
-  - `*.service.ts` for Services
-  - `*.facade.ts` for Facade services
-  - `*.repository.ts` for Repository services
-  - `*.directive.ts` for Directives
-  - `*.pipe.ts` for Pipes
-  - `*.spec.ts` for Tests
-  - `*.model.ts` for Interfaces/Types
-- **Variable Naming**: 
-  - camelCase for variables, functions, properties
-  - PascalCase for classes, interfaces, types, enums
-  - UPPER_SNAKE_CASE for constants
-- **Component Selectors**: Use consistent prefix (e.g., `app-`, `shared-`, `feature-`)
+- **Variable Naming**: Use camelCase for variables and PascalCase for classes.
 
 ## Code Style & Formatting
 - **Indentation**: 2 spaces
-- **String Literals**: Single quotes preferred
-- **Variable Declaration**: `const` for immutable, `let` for mutable, avoid `var`
-- **Function Limits**: Max 4 parameters, max 50 executable lines
-- **Line Length**: Max 100 characters (increased for modern screens)
-- **Semicolons**: Always use semicolons
-- **Trailing Commas**: Always use in multiline structures
+- **String Literals**: Use single quotes
+- **Variable Declaration**: Prefer `const` for immutable values
+- **Function Limits**: Maximum 4 parameters, max 50 executable lines
+- **Line Length**: Max 80 characters
+- **Imports Order**:
+  1. Angular core and common modules
+  2. RxJS modules
+  3. Other Angular modules
+  4. Application core imports
+  5. Shared module imports
+  6. Environment-specific imports
+  7. Relative path imports
 
-### Import Order (Auto-sorted by ESLint)
-1. Angular core and common modules
-2. Angular Material modules
-3. RxJS modules
-4. Third-party libraries
-5. Application core imports
-6. Shared module imports
-7. Feature module imports
-8. Environment-specific imports
-9. Relative path imports
-
-### Code Structure Pattern
-```typescript
-// 1. Imports
-import { Component, inject, signal } from '@angular/core';
-import { MatButtonModule } from '@angular/material/button';
-
-// 2. Interfaces/Types
-interface UserData {
-  id: string;
-  name: string;
-}
-
-// 3. Component Definition
-@Component({
-  selector: 'app-user-profile',
-  standalone: true,
-  imports: [MatButtonModule],
-  templateUrl: './user-profile.component.html',
-  styleUrls: ['./user-profile.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
-})
-export class UserProfileComponent {
-  // 4. Injected Dependencies
-  private readonly userService = inject(UserService);
-  
-  // 5. Signals and State
-  protected readonly user = signal<UserData | null>(null);
-  protected readonly isLoading = signal<boolean>(false);
-  
-  // 6. Computed Values
-  protected readonly displayName = computed(() => 
-    this.user()?.name ?? 'Anonymous User'
-  );
-  
-  // 7. Lifecycle Hooks
-  ngOnInit(): void {
-    this.loadUser();
-  }
-  
-  // 8. Public Methods
-  public refreshUser(): void {
-    this.loadUser();
-  }
-  
-  // 9. Protected Methods (Template accessible)
-  protected onSaveClick(): void {
-    this.saveUser();
-  }
-  
-  // 10. Private Methods
-  private loadUser(): void {
-    // Implementation
-  }
-}
-```
+### Code Structure
+- Organize code into **imports, definitions, implementations**.
+- Avoid deeply nested code (max 2 levels).
+- Use template literals for multi-line strings.
 
 ## Angular-Specific Guidelines
+- **Components**:
+  - Always use `standalone` components.
+  - Keep HTML, TypeScript, and SASS files separate.
+  - Use `ChangeDetectionStrategy.OnPush` for performance.
+  - Use a specific prefix for component selectors.
+- **Directives and Services**:
+  - Use the `inject` function for dependency injection.
+  - Ensure correct visibility (public, private, or protected).
+- **Reactive Programming**:
+  - Use Angular’s `signals` for state management.
+  - Use the `async` pipe for Observables in templates.
+  - Implement lazy loading for feature modules.
+- **Angular 18 Features**:
+  - Use control flow syntax instead of `ngIf`, `ngFor`, `ngSwitch`.
+  - Use `NgOptimizedImage` for image loading.
+- **Forms and Validation**:
+  - Follow Angular's reactive forms best practices.
+  - Use Angular’s built-in validation and custom validators when needed.
 
-### Components
-- **Always use standalone components** (Angular 16+)
-- **Separate files**: Keep HTML, TypeScript, and SCSS in separate files
-- **ChangeDetectionStrategy.OnPush**: Mandatory for all components
-- **Consistent selector prefix**: Use app-wide naming convention
-- **Input validation**: Use proper typing and validation for @Input properties
-- **Output naming**: Use consistent event naming (e.g., `userSelected`, `formSubmitted`)
+## Responsive Design
+- **Approach**: Mobile-first
+- **Media Queries**: Implement responsive layouts
+- **Touch Targets**: Ensure sufficient size for buttons and links
+- **Responsive Images**: Use `srcset` and `sizes` attributes
+- **Viewport Scaling**: Include meta tags for mobile scaling
 
-```typescript
-@Component({
-  selector: 'app-user-card',
-  standalone: true,
-  imports: [MatCardModule, MatButtonModule],
-  templateUrl: './user-card.component.html',
-  styleUrls: ['./user-card.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
-})
-export class UserCardComponent {
-  @Input({ required: true }) user!: User;
-  @Output() userSelected = new EventEmitter<User>();
-  
-  protected onSelectUser(): void {
-    this.userSelected.emit(this.user);
-  }
-}
-```
+## SASS Styling
+- Follow SASS best practices.
+- Use variables and mixins for consistent styling.
+- Use `scss` files for all component styles.
 
-### Services and Dependency Injection
-- **Use inject() function**: Preferred over constructor injection
-- **Proper visibility**: Mark methods as public, protected, or private appropriately
-- **Single Responsibility**: One service per domain concern
-- **Facade Pattern**: Use facades for complex feature interactions
-
-```typescript
-@Injectable({ providedIn: 'root' })
-export class UserService {
-  private readonly http = inject(HttpClient);
-  private readonly apiUrl = environment.apiUrl;
-  
-  public getUsers(): Observable<User[]> {
-    return this.http.get<User[]>(`${this.apiUrl}/users`);
-  }
-  
-  public getUserById(id: string): Observable<User> {
-    return this.http.get<User>(`${this.apiUrl}/users/${id}`);
-  }
-}
-
-// Facade Pattern Example
-@Injectable({ providedIn: 'root' })
-export class UserFacade {
-  private readonly userService = inject(UserService);
-  private readonly notificationService = inject(NotificationService);
-  
-  public readonly users = signal<User[]>([]);
-  public readonly selectedUser = signal<User | null>(null);
-  
-  public async loadUsers(): Promise<void> {
-    try {
-      const users = await firstValueFrom(this.userService.getUsers());
-      this.users.set(users);
-    } catch (error) {
-      this.notificationService.showError('Failed to load users');
-    }
-  }
-}
-```
-
-### State Management with Signals
-- **Prefer signals**: Use Angular signals for reactive state management
-- **Signal composition**: Leverage computed signals for derived state
-- **Effect usage**: Use effects sparingly, prefer computed signals
-- **Resource API**: Use for async data loading patterns
-
-```typescript
-// Signal-based State Management
-export class ProductStore {
-  // Base signals
-  private readonly _products = signal<Product[]>([]);
-  private readonly _selectedCategory = signal<string>('all');
-  private readonly _isLoading = signal<boolean>(false);
-  
-  // Read-only public signals
-  public readonly products = this._products.asReadonly();
-  public readonly selectedCategory = this._selectedCategory.asReadonly();
-  public readonly isLoading = this._isLoading.asReadonly();
-  
-  // Computed signals
-  public readonly filteredProducts = computed(() => {
-    const products = this._products();
-    const category = this._selectedCategory();
-    return category === 'all' 
-      ? products 
-      : products.filter(p => p.category === category);
-  });
-  
-  public readonly productCount = computed(() => this.filteredProducts().length);
-  
-  // Resource API for async data
-  public readonly productsResource = resource({
-    request: () => this.selectedCategory(),
-    loader: ({ request: category }) => this.loadProductsByCategory(category)
-  });
-  
-  // State mutations
-  public setProducts(products: Product[]): void {
-    this._products.set(products);
-  }
-  
-  public selectCategory(category: string): void {
-    this._selectedCategory.set(category);
-  }
-}
-```
-
-### Reactive Programming Best Practices
-- **Async pipe**: Always use async pipe in templates for Observables
-- **Signal interop**: Use `toSignal()` and `toObservable()` for RxJS integration
-- **Subscription management**: Use `takeUntilDestroyed()` for automatic cleanup
-- **Error handling**: Always handle Observable errors appropriately
-
-```typescript
-export class DataComponent {
-  private readonly destroyRef = inject(DestroyRef);
-  private readonly dataService = inject(DataService);
-  
-  // Convert Observable to Signal
-  protected readonly data = toSignal(
-    this.dataService.getData().pipe(
-      catchError(error => {
-        console.error('Data loading failed:', error);
-        return of([]);
-      })
-    ),
-    { initialValue: [] }
-  );
-  
-  // Manual subscription with cleanup
-  private subscribeToUpdates(): void {
-    this.dataService.getUpdates()
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe(update => this.handleUpdate(update));
-  }
-}
-```
-
-### Angular 18+ Features
-- **Control Flow**: Use `@if`, `@for`, `@switch` instead of structural directives
-- **Defer Blocks**: Implement lazy loading for non-critical content
-- **View Transitions**: Use Angular's view transition API
-- **Signal-based Routing**: Leverage signal inputs in routes
-
-```html
-<!-- Modern Control Flow -->
-@if (user(); as currentUser) {
-  <div class="user-profile">
-    <h2>{{ currentUser.name }}</h2>
-    @for (role of currentUser.roles; track role.id) {
-      <span class="role-badge">{{ role.name }}</span>
-    }
-  </div>
-} @else {
-  <div class="login-prompt">Please log in</div>
-}
-
-<!-- Defer Blocks for Performance -->
-@defer (when shouldLoadChart) {
-  <app-analytics-chart [data]="chartData()" />
-} @placeholder {
-  <div class="chart-placeholder">Loading chart...</div>
-} @loading (minimum 500ms) {
-  <mat-spinner></mat-spinner>
-} @error {
-  <div class="error-message">Failed to load chart</div>
-}
-```
-
-## Angular Material Guidelines
-- **Consistent theming**: Use Angular Material's theming system
-- **Accessibility first**: Leverage Material's built-in a11y features
-- **Custom components**: Extend Material components when needed
-- **Performance**: Import only required Material modules
-
-```typescript
-// Theme Configuration
-import { ApplicationConfig } from '@angular/core';
-import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
-
-export const appConfig: ApplicationConfig = {
-  providers: [
-    provideAnimationsAsync(),
-    // other providers
-  ]
-};
-
-// Component with Material
-@Component({
-  selector: 'app-user-form',
-  standalone: true,
-  imports: [
-    ReactiveFormsModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatButtonModule,
-    MatSelectModule
-  ],
-  template: `
-    <form [formGroup]="userForm" (ngSubmit)="onSubmit()">
-      <mat-form-field appearance="outline">
-        <mat-label>Name</mat-label>
-        <input matInput formControlName="name" required>
-        <mat-error>Name is required</mat-error>
-      </mat-form-field>
-      
-      <mat-form-field appearance="outline">
-        <mat-label>Role</mat-label>
-        <mat-select formControlName="role">
-          @for (role of roles(); track role.id) {
-            <mat-option [value]="role.id">{{ role.name }}</mat-option>
-          }
-        </mat-select>
-      </mat-form-field>
-      
-      <button mat-raised-button color="primary" type="submit">
-        Save User
-      </button>
-    </form>
-  `
-})
-export class UserFormComponent {
-  protected readonly userForm = this.fb.group({
-    name: ['', Validators.required],
-    role: ['', Validators.required]
-  });
-  
-  protected readonly roles = signal<Role[]>([]);
-}
-```
-
-## Responsive Design & Accessibility
-- **Mobile-first approach**: Design for mobile, enhance for desktop
-- **Flexible layouts**: Use CSS Grid and Flexbox appropriately
-- **Touch targets**: Minimum 44px for interactive elements
-- **WCAG 2.1 AA**: Ensure color contrast, keyboard navigation, screen reader support
-- **Angular CDK**: Leverage CDK for advanced accessibility features
-
-```scss
-// Responsive Mixins
-@mixin mobile-up {
-  @media (min-width: 576px) { @content; }
-}
-
-@mixin tablet-up {
-  @media (min-width: 768px) { @content; }
-}
-
-@mixin desktop-up {
-  @media (min-width: 1024px) { @content; }
-}
-
-// Component Styles
-.user-card {
-  padding: 1rem;
-  margin-bottom: 1rem;
-  
-  @include tablet-up {
-    padding: 1.5rem;
-    margin-bottom: 1.5rem;
-  }
-  
-  @include desktop-up {
-    padding: 2rem;
-    margin-bottom: 2rem;
-  }
-}
-
-// Accessibility
-.sr-only {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  white-space: nowrap;
-  border: 0;
-}
-```
-
-## SASS/SCSS Guidelines
-- **Architecture**: Use 7-1 SASS architecture pattern
-- **Variables**: Define consistent design tokens
-- **Mixins**: Create reusable style patterns
-- **Functions**: Implement utility functions for calculations
-- **BEM methodology**: Use Block-Element-Modifier naming
-
-```scss
-// _variables.scss
-:root {
-  // Colors
-  --primary-color: #1976d2;
-  --accent-color: #ff4081;
-  --warn-color: #f44336;
-  --background-color: #fafafa;
-  
-  // Spacing
-  --spacing-xs: 0.25rem;
-  --spacing-sm: 0.5rem;
-  --spacing-md: 1rem;
-  --spacing-lg: 1.5rem;
-  --spacing-xl: 2rem;
-  
-  // Typography
-  --font-family-primary: 'Roboto', sans-serif;
-  --font-size-sm: 0.875rem;
-  --font-size-base: 1rem;
-  --font-size-lg: 1.125rem;
-}
-
-// _mixins.scss
-@mixin button-base {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: var(--spacing-sm) var(--spacing-md);
-  border: none;
-  border-radius: 4px;
-  font-family: var(--font-family-primary);
-  font-size: var(--font-size-base);
-  cursor: pointer;
-  transition: all 0.2s ease-in-out;
-  
-  &:focus {
-    outline: 2px solid var(--primary-color);
-    outline-offset: 2px;
-  }
-  
-  &:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-  }
-}
-
-// Component SCSS with BEM
-.user-card {
-  &__header {
-    display: flex;
-    align-items: center;
-    margin-bottom: var(--spacing-md);
-  }
-  
-  &__title {
-    font-size: var(--font-size-lg);
-    font-weight: 500;
-    margin: 0;
-  }
-  
-  &__actions {
-    margin-left: auto;
-  }
-  
-  &--featured {
-    border: 2px solid var(--primary-color);
-  }
-}
-```
-
-## Performance Optimization
-
-### Change Detection
-- **OnPush Strategy**: Mandatory for all components
-- **Signal-based**: Prefer signals over traditional change detection
-- **TrackBy Functions**: Always use trackBy in ngFor loops
-- **Pure Pipes**: Create pure pipes for expensive calculations
-
-```typescript
-@Component({
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  template: `
-    @for (item of items(); track trackByItemId($index, item)) {
-      <app-item-card [item]="item" />
-    }
-  `
-})
-export class ItemListComponent {
-  protected readonly items = signal<Item[]>([]);
-  
-  protected trackByItemId(index: number, item: Item): string {
-    return item.id;
-  }
-}
-```
-
-### Bundle Optimization
-- **Lazy Loading**: Implement route-based code splitting
-- **Tree Shaking**: Ensure unused code is eliminated
-- **Preloading Strategy**: Use appropriate preloading for routes
-- **Dynamic Imports**: Use dynamic imports for large components
-
-```typescript
-// Lazy Loading Routes
-export const routes: Routes = [
-  {
-    path: 'dashboard',
-    loadComponent: () => import('./dashboard/dashboard.component')
-      .then(m => m.DashboardComponent)
-  },
-  {
-    path: 'admin',
-    loadChildren: () => import('./admin/admin.routes')
-      .then(m => m.adminRoutes),
-    canActivate: [AdminGuard]
-  }
-];
-
-// Preloading Strategy
-export const appConfig: ApplicationConfig = {
-  providers: [
-    provideRouter(
-      routes,
-      withPreloading(PreloadAllModules),
-      withRouterConfig({ paramsInheritanceStrategy: 'always' })
-    )
-  ]
-};
-```
-
-### Image Optimization
-- **NgOptimizedImage**: Use for all images
-- **Responsive Images**: Implement srcset and sizes
-- **Lazy Loading**: Enable for below-the-fold images
-
-```html
-<img 
-  ngSrc="/assets/images/hero.jpg"
-  alt="Hero image"
-  width="800"
-  height="400"
-  priority
-  [sizes]="(max-width: 768px) 100vw, 800px"
-/>
-```
-
-## Error Handling & Logging
-- **Global Error Handler**: Implement custom error handling
-- **HTTP Interceptors**: Handle API errors consistently
-- **User-Friendly Messages**: Provide meaningful error feedback
-- **Logging Service**: Implement structured logging
-
-```typescript
-@Injectable()
-export class GlobalErrorHandler implements ErrorHandler {
-  private readonly notificationService = inject(NotificationService);
-  private readonly loggingService = inject(LoggingService);
-  
-  handleError(error: any): void {
-    console.error('Global error caught:', error);
-    
-    // Log error
-    this.loggingService.logError(error);
-    
-    // Show user-friendly message
-    const message = this.getUserFriendlyMessage(error);
-    this.notificationService.showError(message);
-  }
-  
-  private getUserFriendlyMessage(error: any): string {
-    if (error?.status === 404) {
-      return 'Resource not found';
-    }
-    if (error?.status >= 500) {
-      return 'Server error. Please try again later.';
-    }
-    return 'An unexpected error occurred';
-  }
-}
-
-// HTTP Error Interceptor
-@Injectable()
-export class ErrorInterceptor implements HttpInterceptor {
-  private readonly notificationService = inject(NotificationService);
-  
-  intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    return next.handle(req).pipe(
-      catchError((error: HttpErrorResponse) => {
-        if (error.status === 401) {
-          // Handle unauthorized
-          this.handleUnauthorized();
-        } else if (error.status >= 500) {
-          // Handle server errors
-          this.notificationService.showError('Server error occurred');
-        }
-        
-        return throwError(() => error);
-      })
-    );
-  }
-}
-```
+## Error Handling
+- Use custom error types or factories for standardization.
+- Implement Angular's form validation and proper error messaging.
 
 ## Testing Guidelines
+- **Unit Tests**: Use Vitest, following the Arrange-Act-Assert pattern.
+- **Linting**: Enforce ESLint and Prettier for code cleanliness.
 
-### Unit Testing with Vitest
-- **Arrange-Act-Assert**: Follow AAA pattern consistently
-- **Test Coverage**: Aim for 80%+ coverage on critical paths
-- **Mock Dependencies**: Use dependency injection for easy mocking
-- **Signal Testing**: Test signal-based components properly
+### Testing Principles
+- Maximize test coverage for critical components and services.
+- Ensure all code passes linting before merging.
 
-```typescript
-describe('UserService', () => {
-  let service: UserService;
-  let httpMock: HttpTestingController;
-  
-  beforeEach(() => {
-    TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule],
-      providers: [UserService]
-    });
-    
-    service = TestBed.inject(UserService);
-    httpMock = TestBed.inject(HttpTestingController);
-  });
-  
-  it('should fetch users successfully', () => {
-    // Arrange
-    const mockUsers: User[] = [
-      { id: '1', name: 'John Doe', email: 'john@example.com' }
-    ];
-    
-    // Act
-    service.getUsers().subscribe(users => {
-      // Assert
-      expect(users).toEqual(mockUsers);
-    });
-    
-    // Assert HTTP request
-    const req = httpMock.expectOne('/api/users');
-    expect(req.request.method).toBe('GET');
-    req.flush(mockUsers);
-  });
-  
-  afterEach(() => {
-    httpMock.verify();
-  });
-});
-
-// Component Testing with Signals
-describe('UserListComponent', () => {
-  let component: UserListComponent;
-  let fixture: ComponentFixture<UserListComponent>;
-  
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [UserListComponent]
-    }).compileComponents();
-    
-    fixture = TestBed.createComponent(UserListComponent);
-    component = fixture.componentInstance;
-  });
-  
-  it('should display users when signal updates', () => {
-    // Arrange
-    const mockUsers: User[] = [
-      { id: '1', name: 'John Doe', email: 'john@example.com' }
-    ];
-    
-    // Act
-    component.users.set(mockUsers);
-    fixture.detectChanges();
-    
-    // Assert
-    const userElements = fixture.debugElement.queryAll(By.css('.user-item'));
-    expect(userElements).toHaveLength(1);
-    expect(userElements[0].nativeElement.textContent).toContain('John Doe');
-  });
-});
-```
-
-### E2E Testing with Cypress
-- **Page Object Model**: Use POM for maintainable tests
-- **Data Attributes**: Use data-cy attributes for reliable selectors
-- **API Mocking**: Mock external APIs for consistent tests
-
-```typescript
-// cypress/support/pages/user-list.page.ts
-export class UserListPage {
-  visit(): void {
-    cy.visit('/users');
-  }
-  
-  getUserItems(): Cypress.Chainable {
-    return cy.get('[data-cy=user-item]');
-  }
-  
-  clickAddUser(): void {
-    cy.get('[data-cy=add-user-button]').click();
-  }
-  
-  searchUsers(query: string): void {
-    cy.get('[data-cy=search-input]').type(query);
-  }
-}
-
-// cypress/e2e/user-management.cy.ts
-describe('User Management', () => {
-  const userListPage = new UserListPage();
-  
-  beforeEach(() => {
-    cy.intercept('GET', '/api/users', { fixture: 'users.json' }).as('getUsers');
-    userListPage.visit();
-    cy.wait('@getUsers');
-  });
-  
-  it('should display list of users', () => {
-    userListPage.getUserItems().should('have.length.greaterThan', 0);
-  });
-  
-  it('should filter users when searching', () => {
-    userListPage.searchUsers('john');
-    userListPage.getUserItems().should('contain.text', 'John');
-  });
-});
-```
+## Performance Optimization
+- **Rendering**:
+  - Use `ChangeDetectionStrategy.OnPush`.
+  - Defer non-critical views for optimization.
+- **DOM Management**:
+  - Use Angular’s signals for state.
+  - Avoid direct DOM manipulation.
+- **TrackBy in Loops**:
+  - Use `trackBy` in `ngFor` to optimize data binding.
+- **Optimized Images**:
+  - Use `NgOptimizedImage` for large image loading.
 
 ## Security Guidelines
-- **Sanitization**: Use Angular's built-in DomSanitizer
-- **CSP**: Implement Content Security Policy headers
-- **HTTPS**: Enforce HTTPS in production
-- **Authentication**: Implement proper token-based auth
-- **Authorization**: Guard routes and components appropriately
+- **Cross-Site Scripting (XSS)**: Use Angular’s built-in sanitization.
+- **Sanitization**: Avoid `innerHTML`, use Angular’s DOM security utilities.
 
-```typescript
-// Auth Guard
-@Injectable({ providedIn: 'root' })
-export class AuthGuard implements CanActivate {
-  private readonly authService = inject(AuthService);
-  private readonly router = inject(Router);
-  
-  canActivate(): boolean | Observable<boolean> {
-    return this.authService.isAuthenticated().pipe(
-      map(isAuth => {
-        if (!isAuth) {
-          this.router.navigate(['/login']);
-          return false;
-        }
-        return true;
-      })
-    );
-  }
-}
-
-// Sanitization Service
-@Injectable({ providedIn: 'root' })
-export class SafeHtmlService {
-  private readonly sanitizer = inject(DomSanitizer);
-  
-  sanitizeHtml(html: string): SafeHtml {
-    return this.sanitizer.sanitize(SecurityContext.HTML, html) || '';
-  }
-  
-  sanitizeUrl(url: string): SafeUrl {
-    return this.sanitizer.sanitize(SecurityContext.URL, url) || '';
-  }
-}
-```
-
-## ESLint Configuration
-```json
-{
-  "extends": [
-    "@angular-eslint/recommended",
-    "@angular-eslint/template/process-inline-templates",
-    "@typescript-eslint/recommended",
-    "@typescript-eslint/stylistic"
-  ],
-  "rules": {
-    "@angular-eslint/directive-selector": [
-      "error",
-      { "type": "attribute", "prefix": "app", "style": "camelCase" }
-    ],
-    "@angular-eslint/component-selector": [
-      "error",
-      { "type": "element", "prefix": "app", "style": "kebab-case" }
-    ],
-    "@typescript-eslint/no-unused-vars": ["error", { "argsIgnorePattern": "^_" }],
-    "@typescript-eslint/explicit-function-return-type": "warn",
-    "@typescript-eslint/no-explicit-any": "warn",
-    "prefer-const": "error",
-    "no-var": "error"
-  }
-}
-```
-
-## Documentation Standards
-- **JSDoc Comments**: Document all public APIs
-- **README**: Maintain comprehensive project documentation
-- **Architecture Decision Records (ADRs)**: Document important decisions
-- **Component Documentation**: Use Storybook for component library
-
-```typescript
-/**
- * Service responsible for managing user data and operations.
- * 
- * @example
- * ```typescript
- * const userService = inject(UserService);
- * userService.getUsers().subscribe(users => console.log(users));
- * ```
- */
-@Injectable({ providedIn: 'root' })
-export class UserService {
-  /**
-   * Retrieves all users from the API.
-   * 
-   * @returns Observable<User[]> - Stream of user data
-   * @throws {HttpErrorResponse} When API request fails
-   */
-  public getUsers(): Observable<User[]> {
-    return this.http.get<User[]>(`${this.apiUrl}/users`).pipe(
-      catchError(this.handleError)
-    );
-  }
-  
-  /**
-   * Creates a new user.
-   * 
-   * @param userData - The user data to create
-   * @returns Observable<User> - The created user
-   */
-  public createUser(userData: CreateUserRequest): Observable<User> {
-    return this.http.post<User>(`${this.apiUrl}/users`, userData);
-  }
-}
-```
-
-## Performance Monitoring
-- **JCore Web Vitals**: Monitor LCP, FID, CLS
-- **Bundle Analysis**: Use webpack-bundle-analyzer
-- **Angular DevTools**: Leverage for debugging and profiling
-- **Lighthouse CI**: Integrate performance testing in CI/CD
-```typescript
-// Performance Monitoring Service
-@Injectable({ providedIn: 'root' })
-export class PerformanceMonitoringService {
-  private readonly analytics = inject(AnalyticsService);
-  
-  public measureComponentRender(componentName: string): void {
-    performance.mark(`${componentName}-start`);
-    
-    // Use in ngAfterViewInit
-    requestAnimationFrame(() => {
-      performance.mark(`${componentName}-end`);
-      performance.measure(
-        `${componentName}-render`,
-        `${componentName}-start`,
-        `${componentName}-end`
-      );
-      
-      const measure = performance.getEntriesByName(`${componentName}-render`)[0];
-      this.analytics.trackPerformance(componentName, measure.duration);
-    });
-  }
-}
-```
+## Documentation
+- **Function and Property Documentation**:
+  - Use JSDoc-style comments.
+  - Provide clear explanations for each function and variable.
+- **Component and Service Documentation**:
+  - Ensure every component and service is well documented.
 
 ## References
 
