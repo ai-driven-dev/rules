@@ -1,0 +1,179 @@
+---
+description: APPLY Angular best practices WHEN developing a scalable web application architecture in Angular, TypeScript, Angular Material and SASS
+globs: src/*/*.ts, src/*/*.html,src/*/*.scss
+alwaysApply: false
+---
+
+## Context
+- Develop a standalone Angular application using the latest version of Angular.
+- Ensure clarity, readability, and optimal performance across all components.
+- Follow best practices from Angular official documentation.
+
+## General Guidelines
+- Prioritize performance, readability, and maintainability.
+- Use modular, reusable components.
+- Follow immutability principles and use pure functions where possible.
+- Ensure all responses are well-reasoned and accurate.
+- State Management: Angular signals (preferred), with NgRx and RxJS only if necessary
+- Testing Framework: Vitest for unit tests
+
+## Naming Conventions
+- **Variable Naming**: Use camelCase for variables and PascalCase for classes.
+
+## Code Style & Formatting
+- **Indentation**: 2 spaces
+- **String Literals**: Use single quotes
+- **Variable Declaration**: Prefer `const` for immutable values
+- **Function Limits**: Maximum 4 parameters, max 50 executable lines
+- **Line Length**: Max 80 characters
+- **Imports Order**:
+  1. Angular core and common modules
+  2. RxJS modules
+  3. Other Angular modules
+  4. Application core imports
+  5. Shared module imports
+  6. Environment-specific imports
+  7. Relative path imports
+
+### Code Structure
+- Organize code into **imports, definitions, implementations**.
+- Avoid deeply nested code (max 2 levels).
+- Use template literals for multi-line strings.
+
+## Angular-Specific Guidelines
+- **Components**:
+  - Always use `standalone` components.
+  - Keep HTML, TypeScript, and SASS files separate.
+  - Use `ChangeDetectionStrategy.OnPush` for performance.
+  - Use a specific prefix for component selectors.
+- **Directives and Services**:
+  - Use the `inject` function for dependency injection.
+  - Ensure correct visibility (public, private, or protected).
+- **Reactive Programming**:
+  - Use Angular’s `signals` for state management.
+  - Use the `async` pipe for Observables in templates.
+  - Implement lazy loading for feature modules.
+- **Angular 18 Features**:
+  - Use control flow syntax instead of `ngIf`, `ngFor`, `ngSwitch`.
+  - Use `NgOptimizedImage` for image loading.
+- **Forms and Validation**:
+  - Follow Angular's reactive forms best practices.
+  - Use Angular’s built-in validation and custom validators when needed.
+
+## Responsive Design
+- **Approach**: Mobile-first
+- **Media Queries**: Implement responsive layouts
+- **Touch Targets**: Ensure sufficient size for buttons and links
+- **Responsive Images**: Use `srcset` and `sizes` attributes
+- **Viewport Scaling**: Include meta tags for mobile scaling
+
+## SASS Styling
+- Follow SASS best practices.
+- Use variables and mixins for consistent styling.
+- Use `scss` files for all component styles.
+
+## Error Handling
+- Use custom error types or factories for standardization.
+- Implement Angular's form validation and proper error messaging.
+
+## Testing Guidelines
+- **Unit Tests**: Use Vitest, following the Arrange-Act-Assert pattern.
+- **Linting**: Enforce ESLint and Prettier for code cleanliness.
+
+### Testing Principles
+- Maximize test coverage for critical components and services.
+- Ensure all code passes linting before merging.
+
+## Performance Optimization
+- **Rendering**:
+  - Use `ChangeDetectionStrategy.OnPush`.
+  - Defer non-critical views for optimization.
+- **DOM Management**:
+  - Use Angular’s signals for state.
+  - Avoid direct DOM manipulation.
+- **TrackBy in Loops**:
+  - Use `trackBy` in `ngFor` to optimize data binding.
+- **Optimized Images**:
+  - Use `NgOptimizedImage` for large image loading.
+
+## Security Guidelines
+- **Cross-Site Scripting (XSS)**: Use Angular’s built-in sanitization.
+- **Sanitization**: Avoid `innerHTML`, use Angular’s DOM security utilities.
+
+## Documentation
+- **Function and Property Documentation**:
+  - Use JSDoc-style comments.
+  - Provide clear explanations for each function and variable.
+- **Component and Service Documentation**:
+  - Ensure every component and service is well documented.
+
+## References
+
+### Core Angular
+- [Angular Developer Guide](mdc:https:/angular.dev)
+- [Angular API Reference](mdc:https:/angular.dev/api)
+- [Angular CLI Documentation](mdc:https:/angular.dev/cli)
+- [Angular Update Guide](mdc:https:/angular.dev/update-guide)
+
+### Components & Templates
+- [Component Overview](mdc:https:/angular.dev/guide/components)
+- [Template Syntax](mdc:https:/angular.dev/guide/templates)
+- [Control Flow](mdc:https:/angular.dev/guide/templates/control-flow)
+- [Defer Blocks](mdc:https:/angular.dev/guide/templates/defer)
+
+### Signals & State Management
+- [Signals Overview](mdc:https:/angular.dev/guide/signals)
+- [Signal Inputs](mdc:https:/angular.dev/guide/signals#signal-inputs)
+- [Computed Signals](mdc:https:/angular.dev/guide/signals#computed-signals)
+- [Signal Effects](mdc:https:/angular.dev/guide/signals#effects)
+- [Resource API](mdc:https:/angular.dev/guide/signals/resource)
+- [RxJS Interop](mdc:https:/angular.dev/guide/rxjs-interop)
+
+### Dependency Injection
+- [DI Overview](mdc:https:/angular.dev/guide/di)
+- [Injectable Services](mdc:https:/angular.dev/guide/di/creating-injectable-service)
+- [Injection Context](mdc:https:/angular.dev/guide/di/dependency-injection-context)
+- [Hierarchical Injectors](mdc:https:/angular.dev/guide/di/hierarchical-dependency-injection)
+
+### HTTP & Data Loading
+- [HttpClient Guide](mdc:https:/angular.dev/guide/http)
+- [HTTP Interceptors](mdc:https:/angular.dev/guide/http/interceptors)
+- [HTTP Testing](mdc:https:/angular.dev/guide/http/testing)
+
+### Forms
+- [Forms Overview](mdc:https:/angular.dev/guide/forms)
+- [Reactive Forms](mdc:https:/angular.dev/guide/forms/reactive-forms)
+- [Form Validation](mdc:https:/angular.dev/guide/forms/form-validation)
+- [Dynamic Forms](mdc:https:/angular.dev/guide/forms/dynamic-forms)
+
+### Routing
+- [Router Overview](mdc:https:/angular.dev/guide/routing)
+- [Route Guards](mdc:https:/angular.dev/guide/routing/guards)
+- [Lazy Loading](mdc:https:/angular.dev/guide/routing/lazy-loading)
+
+### Testing
+- [Testing Overview](mdc:https:/angular.dev/guide/testing)
+- [Component Testing](mdc:https:/angular.dev/guide/testing/components-basics)
+- [Service Testing](mdc:https:/angular.dev/guide/testing/services)
+- [E2E Testing](mdc:https:/angular.dev/guide/testing/e2e)
+
+### Performance
+- [Performance Guide](mdc:https:/angular.dev/guide/performance)
+- [Bundle Optimization](mdc:https:/angular.dev/guide/performance/bundle-optimization)
+- [Image Optimization](mdc:https:/angular.dev/guide/image-optimization)
+
+### Accessibility
+- [A11y Overview](mdc:https:/angular.dev/guide/accessibility)
+- [Angular CDK A11y](mdc:https:/material.angular.io/cdk/a11y/overview)
+
+### Angular Material
+- [Material Design](mdc:https:/material.angular.io)
+- [Material Components](mdc:https:/material.angular.io/components)
+- [Material Theming](mdc:https:/material.angular.io/guide/theming)
+- [Material CDK](mdc:https:/material.angular.io/cdk)
+
+### Best Practices
+- [Style Guide](mdc:https:/angular.dev/style-guide)
+- [Security Guide](mdc:https:/angular.dev/guide/security)
+- [Performance Best Practices](mdc:https:/angular.dev/guide/performance)
+- [Accessibility Best Practices](mdc:https:/angular.dev/guide/accessibility)
