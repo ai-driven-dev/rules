@@ -154,7 +154,7 @@ Exemples :
 
 1. Ouvrir un chat **en mode Agent**.
 2. Choisir le modèle `GPT 4.1`.
-3. Ajouter la Cursor Rules `meta-generator.mdc`.
+3. Ajouter la Cursor Rules `cursor-rules-generator.mdc`.
 4. Promptez !
 
 **Créer une nouvelle règle :**
